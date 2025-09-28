@@ -5,6 +5,17 @@ class ApiClient {
     this.baseURL = baseURL;
   }
 
+  // Handle 401 unauthorized responses
+  handleUnauthorized() {
+    // Clear auth token
+    localStorage.removeItem('authToken');
+
+    // Only redirect if we're in a browser environment and not already on login page
+    if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+      window.location.href = '/login';
+    }
+  }
+
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
 
@@ -30,6 +41,12 @@ class ApiClient {
       const response = await fetch(url, config);
 
       if (!response.ok) {
+        // Handle 401 Unauthorized
+        if (response.status === 401) {
+          this.handleUnauthorized();
+          throw new Error('Unauthorized - redirecting to login');
+        }
+
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
