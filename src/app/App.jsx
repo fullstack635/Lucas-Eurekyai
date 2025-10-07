@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Layout from '../shared/components/layout/Layout';
 import Dashboard from '../features/dashboard';
 import Lists from '../features/lists';
+import Calendar from '../features/calendar';
+import CalendarCallback from '../features/calendar/CalendarCallback';
 import Settings from '../features/settings';
 import Register from '../features/auth';
 import Login from '../features/auth/Login';
@@ -18,7 +20,14 @@ function App() {
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            
+
+            {/* OAuth callback route - protected */}
+            <Route path="/calendar/callback" element={
+              <ProtectedRoute>
+                <CalendarCallback />
+              </ProtectedRoute>
+            } />
+
             {/* Protected dashboard routes */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
@@ -27,6 +36,7 @@ function App() {
             }>
               <Route index element={<Dashboard />} />
               <Route path="lists" element={<Lists />} />
+              <Route path="calendar" element={<Calendar />} />
               <Route path="settings" element={<Settings />} />
             </Route>
             

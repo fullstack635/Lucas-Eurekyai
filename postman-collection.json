@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "eureky-lists-api",
-		"name": "Eureky Lists, Items & Reminders API",
-		"description": "API endpoints for managing lists, list items, and reminders in Eureky. Reminders are now implemented as special list items with scheduling capabilities.",
+		"_postman_id": "eureky-api",
+		"name": "Eureky API",
+		"description": "API endpoints for managing lists, items, reminders, and calendars in Eureky. Reminders are implemented as special list items with scheduling capabilities.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"auth": {
@@ -379,7 +379,79 @@
 			"description": "List items can be regular items or reminders with scheduling capabilities. To create a reminder, include 'scheduledAt' field in the request body.",
 			"item": [
 				{
-					"name": "Add Regular Item to List",
+					"name": "Add Item to Default List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Buy groceries\",\n  \"description\": \"Weekly grocery shopping\",\n  \"priority\": \"medium\",\n  \"order\": \"1\",\n  \"metadata\": {\n    \"category\": \"shopping\",\n    \"estimatedTime\": 60,\n    \"notes\": \"Don't forget milk and bread\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/list-items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"list-items"
+							]
+						},
+						"description": "Creates a regular item in the user's default list. Do not include 'scheduledAt' field for regular items."
+					}
+				},
+				{
+					"name": "Add Reminder to Default List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Call dentist for appointment\",\n  \"description\": \"Schedule annual checkup\",\n  \"priority\": \"high\",\n  \"scheduledAt\": \"2024-12-31T15:30:00.000Z\",\n  \"metadata\": {\n    \"originalText\": \"Remind me to call dentist tomorrow at 3:30 PM\",\n    \"timezone\": \"America/New_York\",\n    \"phoneNumber\": \"+1234567890\",\n    \"category\": \"health\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/list-items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"list-items"
+							]
+						},
+						"description": "Creates a reminder in the user's default list. Include 'scheduledAt' field to make it a reminder."
+					}
+				},
+				{
+					"name": "Add Regular Item to Specific List",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -676,6 +748,417 @@
 			]
 		},
 		{
+			"name": "Calendars Management",
+			"description": "Endpoints for managing user calendars and Google Calendar integration",
+			"item": [
+				{
+					"name": "Create Calendar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"googleCalendarId\": \"primary\",\n  \"calendarName\": \"My Calendar\",\n  \"calendarDescription\": \"Personal calendar\",\n  \"timeZone\": \"America/New_York\",\n  \"backgroundColor\": \"#0B8043\",\n  \"foregroundColor\": \"#FFFFFF\",\n  \"accessToken\": \"your-google-access-token\",\n  \"refreshToken\": \"your-google-refresh-token\",\n  \"tokenExpiresAt\": \"2025-12-31T23:59:59.000Z\",\n  \"isActive\": true,\n  \"isPrimary\": false,\n  \"syncEnabled\": true,\n  \"accessRole\": \"owner\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/calendars",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars"
+							]
+						},
+						"description": "Creates a new calendar for the authenticated user. Requires Google Calendar credentials."
+					}
+				},
+				{
+					"name": "Get User Calendars",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendars?limit=20&offset=0&isActive=true&syncEnabled=true&orderBy=createdAt&orderDirection=desc",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Maximum number of calendars to return (default: 50)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Number of calendars to skip for pagination"
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"description": "Filter by active status (true/false)"
+								},
+								{
+									"key": "syncEnabled",
+									"value": "true",
+									"description": "Filter by sync enabled status (true/false)"
+								},
+								{
+									"key": "orderBy",
+									"value": "createdAt",
+									"description": "Sort by field (calendarName, createdAt, updatedAt, lastSyncAt)"
+								},
+								{
+									"key": "orderDirection",
+									"value": "desc",
+									"description": "Sort direction (asc/desc)"
+								}
+							]
+						},
+						"description": "Gets all calendars for the authenticated user with pagination and filtering options."
+					}
+				},
+				{
+					"name": "Get Calendar by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendars/{{calendar_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars",
+								"{{calendar_id}}"
+							]
+						},
+						"description": "Gets a specific calendar by ID. The calendar must belong to the authenticated user."
+					}
+				},
+				{
+					"name": "Update Calendar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"calendarName\": \"Updated Calendar Name\",\n  \"calendarDescription\": \"Updated description\",\n  \"backgroundColor\": \"#FF5733\",\n  \"foregroundColor\": \"#FFFFFF\",\n  \"isActive\": true,\n  \"syncEnabled\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/calendars/{{calendar_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars",
+								"{{calendar_id}}"
+							]
+						},
+						"description": "Updates an existing calendar. Only the calendar owner can update it."
+					}
+				},
+				{
+					"name": "Delete Calendar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendars/{{calendar_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars",
+								"{{calendar_id}}"
+							]
+						},
+						"description": "Deletes a calendar and all its associated events. Only the calendar owner can delete it."
+					}
+				},
+				{
+					"name": "Set Calendar as Primary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendars/{{calendar_id}}/set-primary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars",
+								"{{calendar_id}}",
+								"set-primary"
+							]
+						},
+						"description": "Sets a calendar as the primary calendar for the user. Automatically unsets other primary calendars."
+					}
+				},
+				{
+					"name": "Sync Calendar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendars/{{calendar_id}}/sync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars",
+								"{{calendar_id}}",
+								"sync"
+							]
+						},
+						"description": "Triggers a manual sync of the calendar with Google Calendar. Calendar must be active and have sync enabled."
+					}
+				}
+			]
+		},
+		{
+			"name": "Calendar OAuth & Sync",
+			"description": "Google Calendar OAuth flow and synchronization endpoints",
+			"item": [
+				{
+					"name": "Get OAuth Authorization URL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendar-oauth/google/authorize",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendar-oauth",
+								"google",
+								"authorize"
+							]
+						},
+						"description": "Get the Google OAuth authorization URL to redirect the user to. This initiates the OAuth flow."
+					}
+				},
+				{
+					"name": "OAuth Callback (Handle)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"AUTHORIZATION_CODE_FROM_GOOGLE\",\n  \"state\": \"STATE_TOKEN_FROM_AUTHORIZE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/calendar-oauth/google/callback",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendar-oauth",
+								"google",
+								"callback"
+							]
+						},
+						"description": "Handles the OAuth callback. Frontend calls this endpoint after receiving the code from Google.\n\nFlow:\n1. User authorizes on Google\n2. Google redirects to: https://eureky.ai/calendar/callback?code=xxx&state=xxx\n3. Frontend extracts code and state from URL\n4. Frontend calls this endpoint with code and state\n5. Backend exchanges code for tokens, saves to DB, and imports calendars"
+					}
+				},
+				{
+					"name": "Sync All User Calendars",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendar-oauth/sync",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendar-oauth",
+								"sync"
+							]
+						},
+						"description": "Syncs all active calendars and their events for the authenticated user."
+					}
+				},
+				{
+					"name": "Sync Specific Calendar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendar-oauth/sync/{{calendar_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendar-oauth",
+								"sync",
+								"{{calendar_id}}"
+							]
+						},
+						"description": "Syncs events for a specific calendar."
+					}
+				},
+				{
+					"name": "Disconnect Google Calendar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendar-oauth/google/disconnect",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendar-oauth",
+								"google",
+								"disconnect"
+							]
+						},
+						"description": "Revokes Google Calendar access and deactivates all user's calendars."
+					}
+				}
+			]
+		},
+		{
 			"name": "Health Checks",
 			"item": [
 				{
@@ -689,6 +1172,40 @@
 								"{{base_url}}"
 							],
 							"path": [
+								"health"
+							]
+						}
+					}
+				},
+				{
+					"name": "Calendars Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendars/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendars",
+								"health"
+							]
+						}
+					}
+				},
+				{
+					"name": "Calendar OAuth Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendar-oauth/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"calendar-oauth",
 								"health"
 							]
 						}
@@ -711,6 +1228,11 @@
 		{
 			"key": "reminder_id",
 			"value": "your-reminder-id-here",
+			"type": "string"
+		},
+		{
+			"key": "calendar_id",
+			"value": "your-calendar-id-here",
 			"type": "string"
 		}
 	]
