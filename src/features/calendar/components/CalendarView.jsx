@@ -22,14 +22,57 @@ const CalendarView = ({ events = [], onSelectEvent, onSelectSlot, onNavigate }) 
 
   // Transform events to the format react-big-calendar expects
   const calendarEvents = useMemo(() => {
-    return events.map(event => ({
-      id: event.id,
-      title: event.summary || event.title || 'Untitled Event',
-      start: new Date(event.start?.dateTime || event.start?.date || event.startTime),
-      end: new Date(event.end?.dateTime || event.end?.date || event.endTime),
-      allDay: !event.start?.dateTime, // If no dateTime, it's an all-day event
-      resource: event,
-    }));
+    console.log('CalendarView - Raw events from API:', events);
+
+    return events.map(event => {
+      // Handle both API formats: Google Calendar API and our backend format
+      let startDate, endDate, isAllDay;
+
+      // Backend format (startDateTime, startDate, endDateTime, endDate)
+      if (event.startDateTime || event.endDateTime) {
+        startDate = event.startDateTime;
+        endDate = event.endDateTime;
+        isAllDay = event.isAllDay || false;
+      }
+      // Backend format for all-day events (startDate, endDate as strings)
+      else if (event.startDate || event.endDate) {
+        // For all-day events, add time to make it work with Date constructor
+        startDate = event.startDate ? `${event.startDate}T00:00:00` : null;
+        endDate = event.endDate ? `${event.endDate}T23:59:59` : null;
+        isAllDay = true;
+      }
+      // Google Calendar API format
+      else if (event.start?.dateTime || event.start?.date) {
+        startDate = event.start.dateTime || event.start.date;
+        endDate = event.end.dateTime || event.end.date;
+        isAllDay = !event.start.dateTime;
+      }
+      // Fallback
+      else {
+        startDate = event.startTime;
+        endDate = event.endTime;
+        isAllDay = false;
+      }
+
+      const transformedEvent = {
+        id: event.id,
+        title: event.summary || event.title || 'Untitled Event',
+        start: new Date(startDate),
+        end: new Date(endDate),
+        allDay: isAllDay,
+        resource: event,
+      };
+
+      console.log('CalendarView - Transformed event:', {
+        original: event,
+        startDate,
+        endDate,
+        isAllDay,
+        transformed: transformedEvent,
+      });
+
+      return transformedEvent;
+    });
   }, [events]);
 
   const handleSelectEvent = useCallback((event) => {

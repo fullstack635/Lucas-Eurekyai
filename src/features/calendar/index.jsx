@@ -1,15 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { RefreshCw, Settings as SettingsIcon, Calendar as CalendarIcon } from 'lucide-react';
 import { useCalendars } from './hooks/useCalendars';
 import { useGoogleCalendar } from './hooks/useGoogleCalendar';
+import { useAllCalendarEvents } from './hooks/useCalendarEvents';
 import CalendarView from './components/CalendarView';
 import CalendarSettings from './components/CalendarSettings';
 import Button from '../../shared/components/ui/Button';
+import { startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
 
 const Calendar = () => {
   const [selectedCalendar, setSelectedCalendar] = useState(null);
-  const [events, setEvents] = useState([]);
   const [showSettings, setShowSettings] = useState(false);
+  const [dateRange, setDateRange] = useState({
+    start: subMonths(startOfMonth(new Date()), 1),
+    end: addMonths(endOfMonth(new Date()), 1),
+  });
 
   // Fetch calendars
   const { data: calendarsData, isLoading, error, refetch } = useCalendars({
@@ -19,26 +24,38 @@ const Calendar = () => {
 
   const { syncAllCalendars, isSyncing } = useGoogleCalendar();
 
-  const calendars = calendarsData?.data || [];
+  // Fetch events for all calendars
+  const { data: eventsData, isLoading: isLoadingEvents } = useAllCalendarEvents({ dateRange });
+
+  const calendars = calendarsData?.data?.calendars || [];
   const hasCalendars = calendars.length > 0;
+
+  // Extract events from response
+  const allEvents = useMemo(() => {
+    return eventsData?.data?.events || [];
+  }, [eventsData]);
+
+  console.log('Calendar index - calendarsData:', calendarsData);
+  console.log('Calendar index - calendars:', calendars);
+  console.log('Calendar index - selectedCalendar:', selectedCalendar);
+  console.log('Calendar index - eventsData:', eventsData);
+  console.log('Calendar index - allEvents:', allEvents);
 
   // Set the first calendar as selected by default
   useEffect(() => {
     if (calendars.length > 0 && !selectedCalendar) {
       const primary = calendars.find(cal => cal.isPrimary) || calendars[0];
+      console.log('Setting selected calendar:', primary);
       setSelectedCalendar(primary);
     }
   }, [calendars, selectedCalendar]);
 
-  // Mock events - In a real implementation, you would fetch these from the backend
-  // based on the selected calendar
-  useEffect(() => {
-    if (selectedCalendar) {
-      // TODO: Fetch events from backend for the selected calendar
-      // For now, using empty array
-      setEvents([]);
-    }
-  }, [selectedCalendar]);
+  const handleNavigate = (newDate) => {
+    // Update date range when user navigates to different month
+    const start = subMonths(startOfMonth(newDate), 1);
+    const end = addMonths(endOfMonth(newDate), 1);
+    setDateRange({ start, end });
+  };
 
   const handleSync = () => {
     syncAllCalendars();
@@ -143,16 +160,20 @@ const Calendar = () => {
 
       {/* Calendar View */}
       <div className="flex-1 p-6 overflow-hidden">
-        {selectedCalendar ? (
+        {isLoadingEvents ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center">
+              <RefreshCw className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-2" />
+              <p className="text-gray-600">Cargando eventos...</p>
+            </div>
+          </div>
+        ) : (
           <CalendarView
-            events={events}
+            events={allEvents}
             onSelectEvent={handleSelectEvent}
             onSelectSlot={handleSelectSlot}
+            onNavigate={handleNavigate}
           />
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-gray-500">Selecciona un calendario</p>
-          </div>
         )}
       </div>
     </div>

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Calendar, RefreshCw, Trash2, AlertCircle, CheckCircle, Link as LinkIcon } from 'lucide-react';
-import { useCalendars } from '../hooks/useCalendars';
+import { Calendar, RefreshCw, Trash2, AlertCircle, CheckCircle, Link as LinkIcon, Eye, EyeOff } from 'lucide-react';
+import { useCalendars, useUpdateCalendar } from '../hooks/useCalendars';
 import { useGoogleCalendar } from '../hooks/useGoogleCalendar';
 import Button from '../../../shared/components/ui/Button';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { calendarService } from '../../../shared/services/calendars';
 
 const CalendarSettings = () => {
   const { data: calendarsData, isLoading } = useCalendars({ isActive: true });
@@ -18,10 +19,15 @@ const CalendarSettings = () => {
     error,
   } = useGoogleCalendar();
 
+  const updateCalendarMutation = useUpdateCalendar();
   const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false);
+  const [syncingCalendarId, setSyncingCalendarId] = useState(null);
 
-  const calendars = calendarsData?.data || [];
+  const calendars = calendarsData?.data?.calendars || [];
+  console.log("calendars", calendars);
   const hasCalendars = calendars.length > 0;
+
+  console.log("hasCalendars", hasCalendars);
 
   const handleConnect = () => {
     connectGoogleCalendar();
@@ -43,6 +49,26 @@ const CalendarSettings = () => {
     } catch {
       return 'Fecha inválida';
     }
+  };
+
+  const handleSyncSpecificCalendar = async (calendarId) => {
+    try {
+      setSyncingCalendarId(calendarId);
+      await calendarService.syncSpecificCalendar(calendarId);
+    } catch (error) {
+      console.error('Error syncing calendar:', error);
+    } finally {
+      setSyncingCalendarId(null);
+    }
+  };
+
+  const handleToggleCalendarSync = (calendar) => {
+    updateCalendarMutation.mutate({
+      calendarId: calendar.id,
+      data: {
+        syncEnabled: !calendar.syncEnabled,
+      },
+    });
   };
 
   if (isLoading) {
@@ -168,12 +194,12 @@ const CalendarSettings = () => {
             {calendars.map((calendar) => (
               <div key={calendar.id} className="p-4 hover:bg-gray-50 transition-colors">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 flex-1">
                     <div
                       className="w-4 h-4 rounded-full mt-0.5 flex-shrink-0"
                       style={{ backgroundColor: calendar.backgroundColor || '#3b82f6' }}
                     />
-                    <div>
+                    <div className="flex-1">
                       <h4 className="font-medium text-gray-900">
                         {calendar.calendarName}
                       </h4>
@@ -198,11 +224,28 @@ const CalendarSettings = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {calendar.syncEnabled ? (
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                    ) : (
-                      <AlertCircle className="w-5 h-5 text-gray-400" />
-                    )}
+                    <button
+                      onClick={() => handleToggleCalendarSync(calendar)}
+                      disabled={updateCalendarMutation.isPending}
+                      className="p-2 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
+                      title={calendar.syncEnabled ? 'Desactivar sincronización' : 'Activar sincronización'}
+                    >
+                      {calendar.syncEnabled ? (
+                        <Eye className="w-5 h-5 text-green-600" />
+                      ) : (
+                        <EyeOff className="w-5 h-5 text-gray-400" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => handleSyncSpecificCalendar(calendar.id)}
+                      disabled={syncingCalendarId === calendar.id}
+                      className="p-2 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
+                      title="Sincronizar este calendario"
+                    >
+                      <RefreshCw
+                        className={`w-5 h-5 text-blue-600 ${syncingCalendarId === calendar.id ? 'animate-spin' : ''}`}
+                      />
+                    </button>
                   </div>
                 </div>
               </div>

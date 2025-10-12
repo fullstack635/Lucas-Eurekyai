@@ -100,6 +100,37 @@ class CalendarService {
   async disconnectGoogleCalendar() {
     return apiClient.post('/calendar-oauth/google/disconnect');
   }
+
+  /**
+   * Get events for a specific calendar
+   * @param {string} calendarId - Calendar ID
+   * @param {object} params - Query parameters (start, end, limit, offset)
+   */
+  async getCalendarEvents(calendarId, params = {}) {
+    const queryParams = new URLSearchParams({
+      ...(params.start && { start: params.start }),
+      ...(params.end && { end: params.end }),
+      ...(params.limit && { limit: params.limit }),
+      ...(params.offset && { offset: params.offset }),
+    });
+
+    return apiClient.get(`/calendars/${calendarId}/events?${queryParams}`);
+  }
+
+  /**
+   * Get all events for all user calendars
+   * @param {object} params - Query parameters (start, end, limit, offset)
+   */
+  async getAllEvents(params = {}) {
+    const queryParams = new URLSearchParams({
+      ...(params.start && { start: params.start }),
+      ...(params.end && { end: params.end }),
+      ...(params.limit && { limit: params.limit }),
+      ...(params.offset && { offset: params.offset }),
+    });
+
+    return apiClient.get(`/calendar-events?${queryParams}`);
+  }
 }
 
 export const calendarService = new CalendarService();
