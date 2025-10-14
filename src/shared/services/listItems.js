@@ -1,6 +1,27 @@
 import { apiClient } from './api';
 
 export const listItemsService = {
+  // Get all items across all user's lists
+  async getAllUserItems(params = {}) {
+    try {
+      const queryParams = new URLSearchParams();
+
+      // Add optional query parameters
+      if (params.limit) queryParams.append('limit', params.limit);
+      if (params.offset) queryParams.append('offset', params.offset);
+      if (params.isCompleted !== undefined) queryParams.append('isCompleted', params.isCompleted);
+      if (params.priority) queryParams.append('priority', params.priority);
+      if (params.orderBy) queryParams.append('orderBy', params.orderBy);
+      if (params.orderDirection) queryParams.append('orderDirection', params.orderDirection);
+
+      const url = `/list-items${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const response = await apiClient.get(url);
+      return response;
+    } catch (error) {
+      throw new Error(error.message || 'Failed to fetch all items');
+    }
+  },
+
   // Get all items for a specific list
   async getListItems(listId, params = {}) {
     try {

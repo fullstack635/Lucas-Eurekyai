@@ -7,6 +7,18 @@ export const listItemsKeys = {
   all: ['listItems'],
   lists: () => [...listItemsKeys.all, 'list'],
   list: (listId, filters) => [...listItemsKeys.lists(), listId, { filters }],
+  allUserItems: (filters) => [...listItemsKeys.all, 'allUserItems', { filters }],
+};
+
+// Hook to get all items across all lists
+export const useAllUserItems = (filters = {}) => {
+  return useQuery({
+    queryKey: listItemsKeys.allUserItems(filters),
+    queryFn: () => listItemsService.getAllUserItems(filters),
+    select: (response) => response.data?.items || [],
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    refetchOnWindowFocus: false,
+  });
 };
 
 // Hook to get all items for a specific list

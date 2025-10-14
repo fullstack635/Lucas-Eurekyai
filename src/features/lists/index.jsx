@@ -1,64 +1,66 @@
 import { useState } from 'react';
-import { Plus, ArrowLeft, Filter } from 'lucide-react';
-import ListCard from './components/ListCard';
+import { Plus, MoreHorizontal, SlidersHorizontal } from 'lucide-react';
+import ListsSidebar from './components/ListsSidebar';
 import ListForm from './components/ListForm';
 import ItemCard from './components/ItemCard';
 import ItemForm from './components/ItemForm';
+import ItemDetailView from './components/ItemDetailView';
 import { useListsOperations } from './hooks/useListsQuery';
-import { useAddItemToList, useToggleItemCompletion, useDeleteItem, useListItemsOperations, useAddItemToDefaultList } from './hooks/useListItemsQuery';
+import { useAllUserItems, useListItems, useAddItemToList, useToggleItemCompletion, useDeleteItem, useUpdateItem, useAddItemToDefaultList } from './hooks/useListItemsQuery';
 
 const Lists = () => {
   const {
     lists,
     isLoading: listsLoading,
-    isError: listsError,
-    error: listsErrorMessage,
     createList,
     updateList,
-    deleteList,
-    isCreating,
-    isUpdating,
-    isDeleting
   } = useListsOperations();
 
-  // Item operations for inline management
-  const addItemMutation = useAddItemToList();
-  const addItemToDefaultMutation = useAddItemToDefaultList();
-  const toggleItemMutation = useToggleItemCompletion();
-  const deleteItemMutation = useDeleteItem();
-
+  // State management
+  const [selectedListId, setSelectedListId] = useState('all');
   const [showListForm, setShowListForm] = useState(false);
   const [editingList, setEditingList] = useState(null);
-  const [selectedList, setSelectedList] = useState(null);
-  const [showItemForm, setShowItemForm] = useState(false);
-  const [editingItem, setEditingItem] = useState(null);
-  const [showQuickAdd, setShowQuickAdd] = useState(false);
-  const [filters, setFilters] = useState({
-    status: 'ACTIVE',
-    isCompleted: false
-  });
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showAddTask, setShowAddTask] = useState(false);
+  const [newTaskContent, setNewTaskContent] = useState('');
 
-  // Get items for selected list
-  const {
-    items,
-    isLoading: itemsLoading,
-    addItem,
-    updateItem,
-    toggleCompletion,
-    deleteItem,
-    isAdding,
-    isUpdating: itemUpdating,
-    isDeleting: itemDeleting
-  } = useListItemsOperations(selectedList?.id);
+  // Get items based on selected list/view
+  const { data: allItems = [], isLoading: allItemsLoading } = useAllUserItems();
+  const { data: listItems = [], isLoading: listItemsLoading } = useListItems(
+    selectedListId !== 'all' && selectedListId !== 'today' && selectedListId !== 'next7' ? selectedListId : null
+  );
 
-  // List handlers
-  const handleCreateList = () => {
-    setEditingList(null);
-    setShowListForm(true);
+  // Item operations
+  const addItemMutation = useAddItemToDefaultList();
+  const toggleItemMutation = useToggleItemCompletion();
+  const deleteItemMutation = useDeleteItem();
+  const updateItemMutation = useUpdateItem();
+
+  // Determine which items to display
+  const displayItems = selectedListId === 'all'
+    ? allItems
+    : selectedListId === 'today' || selectedListId === 'next7'
+    ? allItems // TODO: filter by date
+    : listItems;
+
+  const isLoading = selectedListId === 'all' ? allItemsLoading : listItemsLoading;
+
+  // Get current list/view name
+  const getViewTitle = () => {
+    if (selectedListId === 'all') return 'All my tasks';
+    if (selectedListId === 'today') return 'My day';
+    if (selectedListId === 'next7') return 'Next 7 days';
+    const list = lists.find(l => l.id === selectedListId);
+    return list?.name || 'Tasks';
   };
 
-  const handleEditList = (list) => {
-    setEditingList(list);
+  // Handlers
+  const handleSelectList = (listId) => {
+    setSelectedListId(listId);
+    setSelectedItem(null);
+  };
+
+  const handleCreateList = () => {
     setShowListForm(true);
   };
 
@@ -84,281 +86,216 @@ const Lists = () => {
     setEditingList(null);
   };
 
-  const handleViewList = (list) => {
-    setSelectedList(list);
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
   };
 
-  const handleBackToLists = () => {
-    setSelectedList(null);
-    setShowItemForm(false);
-    setEditingItem(null);
+  const handleCloseItemDetail = () => {
+    setSelectedItem(null);
   };
 
-  // Item handlers
-  const handleAddItem = () => {
-    setEditingItem(null);
-    setShowItemForm(true);
-  };
-
-  const handleEditItem = (item) => {
-    setEditingItem(item);
-    setShowItemForm(true);
-  };
-
-  const handleSubmitItem = (itemData) => {
-    if (editingItem) {
-      updateItem({ id: editingItem.id, ...itemData }, {
-        onSuccess: () => {
-          setShowItemForm(false);
-          setEditingItem(null);
-        }
-      });
-    } else {
-      addItem(itemData, {
-        onSuccess: () => {
-          setShowItemForm(false);
-        }
-      });
-    }
-  };
-
-  const handleCancelItem = () => {
-    setShowItemForm(false);
-    setEditingItem(null);
-  };
-
-  // Filter handlers
-  const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  };
-
-  // Inline item management handlers
-  const handleAddItemInline = async (listId, itemData) => {
-    return addItemMutation.mutateAsync({ listId, itemData });
-  };
-
-  const handleToggleItemInline = (itemId) => {
+  const handleToggleItem = (itemId) => {
     toggleItemMutation.mutate(itemId);
   };
 
-  const handleDeleteItemInline = (itemId) => {
+  const handleDeleteItem = (itemId) => {
     deleteItemMutation.mutate(itemId);
+    if (selectedItem?.id === itemId) {
+      setSelectedItem(null);
+    }
   };
 
-  // Quick add handlers
-  const handleQuickAdd = () => {
-    setShowQuickAdd(true);
+  const handleMarkItemComplete = () => {
+    if (selectedItem) {
+      toggleItemMutation.mutate(selectedItem.id);
+      setSelectedItem(null);
+    }
   };
 
-  const handleSubmitQuickAdd = (itemData) => {
-    addItemToDefaultMutation.mutate(itemData, {
-      onSuccess: () => {
-        setShowQuickAdd(false);
+  const handleUpdateItem = (updates) => {
+    updateItemMutation.mutate(updates);
+  };
+
+  const handleAddTask = (e) => {
+    e.preventDefault();
+    if (!newTaskContent.trim()) return;
+
+    addItemMutation.mutate(
+      { content: newTaskContent },
+      {
+        onSuccess: () => {
+          setNewTaskContent('');
+          setShowAddTask(false);
+        }
       }
-    });
+    );
   };
 
-  const handleCancelQuickAdd = () => {
-    setShowQuickAdd(false);
+  // Get list name for an item
+  const getListNameForItem = (item) => {
+    if (!item.listId) return 'Personal';
+    const list = lists.find(l => l.id === item.listId);
+    return list?.name || 'Personal';
   };
 
-  if (listsLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
+  // Main render with new layout
+  return (
+    <div className="flex h-screen bg-white -m-6">
+      {/* Left Sidebar */}
+      <ListsSidebar
+        selectedListId={selectedListId}
+        onSelectList={handleSelectList}
+        onCreateList={handleCreateList}
+      />
 
-  if (listsError) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Error al cargar las listas</p>
-          <p className="text-sm text-gray-500">{listsErrorMessage?.message}</p>
-        </div>
-      </div>
-    );
-  }
-
-  // If viewing a specific list and its items
-  if (selectedList) {
-    return (
-      <div className="space-y-6">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={handleBackToLists}
-              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{selectedList.name}</h1>
-              <p className="text-gray-600">{selectedList.description || 'Manage your list items'}</p>
+        <div className="border-b border-gray-200 px-8 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold text-gray-900">{getViewTitle()}</h1>
+            <div className="flex items-center space-x-2">
+              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <SlidersHorizontal className="w-5 h-5 text-gray-600" />
+              </button>
+              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <MoreHorizontal className="w-5 h-5 text-gray-600" />
+              </button>
             </div>
           </div>
-          <button
-            onClick={handleAddItem}
-            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Item
-          </button>
         </div>
 
-        {/* Item Form */}
-        {showItemForm && (
-          <ItemForm
-            onSubmit={handleSubmitItem}
-            onCancel={handleCancelItem}
-            initialData={editingItem}
-            loading={isAdding || itemUpdating}
-          />
-        )}
-
         {/* Items List */}
-        <div className="space-y-3">
-          {itemsLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <div className="flex-1 overflow-y-auto px-8 py-6">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div>
             </div>
-          ) : items.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-500">No items in this list yet.</p>
+          ) : displayItems.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 mb-4">No tasks yet.</p>
               <button
-                onClick={handleAddItem}
-                className="mt-2 text-primary-600 hover:text-primary-700"
+                onClick={() => setShowAddTask(true)}
+                className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                Add your first item
+                Add your first task
               </button>
             </div>
           ) : (
-            items.map((item) => (
-              <ItemCard
-                key={item.id}
-                item={item}
-                onEdit={handleEditItem}
-                onDelete={deleteItem}
-                onToggleCompletion={toggleCompletion}
-              />
-            ))
+            <div className="space-y-2 max-w-4xl">
+              {displayItems.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() => handleItemClick(item)}
+                  className={`flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors border ${
+                    selectedItem?.id === item.id
+                      ? 'border-blue-200 bg-blue-50'
+                      : 'border-transparent'
+                  }`}
+                >
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleItem(item.id);
+                    }}
+                    className="mt-1 w-5 h-5 rounded-full border-2 border-gray-400 hover:border-blue-600 flex-shrink-0 transition-colors"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm ${item.isCompleted ? 'line-through text-gray-400' : 'text-gray-900'}`}>
+                      {item.content}
+                    </p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-xs text-gray-500">{getListNameForItem(item)}</span>
+                      {item.subtaskStats && item.subtaskStats.total > 0 && (
+                        <>
+                          <span className="text-xs text-gray-400">|</span>
+                          <span className="text-xs text-gray-500">
+                            {item.subtaskStats.completed}/{item.subtaskStats.total}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add Task Button */}
+          {showAddTask ? (
+            <form onSubmit={handleAddTask} className="mt-4 max-w-4xl">
+              <div className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg bg-white">
+                <div className="mt-1 w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0" />
+                <input
+                  type="text"
+                  value={newTaskContent}
+                  onChange={(e) => setNewTaskContent(e.target.value)}
+                  placeholder="Task name"
+                  className="flex-1 text-sm focus:outline-none"
+                  autoFocus
+                />
+              </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <button
+                  type="submit"
+                  disabled={addItemMutation.isPending}
+                  className="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                >
+                  Add task
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddTask(false);
+                    setNewTaskContent('');
+                  }}
+                  className="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <button
+              onClick={() => setShowAddTask(true)}
+              className="mt-4 flex items-center space-x-2 text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <Plus className="w-5 h-5" />
+              <span className="text-sm">Add task</span>
+            </button>
           )}
         </div>
       </div>
-    );
-  }
 
-  // Main lists view
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Lists</h1>
-          <p className="text-gray-600">Organize your tasks and items into lists</p>
-        </div>
-        <div className="flex space-x-3">
-          <button
-            onClick={handleQuickAdd}
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Quick Add Item
-          </button>
-          <button
-            onClick={handleCreateList}
-            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            New List
-          </button>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-        <Filter className="w-4 h-4 text-gray-500" />
-        <div className="flex items-center space-x-4">
-          <div>
-            <label className="text-sm font-medium text-gray-700 mr-2">Status:</label>
-            <select
-              value={filters.status}
-              onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="text-sm border border-gray-300 rounded px-2 py-1"
-            >
-              <option value="">All</option>
-              <option value="ACTIVE">Active</option>
-              <option value="COMPLETED">Completed</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-gray-700 mr-2">Completed:</label>
-            <select
-              value={filters.isCompleted}
-              onChange={(e) => handleFilterChange('isCompleted', e.target.value === 'true')}
-              className="text-sm border border-gray-300 rounded px-2 py-1"
-            >
-              <option value="">All</option>
-              <option value="false">Incomplete</option>
-              <option value="true">Complete</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Add Form */}
-      {showQuickAdd && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">
-            Quick Add Item (Default List)
-          </h3>
-          <ItemForm
-            onSubmit={handleSubmitQuickAdd}
-            onCancel={handleCancelQuickAdd}
-            loading={addItemToDefaultMutation.isPending}
+      {/* Right Panel - Item Detail */}
+      {selectedItem && (
+        <div className="w-96 border-l border-gray-200 bg-white overflow-hidden">
+          <ItemDetailView
+            item={selectedItem}
+            onClose={handleCloseItemDetail}
+            onMarkComplete={handleMarkItemComplete}
+            onUpdate={handleUpdateItem}
+            lists={lists}
           />
         </div>
       )}
 
-      {/* List Form */}
+      {/* List Form Modal */}
       {showListForm && (
-        <ListForm
-          onSubmit={handleSubmitList}
-          onCancel={handleCancelList}
-          initialData={editingList}
-          loading={isCreating || isUpdating}
-        />
-      )}
-
-      {/* Lists Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {lists.length === 0 ? (
-          <div className="col-span-full text-center py-8">
-            <p className="text-gray-500 mb-4">No lists found.</p>
-            <button
-              onClick={handleCreateList}
-              className="text-primary-600 hover:text-primary-700"
-            >
-              Create your first list
-            </button>
-          </div>
-        ) : (
-          lists.map((list) => (
-            <ListCard
-              key={list.id}
-              list={list}
-              onEdit={handleEditList}
-              onDelete={deleteList}
-              onView={handleViewList}
-              onToggleItem={handleToggleItemInline}
-              onAddItem={handleAddItemInline}
-              onDeleteItem={handleDeleteItemInline}
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h2 className="text-xl font-semibold mb-4">
+              {editingList ? 'Edit List' : 'Create New List'}
+            </h2>
+            <ListForm
+              onSubmit={handleSubmitList}
+              onCancel={handleCancelList}
+              initialData={editingList}
+              loading={false}
             />
-          ))
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
