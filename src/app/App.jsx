@@ -7,6 +7,7 @@ import CalendarCallback from '../features/calendar/CalendarCallback';
 import Settings from '../features/settings';
 import Register from '../features/auth';
 import Login from '../features/auth/Login';
+import Landing from '../features/landing';
 import ProtectedRoute from '../shared/components/ProtectedRoute';
 import QueryProvider from './providers/QueryProvider';
 import { AppProvider } from '../shared/contexts/AppContext';
@@ -17,6 +18,9 @@ function App() {
       <AppProvider>
         <Router>
           <Routes>
+            {/* Landing page - public route */}
+            <Route path="/" element={<Landing />} />
+
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -39,12 +43,9 @@ function App() {
               <Route path="calendar" element={<Calendar />} />
               <Route path="settings" element={<Settings />} />
             </Route>
-            
-            {/* Redirect root to dashboard */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            
-            {/* Catch all - redirect to dashboard */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+            {/* Catch all - redirect to landing */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </AppProvider>

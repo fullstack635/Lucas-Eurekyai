@@ -2,3 +2,8 @@
 
 /* React Big Calendar Styles */
 @import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+/* Default Font */
+* {
+  font-family: 'Figtree', sans-serif;
+}

@@ -11,6 +11,7 @@
     "build:aws": "npm run build && echo 'Build ready for AWS S3/CloudFront deployment'"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@tanstack/react-query": "^5.87.4",
     "@tanstack/react-query-devtools": "^5.87.4",
     "date-fns": "^4.1.0",

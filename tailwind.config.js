@@ -21,6 +21,10 @@ export default defineConfig({
           500: '#64748b',
           600: '#475569',
         }
+      },
+      fontFamily: {
+        sans: ['Figtree', 'sans-serif'],
+        figtree: ['Figtree', 'sans-serif'],
       }
     },
   },
