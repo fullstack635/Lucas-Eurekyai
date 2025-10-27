@@ -14,7 +14,7 @@ import Chat4 from '../../assets/images/chat_4.png';
 import Chat6 from '../../assets/images/chat_6.png';
 import Image5 from '../../assets/images/image_5.jpg';
 import Logo from '../../assets/images/logo.png';
-import { SparklesIcon, BoltIcon, HeartIcon, PlusCircleIcon, CheckIcon } from '@heroicons/react/24/outline'
+import { SparklesIcon, BoltIcon, HeartIcon, PlusCircleIcon, CheckIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const features = [
   { image: Chat1, title: "Tareas por voz en WhatsApp", text: "Habla y listo, tus notas de voz se convierten en tareas con recordatorios en WhatsApp para que nada se te escape.", alt: "chat_1" },
@@ -171,6 +171,7 @@ const pricingPlans = [
 export default function Landing() {
   const [billingPeriod, setBillingPeriod] = useState('monthly');
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleFaq = (index) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
@@ -186,97 +187,149 @@ export default function Landing() {
       <div className="min-h-screen bg-[#050912]">
         {/* Navigation */}
         <nav className="fixed top-0 w-full backdrop-blur-md z-50 bg-[#050912]">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
-                <img src={Logo} alt="logo" />
+                <img src={Logo} alt="logo" className="h-8 sm:h-auto" />
               </div>
+
+              {/* Desktop menu */}
               <div className="hidden md:flex items-center gap-8 text-white">
-                <a href="#features">
+                <a href="#features" className="hover:text-gray-300">
                   Características
                 </a>
-                <a href="#pricing">
+                <a href="#pricing" className="hover:text-gray-300">
                   Precios
                 </a>
-                <a href="#how-works">
+                <a href="#how-works" className="hover:text-gray-300">
                   ¿Como funciona?
                 </a>
-                <a href="#reviews">
+                <a href="#reviews" className="hover:text-gray-300">
                   Reviews
                 </a>
               </div>
+
+              {/* Mobile menu button */}
+              <div className="md:hidden">
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="text-white p-2"
+                >
+                  {mobileMenuOpen ? (
+                    <XMarkIcon className="h-6 w-6" />
+                  ) : (
+                    <Bars3Icon className="h-6 w-6" />
+                  )}
+                </button>
+              </div>
             </div>
+
+            {/* Mobile menu */}
+            {mobileMenuOpen && (
+              <div className="md:hidden pb-4">
+                <div className="flex flex-col gap-4 text-white">
+                  <a
+                    href="#features"
+                    className="hover:text-gray-300"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Características
+                  </a>
+                  <a
+                    href="#pricing"
+                    className="hover:text-gray-300"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Precios
+                  </a>
+                  <a
+                    href="#how-works"
+                    className="hover:text-gray-300"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    ¿Como funciona?
+                  </a>
+                  <a
+                    href="#reviews"
+                    className="hover:text-gray-300"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Reviews
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </nav>
 
         {/* Hero Section */}
-        <section className="pt-32 pb-20">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 text-white">
-            <div className="w-xl">
-              <h1 className="text-[80px]/18 font-bold">
+        <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 text-white">
+            <div className="w-full">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[80px] lg:leading-tight font-bold">
                 Más que recordatorios, tu coach de metas
               </h1>
             </div>
-            <div className="flex flex-col justify-self-end">
-              <p className="md:text-xl mb-4 max-w-3xl flex items-center">
-                <CheckIcon className="size-6 mr-3 rounded-full bg-[#6A52CC] p-0.5" /> <span>Ahorra hasta 3 horas a la semana.</span>
+            <div className="flex flex-col md:justify-self-end">
+              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>Ahorra hasta 3 horas a la semana.</span>
               </p>
-              <p className="md:text-xl mb-4 max-w-3xl flex items-center">
-                <CheckIcon className="size-6 mr-3 rounded-full bg-[#6A52CC] p-0.5" /> <span>100% de tus ideas al instante con notas de voz.</span>
+              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>100% de tus ideas al instante con notas de voz.</span>
               </p>
-              <p className="md:text-xl mb-4 max-w-3xl flex items-center">
-                <CheckIcon className="size-6 mr-3 rounded-full bg-[#6A52CC] p-0.5" /> <span>PDFs en decisiones en menos de 90 segundos.</span>
+              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>PDFs en decisiones en menos de 90 segundos.</span>
               </p>
-              <p className="md:text-xl mb-4 max-w-3xl flex items-center">
-                <CheckIcon className="size-6 mr-3 rounded-full bg-[#6A52CC] p-0.5" /> <span>0 citas olvidadas, garantizado por tu coach 24/7.</span>
+              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>0 citas olvidadas, garantizado por tu coach 24/7.</span>
               </p>
 
-              <div className="mt-10">
+              <div className="mt-6 sm:mt-10">
                 <Link
                   to="/register"
-                  className={`text-center py-5 px-8 rounded-full font-semibold transition-colors bg-[#76FF72] text-black hover:bg-[#9FEE9C]`}
+                  className="w-full md:w-auto inline-block text-center py-4 sm:py-5 px-6 sm:px-8 rounded-full font-semibold transition-colors bg-[#76FF72] text-black hover:bg-[#9FEE9C]"
                 >
                   Prueba gratis
                 </Link>
               </div>
             </div>
           </div>
-          <div className="flex justify-between my-30">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 sm:mt-20 md:mt-30 px-4 sm:px-0">
             <div className="flex items-stretch">
-              <img src={Image2} alt="image2" />
+              <img src={Image2} alt="image2" className="w-full h-auto object-cover rounded-lg" />
             </div>
             <div className="flex items-stretch">
-              <img src={Image1} alt="image1" />
+              <img src={Image1} alt="image1" className="w-full h-auto object-cover rounded-lg" />
             </div>
             <div className="flex items-stretch">
-              <img src={Image4} alt="image4" />
+              <img src={Image4} alt="image4" className="w-full h-auto object-cover rounded-lg" />
             </div>
-            <div className="flex justify-end">
-              <img src={Image3} alt="image3" />
+            <div className="flex items-stretch">
+              <img src={Image3} alt="image3" className="w-full h-auto object-cover rounded-lg" />
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="pt-24 pb-39 bg-[#ABFFA8] px-4 sm:px-6 lg:px-8">
+        <section id="features" className="pt-12 sm:pt-24 pb-20 sm:pb-39 bg-[#ABFFA8] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto justify-items-center">
-            <div className="flex justify-center items-center pb-28">
-              <img src={Subtitle} alt="subtitle" />
+            <div className="flex justify-center items-center pb-12 sm:pb-28">
+              <img src={Subtitle} alt="subtitle" className="w-full max-w-md sm:max-w-none" />
             </div>
 
             <div className="grid grid-cols-1">
-              <img src={Desktop2} alt="desktop2" />
+              <img src={Desktop2} alt="desktop2" className="w-full h-auto" />
             </div>
 
             {features.map((feat, index) => {
               return (
-                <div className="flex items-center flex-col w-2xl mt-39" key={`feat-${index}`}>
-                  <div className="text-center">
-                    <p className="text-5xl font-bold mb-2">{feat.title}</p>
-                    <p className="text-2xl mb-10">{feat.text}</p>
+                <div className="flex items-center flex-col w-full max-w-2xl mt-16 sm:mt-20 md:mt-39" key={`feat-${index}`}>
+                  <div className="text-center px-4">
+                    <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">{feat.title}</p>
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-10">{feat.text}</p>
                   </div>
-                  <div className="">
-                    <img src={feat.image} alt={feat.alt} />
+                  <div className="w-full">
+                    <img src={feat.image} alt={feat.alt} className="w-full h-auto" />
                   </div>
                 </div>
               )
@@ -287,19 +340,19 @@ export default function Landing() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-28 bg-[#6A52CC] px-4 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-20 md:py-28 bg-[#6A52CC] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Title */}
-            <h2 className="text-5xl md:text-6xl font-bold text-white text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-8 sm:mb-12 md:mb-14">
               Tus tareas y avances<br />en un solo panel.
             </h2>
 
             {/* Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {dashboardFeatures.map((feature, index) => (
                 <div key={index} className="flex flex-col">
                   {/* Card with border */}
-                  <div className={`rounded-3xl ${feature.borderColor} mb-8 overflow-hidden`}>
+                  <div className={`rounded-3xl ${feature.borderColor} mb-6 sm:mb-8 overflow-hidden`}>
                     <img
                       src={Chat6}
                       alt="Dashboard preview"
@@ -308,11 +361,11 @@ export default function Landing() {
                   </div>
 
                   {/* Text below card */}
-                  <div className="text-center px-4">
-                    <h3 className="text-xl font-bold text-white mb-2">
+                  <div className="text-center px-2 sm:px-4">
+                    <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-white/90 text-base leading-relaxed">
+                    <p className="text-white/90 text-sm sm:text-base leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -323,14 +376,14 @@ export default function Landing() {
         </section>
 
         {/* Pricing Section */}
-        <section id="pricing" className="py-20 bg-[#050912] px-4 sm:px-6 lg:px-8">
+        <section id="pricing" className="py-12 sm:py-20 bg-[#050912] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Header */}
-            <div className="text-center mb-12">
-              <h2 className="text-6xl md:text-7xl font-bold text-white mb-4">
+            <div className="text-center mb-8 sm:mb-12">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4">
                 Planes para todos.
               </h2>
-              <p className="text-3xl md:text-4xl font-bold italic text-[#ABFFA8] mb-8">
+              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold italic text-[#ABFFA8] mb-6 sm:mb-8">
                 ¡Pruébalo sin pagar por 7 días!
               </p>
 
@@ -338,7 +391,7 @@ export default function Landing() {
               <div className="inline-flex items-center bg-[#0f1521] rounded-full p-1 gap-1">
                 <button
                   onClick={() => setBillingPeriod('monthly')}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${billingPeriod === 'monthly'
+                  className={`px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium transition-all cursor-pointer ${billingPeriod === 'monthly'
                     ? 'bg-white text-black'
                     : 'text-white hover:text-gray-300'
                     }`}
@@ -347,7 +400,7 @@ export default function Landing() {
                 </button>
                 <button
                   onClick={() => setBillingPeriod('annual')}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all cursor-pointer ${billingPeriod === 'annual'
+                  className={`px-4 sm:px-6 py-2 rounded-full text-xs sm:text-sm font-medium transition-all cursor-pointer ${billingPeriod === 'annual'
                     ? 'bg-white text-black'
                     : 'text-white hover:text-gray-300'
                     }`}
@@ -362,60 +415,60 @@ export default function Landing() {
               {pricingPlans.map((plan, index) => (
                 <div
                   key={index}
-                  className={`relative rounded-3xl px-8 bg-[#050912] ${plan.popular
-                    ? 'border-1 border-[#7B5FCC] md:-mt-6 py-14'
-                    : 'border-1 border-[#1a2332] py-8'
+                  className={`relative rounded-3xl px-4 sm:px-6 md:px-8 bg-[#050912] ${plan.popular
+                    ? 'border-1 border-[#7B5FCC] md:-mt-6 py-10 sm:py-12 md:py-14'
+                    : 'border-1 border-[#1a2332] py-6 sm:py-8'
                     }`}
                 >
                   {/* Popular Badge */}
                   {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#7B5FCC] text-white px-6 py-1 rounded-full text-sm font-bold uppercase whitespace-nowrap">
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#7B5FCC] text-white px-4 sm:px-6 py-1 rounded-full text-xs sm:text-sm font-bold uppercase whitespace-nowrap">
                       MÁS POPULAR
                     </div>
                   )}
 
                   {/* Icon */}
-                  <div className="flex justify-center mb-6">
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl ${plan.popular ? 'bg-[#7B5FCC] text-white' : 'bg-white text-black'
+                  <div className="flex justify-center mb-4 sm:mb-6">
+                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center ${plan.popular ? 'bg-[#7B5FCC] text-white' : 'bg-white text-black'
                       }`}>
                       {plan.icon}
                     </div>
                   </div>
 
                   {/* Plan Name */}
-                  <h3 className="text-xl text-white text-center mb-2">
+                  <h3 className="text-lg sm:text-xl text-white text-center mb-2">
                     {plan.name}
                   </h3>
 
                   {/* Price */}
-                  <div className="text-center mb-6">
-                    <span className="text-3xl font-bold text-white">
+                  <div className="text-center mb-4 sm:mb-6">
+                    <span className="text-2xl sm:text-3xl font-bold text-white">
                       {billingPeriod === 'monthly' ? plan.monthlyPrice : plan.annualPrice}
                     </span>
                     {!plan.isLifetime && (
-                      <span className="text-3xl font-bold text-white"> /mes</span>
+                      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white"> /mes</span>
                     )}
                     {plan.isLifetime && (
-                      <span className="text-3xl font-bold text-white"> Pago único</span>
+                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-white"> Pago único</span>
                     )}
                   </div>
 
                   {/* CTA Button */}
                   <Link
                     to="/register"
-                    className={`w-full block text-center py-3 rounded-full font-semibold mb-6 transition-colors ${plan.buttonStyle}`}
+                    className={`w-full block text-center py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold mb-4 sm:mb-6 transition-colors ${plan.buttonStyle}`}
                   >
                     {plan.buttonText}
                   </Link>
 
                   {/* Features List */}
-                  <ul className="space-y-3">
+                  <ul className="space-y-2 sm:space-y-3">
                     {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-3 text-white">
-                        <span className={`mt-1 flex-shrink-0 ${feature.included ? 'text-[#ABFFA8]' : 'text-gray-500'}`}>
+                      <li key={featureIndex} className="flex items-start gap-2 sm:gap-3 text-white">
+                        <span className={`mt-0.5 sm:mt-1 flex-shrink-0 ${feature.included ? 'text-[#ABFFA8]' : 'text-gray-500'}`}>
                           {feature.included ? '✓' : '✗'}
                         </span>
-                        <span className={`text-sm leading-relaxed ${!feature.included ? 'text-gray-500' : ''}`}>
+                        <span className={`text-xs sm:text-sm leading-relaxed ${!feature.included ? 'text-gray-500' : ''}`}>
                           {feature.text}
                         </span>
                       </li>
@@ -428,36 +481,36 @@ export default function Landing() {
         </section>
 
         {/* How works Section */}
-        <section id="how-works" className="py-20 bg-gradient-to-r from-[#2a3f5f] to-[#5a4a8a] px-4 sm:px-6 lg:px-8">
+        <section id="how-works" className="py-12 sm:py-16 md:py-20 bg-gradient-to-r from-[#2a3f5f] to-[#5a4a8a] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
               {/* Left side - Image */}
-              <div className="flex justify-center">
+              <div className="flex justify-center order-2 md:order-1">
                 <img src={Image5} alt="WhatsApp conversation" className="w-full max-w-md rounded-2xl" />
               </div>
 
               {/* Right side - Steps */}
-              <div>
-                <h2 className="text-5xl md:text-6xl font-bold text-white mb-12">
+              <div className="order-1 md:order-2">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 sm:mb-10 md:mb-12">
                   ¿Cómo funciona?
                 </h2>
 
-                <div className="space-y-8">
+                <div className="space-y-6 sm:space-y-8">
                   {howItWorksSteps.map((step, index) => (
-                    <div key={index} className="flex gap-4">
+                    <div key={index} className="flex gap-3 sm:gap-4">
                       {/* Number Circle */}
                       <div className="flex-shrink-0">
-                        <div className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">{step.number}</span>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white flex items-center justify-center">
+                          <span className="text-white text-lg sm:text-xl font-bold">{step.number}</span>
                         </div>
                       </div>
 
                       {/* Content */}
                       <div>
-                        <h3 className="text-xl font-bold text-white mb-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">
                           {step.title}
                         </h3>
-                        <p className="text-white text-base leading-relaxed">
+                        <p className="text-white text-sm sm:text-base leading-relaxed">
                           {step.description}
                         </p>
                       </div>
@@ -470,35 +523,35 @@ export default function Landing() {
         </section>
 
         {/* Footer */}
-        <footer id="reviews" className="bg-[#050912] text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
+        <footer id="reviews" className="bg-[#050912] text-gray-300 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
           {/* Testimonials Section */}
-          <div className="max-w-7xl mx-auto mb-16">
-            <h2 className="text-5xl md:text-7xl font-bold text-center mb-12">
+          <div className="max-w-7xl mx-auto mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center mb-8 sm:mb-12">
               Ellos también aman <span className="text-[#9999FE]">eureky.ai</span>
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               {testimonials.map((testimonial, index) => (
-                <div key={index} className="rounded-3xl bg-[#0f1521] p-8">
+                <div key={index} className="rounded-3xl bg-[#0f1521] p-6 sm:p-8">
                   {/* Star Rating */}
                   <div className="flex gap-1 mb-3">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <span key={i} className="text-[#ABFFA8] text-xl">★</span>
+                      <span key={i} className="text-[#ABFFA8] text-lg sm:text-xl">★</span>
                     ))}
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-white font-bold text-xl mb-3">
+                  <h3 className="text-white font-bold text-lg sm:text-xl mb-3">
                     {testimonial.title}
                   </h3>
 
                   {/* Review Text */}
-                  <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                  <p className="text-gray-300 text-xs sm:text-sm mb-4 leading-relaxed">
                     {testimonial.text}
                   </p>
 
                   {/* Author */}
-                  <p className="text-white text-sm mt-10">
+                  <p className="text-white text-xs sm:text-sm mt-6 sm:mt-10">
                     {testimonial.author}
                   </p>
                 </div>
@@ -507,34 +560,34 @@ export default function Landing() {
           </div>
 
           {/* FAQ Section */}
-          <div className="max-w-7xl mx-auto mb-12">
-            <div className="rounded-[40px] bg-[#6B5FCC] p-8 md:p-12">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="max-w-7xl mx-auto mb-8 sm:mb-12">
+            <div className="rounded-3xl sm:rounded-[40px] bg-[#6B5FCC] p-6 sm:p-8 md:p-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                 {/* Left side - Title */}
                 <div className="md:col-span-1">
-                  <h2 className="text-4xl md:text-5xl font-bold text-white">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">
                     ¿Tienes preguntas?
                   </h2>
                 </div>
 
                 {/* Right side - FAQ Items */}
-                <div className="md:col-span-2 space-y-4">
+                <div className="md:col-span-2 space-y-3 sm:space-y-4">
                   {faqs.map((faq, index) => (
-                    <div key={index} className="border-b border-white/20 pb-4">
+                    <div key={index} className="border-b border-white/20 pb-3 sm:pb-4">
                       <button
                         onClick={() => toggleFaq(index)}
                         className="w-full flex items-center justify-between text-left text-white hover:text-gray-200 transition-colors cursor-pointer"
                       >
-                        <span className="text-base md:text-lg font-medium pr-4">
+                        <span className="text-sm sm:text-base md:text-lg font-medium pr-4">
                           {faq.question}
                         </span>
                         <PlusCircleIcon
-                          className={`w-6 h-6 flex-shrink-0 transition-transform ${openFaqIndex === index ? 'rotate-45' : ''
+                          className={`w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 transition-transform ${openFaqIndex === index ? 'rotate-45' : ''
                             }`}
                         />
                       </button>
                       {openFaqIndex === index && (
-                        <p className="mt-3 text-white/90 text-sm md:text-base leading-relaxed">
+                        <p className="mt-2 sm:mt-3 text-white/90 text-xs sm:text-sm md:text-base leading-relaxed">
                           {faq.answer}
                         </p>
                       )}
@@ -546,18 +599,18 @@ export default function Landing() {
           </div>
 
           {/* Bottom Footer */}
-          <div className="max-w-7xl mx-auto pt-8 border-t border-gray-800">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto pt-6 sm:pt-8 border-t border-gray-800">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
               {/* Logo & Contact */}
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">eureky</h3>
-                <a href="mailto:contact@eureky.ia" className="text-sm text-gray-400 hover:text-white underline">
-                  contact@eureky.ia
+              <div className="text-center md:text-left">
+                <img src={Logo} alt="logo_footer" />
+                <a href="mailto:contact@eureky.ia" className="text-xs sm:text-sm text-gray-400 hover:text-white underline">
+                  contacto@eureky.ia
                 </a>
               </div>
 
               {/* Social Icons & Copyright */}
-              <div className="flex items-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                 <div className="flex gap-4">
                   <a href="#" className="text-gray-400 hover:text-white">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -570,10 +623,12 @@ export default function Landing() {
                     </svg>
                   </a>
                 </div>
-                <div className="text-sm text-gray-400 flex items-center gap-4">
+                <div className="text-xs sm:text-sm text-gray-400 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
                   <span>© {new Date().getFullYear()} Eureky</span>
-                  <a href="#" className="hover:text-white underline">Privacidad</a>
-                  <a href="#" className="hover:text-white underline">Términos</a>
+                  <div className="flex items-center gap-2 sm:gap-4">
+                    <a href="#" className="hover:text-white underline">Privacidad</a>
+                    <a href="#" className="hover:text-white underline">Términos</a>
+                  </div>
                 </div>
               </div>
             </div>
