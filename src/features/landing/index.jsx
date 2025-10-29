@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import SEO from '../../shared/components/SEO';
+import LanguageSwitcher from '../../shared/components/LanguageSwitcher';
 import Image2 from '../../assets/images/image_2.png';
 import Image1 from '../../assets/images/image_1.png';
 import Image4 from '../../assets/images/image_4.png';
@@ -16,159 +18,8 @@ import Image5 from '../../assets/images/image_5.jpg';
 import Logo from '../../assets/images/logo.png';
 import { SparklesIcon, BoltIcon, HeartIcon, PlusCircleIcon, CheckIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-const features = [
-  { image: Chat1, title: "Tareas por voz en WhatsApp", text: "Habla y listo, tus notas de voz se convierten en tareas con recordatorios en WhatsApp para que nada se te escape.", alt: "chat_1" },
-  { image: Chat2, title: "Plan diario inteligente", text: "Eureky arma tu agenda con prioridades y sincroniza Google, Apple o Microsoft Calendar. Te dice qué hacer ahora y cuándo.", alt: "chat_2" },
-  { image: Chat3, title: "Empuje inteligente + Reviews", text: "Si pospones, Eureky te reubica la tarea, te motiva y muestra tu progreso en reviews diarios, semanales o mensuales.", alt: "chat_3" },
-  { image: Chat4, title: "Captura voz, texto o imágenes", text: "Agrega tareas por texto, voz o con fotos y documentos; Eureky lo entiende y lo agenda al instante.", alt: "chat_4" }
-]
-
-const howItWorksSteps = [
-  {
-    number: "1",
-    title: "Añade a Eureky.ai a WhatsApp.",
-    description: "Chatea con tu coach y empieza tu camino al éxito."
-  },
-  {
-    number: "2",
-    title: "Dile tu meta.",
-    description: "Explícale lo que quieres conseguir, agendar o recordar. Tu coach te escuchará y te ayudará a planificarlo."
-  },
-  {
-    number: "3",
-    title: "Enfócate en tu éxito.",
-    description: "Deja que Eureky.ai se encargue de la planificación. Tú solo concéntrate en cumplir tus objetivos."
-  }
-]
-
-const testimonials = [
-  {
-    rating: 5,
-    title: "¡Súper recomendado!",
-    text: "Me ha ayudado a no fallar en mis compromisos y a mantener el rumbo hacia mis metas. Lo uso para todo, hasta recordarme que compre flores. ¡Estoy logrando mis objetivos como nunca antes!",
-    author: "@carlamartinez"
-  },
-  {
-    rating: 5,
-    title: "¡Súper recomendado!",
-    text: "Me ha ayudado a no fallar en mis compromisos y a mantener el rumbo hacia mis metas. Lo uso para todo, hasta recordarme que compre flores. ¡Estoy logrando mis objetivos como nunca antes!",
-    author: "@lucartv"
-  },
-  {
-    rating: 5,
-    title: "¡Súper recomendado!",
-    text: "Me ha ayudado a no fallar en mis compromisos y a mantener el rumbo hacia mis metas. Lo uso para todo, hasta recordarme que compre flores. ¡Estoy logrando mis objetivos como nunca antes!",
-    author: "@fabriclavo"
-  }
-]
-
-const faqs = [
-  {
-    question: "¿Qué es Eureky.ai y cómo me ayuda a alcanzar mis metas?",
-    answer: "Eureky.ai es tu asistente personal de productividad que te ayuda a organizar tus tareas, establecer recordatorios y alcanzar tus objetivos de manera eficiente."
-  },
-  {
-    question: "¿Puedo programar recordatorios que se repitan?",
-    answer: "Sí, puedes programar recordatorios recurrentes diarios, semanales o mensuales según tus necesidades."
-  },
-  {
-    question: "¿Qué funcionalidades únicas tiene Eureky.ai?",
-    answer: "Eureky.ai ofrece funcionalidades como captura por voz, análisis de imágenes, sincronización con calendarios, copiloto IA y mucho más."
-  },
-  {
-    question: "¿Mi información está segura?",
-    answer: "Sí, tu información está completamente segura. Utilizamos encriptación de extremo a extremo y nunca compartimos tus datos con terceros."
-  }
-]
-
-const dashboardFeatures = [
-  {
-    borderColor: "border-[#4A9FF5]",
-    title: "Tareas, avances y rachas",
-    description: "El dashboard de Eureky muestra tus tareas, avances y rachas de forma simple y visual."
-  },
-  {
-    borderColor: "border-[#6B5FCC]",
-    title: "Tareas, avances y rachas",
-    description: "El dashboard de Eureky muestra tus tareas, avances y rachas de forma simple y visual."
-  },
-  {
-    borderColor: "border-[#9F5FCC]",
-    title: "Tareas, avances y rachas",
-    description: "El dashboard de Eureky muestra tus tareas, avances y rachas de forma simple y visual."
-  }
-]
-
-const pricingPlans = [
-  {
-    name: "Plan Junior",
-    icon: <SparklesIcon className="size-6 text-[#050912]" />,
-    monthlyPrice: "€2.99",
-    annualPrice: "€29.99",
-    buttonText: "Prueba gratis",
-    buttonStyle: "bg-[#76FF72] text-black hover:bg-[#9FEE9C]",
-    popular: false,
-    features: [
-      { text: "Todo por WhatsApp 24/7", included: true },
-      { text: "Recordatorios puntuales y recurrentes.", included: true },
-      { text: "150 Recordatorios a amigos.", included: true },
-      { text: "Listas y tareas (to-dos).", included: true },
-      { text: "Captura por voz → tarea.", included: true },
-      { text: "+150 idiomas (detección automática)", included: true },
-      { text: "Sincronización con multicalendarios.", included: true },
-      { text: "Copiloto IA (Gemini/ChatGPT).", included: false },
-      { text: "Priorización y agenda sugerida (IA).", included: false },
-      { text: "Si aplazas, sugiere y reprograma.", included: false },
-      { text: "Dashboard Avanzado.", included: false },
-      { text: "Análisis de imágenes ilimitado.", included: false },
-      { text: "Resumen semanal con insights.", included: false },
-      { text: "Soporte Premium.", included: false }
-    ]
-  },
-  {
-    name: "Plan Pro",
-    icon: <BoltIcon className="size-6 text-[#050912]" />,
-    monthlyPrice: "€6.99",
-    annualPrice: "€69.99",
-    buttonText: "Prueba gratis",
-    buttonStyle: "bg-[#76FF72] text-black hover:bg-[#9FEE9C]",
-    popular: true,
-    features: [
-      { text: "Todo por WhatsApp 24/7", included: true },
-      { text: "Recordatorios puntuales y recurrentes.", included: true },
-      { text: "Recordatorios a amigos ilimitado.", included: true },
-      { text: "Listas y tareas (to-dos).", included: true },
-      { text: "Captura por voz → tarea.", included: true },
-      { text: "+150 idiomas (detección automática)", included: true },
-      { text: "Sincronización con multicalendarios.", included: true },
-      { text: "Copiloto IA (Gemini/ChatGPT).", included: true },
-      { text: "Priorización y agenda sugerida (IA).", included: true },
-      { text: "Si aplazas, sugiere y reprograma.", included: true },
-      { text: "Dashboard Avanzado.", included: true },
-      { text: "Análisis de imágenes ilimitado.", included: true },
-      { text: "Resumen semanal con insights.", included: true },
-      { text: "Soporte Premium.", included: true }
-    ]
-  },
-  {
-    name: "Plan Lifetime",
-    icon: <HeartIcon className="size-6 text-[#444358]" />,
-    monthlyPrice: "€299",
-    annualPrice: "€299",
-    buttonText: "Empieza ahora",
-    buttonStyle: "bg-[#76FF72] text-black hover:bg-[#9FEE9C]",
-    popular: false,
-    isLifetime: true,
-    features: [
-      { text: "Todas las funciones del Plan Pro", included: true },
-      { text: "Sin suscripciones ni pagos recurrentes.", included: true },
-      { text: "Prioridad en Soporte Premium.", included: true },
-      { text: "Acceso a futuras funciones.", included: true }
-    ]
-  }
-]
-
 export default function Landing() {
+  const { t } = useTranslation();
   const [billingPeriod, setBillingPeriod] = useState('monthly');
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -176,6 +27,159 @@ export default function Landing() {
   const toggleFaq = (index) => {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
+
+  // Translated content
+  const features = [
+    { image: Chat1, title: t('features.feature1.title'), text: t('features.feature1.text'), alt: "chat_1" },
+    { image: Chat2, title: t('features.feature2.title'), text: t('features.feature2.text'), alt: "chat_2" },
+    { image: Chat3, title: t('features.feature3.title'), text: t('features.feature3.text'), alt: "chat_3" },
+    { image: Chat4, title: t('features.feature4.title'), text: t('features.feature4.text'), alt: "chat_4" }
+  ];
+
+  const howItWorksSteps = [
+    {
+      number: "1",
+      title: t('howWorks.step1.title'),
+      description: t('howWorks.step1.description')
+    },
+    {
+      number: "2",
+      title: t('howWorks.step2.title'),
+      description: t('howWorks.step2.description')
+    },
+    {
+      number: "3",
+      title: t('howWorks.step3.title'),
+      description: t('howWorks.step3.description')
+    }
+  ];
+
+  const testimonials = [
+    {
+      rating: 5,
+      title: t('testimonials.items.1.title'),
+      text: t('testimonials.items.1.text'),
+      author: t('testimonials.items.1.author')
+    },
+    {
+      rating: 5,
+      title: t('testimonials.items.2.title'),
+      text: t('testimonials.items.2.text'),
+      author: t('testimonials.items.2.author')
+    },
+    {
+      rating: 5,
+      title: t('testimonials.items.3.title'),
+      text: t('testimonials.items.3.text'),
+      author: t('testimonials.items.3.author')
+    }
+  ];
+
+  const faqs = [
+    {
+      question: t('faq.items.1.question'),
+      answer: t('faq.items.1.answer')
+    },
+    {
+      question: t('faq.items.2.question'),
+      answer: t('faq.items.2.answer')
+    },
+    {
+      question: t('faq.items.3.question'),
+      answer: t('faq.items.3.answer')
+    },
+    {
+      question: t('faq.items.4.question'),
+      answer: t('faq.items.4.answer')
+    }
+  ];
+
+  const dashboardFeatures = [
+    {
+      borderColor: "border-[#4A9FF5]",
+      title: t('dashboard.cardTitle'),
+      description: t('dashboard.cardDescription')
+    },
+    {
+      borderColor: "border-[#6B5FCC]",
+      title: t('dashboard.cardTitle'),
+      description: t('dashboard.cardDescription')
+    },
+    {
+      borderColor: "border-[#9F5FCC]",
+      title: t('dashboard.cardTitle'),
+      description: t('dashboard.cardDescription')
+    }
+  ];
+
+  const pricingPlans = [
+    {
+      name: t('pricing.plans.junior.name'),
+      icon: <SparklesIcon className="size-6 text-[#050912]" />,
+      monthlyPrice: "€2.99",
+      annualPrice: "€29.99",
+      buttonText: t('pricing.plans.junior.cta'),
+      buttonStyle: "bg-[#76FF72] text-black hover:bg-[#9FEE9C]",
+      popular: false,
+      features: [
+        { text: t('pricing.features.whatsapp247'), included: true },
+        { text: t('pricing.features.reminders'), included: true },
+        { text: t('pricing.features.friendReminders150'), included: true },
+        { text: t('pricing.features.lists'), included: true },
+        { text: t('pricing.features.voiceCapture'), included: true },
+        { text: t('pricing.features.languages'), included: true },
+        { text: t('pricing.features.calendarSync'), included: true },
+        { text: t('pricing.features.copilot'), included: false },
+        { text: t('pricing.features.prioritization'), included: false },
+        { text: t('pricing.features.reschedule'), included: false },
+        { text: t('pricing.features.dashboard'), included: false },
+        { text: t('pricing.features.imageAnalysis'), included: false },
+        { text: t('pricing.features.weeklySummary'), included: false },
+        { text: t('pricing.features.premiumSupport'), included: false }
+      ]
+    },
+    {
+      name: t('pricing.plans.pro.name'),
+      icon: <BoltIcon className="size-6 text-[#050912]" />,
+      monthlyPrice: "€6.99",
+      annualPrice: "€69.99",
+      buttonText: t('pricing.plans.pro.cta'),
+      buttonStyle: "bg-[#76FF72] text-black hover:bg-[#9FEE9C]",
+      popular: true,
+      features: [
+        { text: t('pricing.features.whatsapp247'), included: true },
+        { text: t('pricing.features.reminders'), included: true },
+        { text: t('pricing.features.friendRemindersUnlimited'), included: true },
+        { text: t('pricing.features.lists'), included: true },
+        { text: t('pricing.features.voiceCapture'), included: true },
+        { text: t('pricing.features.languages'), included: true },
+        { text: t('pricing.features.calendarSync'), included: true },
+        { text: t('pricing.features.copilot'), included: true },
+        { text: t('pricing.features.prioritization'), included: true },
+        { text: t('pricing.features.reschedule'), included: true },
+        { text: t('pricing.features.dashboard'), included: true },
+        { text: t('pricing.features.imageAnalysis'), included: true },
+        { text: t('pricing.features.weeklySummary'), included: true },
+        { text: t('pricing.features.premiumSupport'), included: true }
+      ]
+    },
+    {
+      name: t('pricing.plans.lifetime.name'),
+      icon: <HeartIcon className="size-6 text-[#444358]" />,
+      monthlyPrice: "€299",
+      annualPrice: "€299",
+      buttonText: t('pricing.plans.lifetime.cta'),
+      buttonStyle: "bg-[#76FF72] text-black hover:bg-[#9FEE9C]",
+      popular: false,
+      isLifetime: true,
+      features: [
+        { text: t('pricing.features.allProFeatures'), included: true },
+        { text: t('pricing.features.noSubscriptions'), included: true },
+        { text: t('pricing.features.prioritySupport'), included: true },
+        { text: t('pricing.features.futureFeatures'), included: true }
+      ]
+    }
+  ];
 
   return (
     <>
@@ -196,17 +200,18 @@ export default function Landing() {
               {/* Desktop menu */}
               <div className="hidden md:flex items-center gap-8 text-white">
                 <a href="#features" className="hover:text-gray-300">
-                  Características
+                  {t('nav.features')}
                 </a>
                 <a href="#pricing" className="hover:text-gray-300">
-                  Precios
+                  {t('nav.pricing')}
                 </a>
                 <a href="#how-works" className="hover:text-gray-300">
-                  ¿Como funciona?
+                  {t('nav.howWorks')}
                 </a>
                 <a href="#reviews" className="hover:text-gray-300">
-                  Reviews
+                  {t('nav.reviews')}
                 </a>
+                <LanguageSwitcher />
               </div>
 
               {/* Mobile menu button */}
@@ -233,29 +238,30 @@ export default function Landing() {
                     className="hover:text-gray-300"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Características
+                    {t('nav.features')}
                   </a>
                   <a
                     href="#pricing"
                     className="hover:text-gray-300"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Precios
+                    {t('nav.pricing')}
                   </a>
                   <a
                     href="#how-works"
                     className="hover:text-gray-300"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    ¿Como funciona?
+                    {t('nav.howWorks')}
                   </a>
                   <a
                     href="#reviews"
                     className="hover:text-gray-300"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Reviews
+                    {t('nav.reviews')}
                   </a>
+                  <LanguageSwitcher />
                 </div>
               </div>
             )}
@@ -267,21 +273,21 @@ export default function Landing() {
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 text-white">
             <div className="w-full">
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[80px] lg:leading-tight font-bold">
-                Más que recordatorios, tu coach de metas
+                {t('hero.title')}
               </h1>
             </div>
             <div className="flex flex-col md:justify-self-end">
               <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>Ahorra hasta 3 horas a la semana.</span>
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit1')}</span>
               </p>
               <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>100% de tus ideas al instante con notas de voz.</span>
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit2')}</span>
               </p>
               <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>PDFs en decisiones en menos de 90 segundos.</span>
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit3')}</span>
               </p>
               <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>0 citas olvidadas, garantizado por tu coach 24/7.</span>
+                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit4')}</span>
               </p>
 
               <div className="mt-6 sm:mt-10">
@@ -289,7 +295,7 @@ export default function Landing() {
                   to="/register"
                   className="w-full md:w-auto inline-block text-center py-4 sm:py-5 px-6 sm:px-8 rounded-full font-semibold transition-colors bg-[#76FF72] text-black hover:bg-[#9FEE9C]"
                 >
-                  Prueba gratis
+                  {t('hero.cta')}
                 </Link>
               </div>
             </div>
@@ -328,8 +334,8 @@ export default function Landing() {
                     <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">{feat.title}</p>
                     <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-10">{feat.text}</p>
                   </div>
-                  <div className="w-full">
-                    <img src={feat.image} alt={feat.alt} className="w-full h-auto" />
+                  <div className="w-full flex justify-center">
+                    <img src={feat.image} alt={feat.alt} className="h-auto" />
                   </div>
                 </div>
               )
@@ -343,9 +349,7 @@ export default function Landing() {
         <section className="py-12 sm:py-20 md:py-28 bg-[#6A52CC] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Title */}
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-8 sm:mb-12 md:mb-14">
-              Tus tareas y avances<br />en un solo panel.
-            </h2>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-8 sm:mb-12 md:mb-14" dangerouslySetInnerHTML={{ __html: t('dashboard.title') }} />
 
             {/* Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
@@ -381,10 +385,10 @@ export default function Landing() {
             {/* Header */}
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4">
-                Planes para todos.
+                {t('pricing.title')}
               </h2>
               <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold italic text-[#ABFFA8] mb-6 sm:mb-8">
-                ¡Pruébalo sin pagar por 7 días!
+                {t('pricing.trial')}
               </p>
 
               {/* Billing Toggle */}
@@ -396,7 +400,7 @@ export default function Landing() {
                     : 'text-white hover:text-gray-300'
                     }`}
                 >
-                  Mensual
+                  {t('pricing.monthly')}
                 </button>
                 <button
                   onClick={() => setBillingPeriod('annual')}
@@ -405,7 +409,7 @@ export default function Landing() {
                     : 'text-white hover:text-gray-300'
                     }`}
                 >
-                  Anual
+                  {t('pricing.annual')}
                 </button>
               </div>
             </div>
@@ -423,7 +427,7 @@ export default function Landing() {
                   {/* Popular Badge */}
                   {plan.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#7B5FCC] text-white px-4 sm:px-6 py-1 rounded-full text-xs sm:text-sm font-bold uppercase whitespace-nowrap">
-                      MÁS POPULAR
+                      {t('pricing.mostPopular')}
                     </div>
                   )}
 
@@ -446,10 +450,10 @@ export default function Landing() {
                       {billingPeriod === 'monthly' ? plan.monthlyPrice : plan.annualPrice}
                     </span>
                     {!plan.isLifetime && (
-                      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white"> /mes</span>
+                      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white"> {t('pricing.perMonth')}</span>
                     )}
                     {plan.isLifetime && (
-                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-white"> Pago único</span>
+                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-white"> {t('pricing.oneTime')}</span>
                     )}
                   </div>
 
@@ -492,7 +496,7 @@ export default function Landing() {
               {/* Right side - Steps */}
               <div className="order-1 md:order-2">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 sm:mb-10 md:mb-12">
-                  ¿Cómo funciona?
+                  {t('howWorks.title')}
                 </h2>
 
                 <div className="space-y-6 sm:space-y-8">
@@ -527,7 +531,9 @@ export default function Landing() {
           {/* Testimonials Section */}
           <div className="max-w-7xl mx-auto mb-12 sm:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center mb-8 sm:mb-12">
-              Ellos también aman <span className="text-[#9999FE]">eureky.ai</span>
+              <Trans i18nKey="testimonials.title">
+                Ellos también aman <span className="text-[#9999FE]">eureky.ai</span>
+              </Trans>
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
@@ -566,7 +572,7 @@ export default function Landing() {
                 {/* Left side - Title */}
                 <div className="md:col-span-1">
                   <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">
-                    ¿Tienes preguntas?
+                    {t('faq.title')}
                   </h2>
                 </div>
 
@@ -604,8 +610,8 @@ export default function Landing() {
               {/* Logo & Contact */}
               <div className="text-center md:text-left">
                 <img src={Logo} alt="logo_footer" />
-                <a href="mailto:contact@eureky.ia" className="text-xs sm:text-sm text-gray-400 hover:text-white underline">
-                  contacto@eureky.ia
+                <a href={`mailto:${t('footer.contact')}`} className="text-xs sm:text-sm text-gray-400 hover:text-white underline">
+                  {t('footer.contact')}
                 </a>
               </div>
 
@@ -624,10 +630,10 @@ export default function Landing() {
                   </a>
                 </div>
                 <div className="text-xs sm:text-sm text-gray-400 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-                  <span>© {new Date().getFullYear()} Eureky</span>
+                  <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
                   <div className="flex items-center gap-2 sm:gap-4">
-                    <a href="#" className="hover:text-white underline">Privacidad</a>
-                    <a href="#" className="hover:text-white underline">Términos</a>
+                    <a href="#" className="hover:text-white underline">{t('footer.privacy')}</a>
+                    <a href="#" className="hover:text-white underline">{t('footer.terms')}</a>
                   </div>
                 </div>
               </div>

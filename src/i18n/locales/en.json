@@ -1,0 +1,146 @@
+{
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "howWorks": "How it works?",
+    "reviews": "Reviews"
+  },
+  "hero": {
+    "title": "More than reminders, your goals coach",
+    "benefit1": "Save up to 3 hours per week.",
+    "benefit2": "100% of your ideas instantly with voice notes.",
+    "benefit3": "PDFs into decisions in less than 90 seconds.",
+    "benefit4": "0 missed appointments, guaranteed by your 24/7 coach.",
+    "cta": "Try for free"
+  },
+  "features": {
+    "subtitle": "Features",
+    "feature1": {
+      "title": "Voice tasks on WhatsApp",
+      "text": "Speak and done, your voice notes become tasks with WhatsApp reminders so you don't miss a thing."
+    },
+    "feature2": {
+      "title": "Smart daily plan",
+      "text": "Eureky builds your agenda with priorities and syncs with Google, Apple or Microsoft Calendar. It tells you what to do now and when."
+    },
+    "feature3": {
+      "title": "Smart nudges + Reviews",
+      "text": "If you postpone, Eureky reschedules the task, motivates you and shows your progress in daily, weekly or monthly reviews."
+    },
+    "feature4": {
+      "title": "Capture voice, text or images",
+      "text": "Add tasks by text, voice or with photos and documents; Eureky understands it and schedules it instantly."
+    }
+  },
+  "dashboard": {
+    "title": "Your tasks and progress<br />in one panel.",
+    "cardTitle": "Tasks, progress and streaks",
+    "cardDescription": "Eureky's dashboard shows your tasks, progress and streaks in a simple and visual way."
+  },
+  "pricing": {
+    "title": "Plans for everyone.",
+    "trial": "Try it free for 7 days!",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "perMonth": "/mo",
+    "oneTime": "One-time payment",
+    "mostPopular": "MOST POPULAR",
+    "plans": {
+      "junior": {
+        "name": "Junior Plan",
+        "cta": "Try for free"
+      },
+      "pro": {
+        "name": "Pro Plan",
+        "cta": "Try for free"
+      },
+      "lifetime": {
+        "name": "Lifetime Plan",
+        "cta": "Start now"
+      }
+    },
+    "features": {
+      "whatsapp247": "Everything on WhatsApp 24/7",
+      "reminders": "One-time and recurring reminders.",
+      "friendReminders150": "150 Friend reminders.",
+      "friendRemindersUnlimited": "Unlimited friend reminders.",
+      "lists": "Lists and to-dos.",
+      "voiceCapture": "Voice capture → task.",
+      "languages": "+150 languages (auto-detection)",
+      "calendarSync": "Multi-calendar synchronization.",
+      "copilot": "AI Copilot (Gemini/ChatGPT).",
+      "prioritization": "Prioritization and suggested agenda (AI).",
+      "reschedule": "If you postpone, suggests and reschedules.",
+      "dashboard": "Advanced Dashboard.",
+      "imageAnalysis": "Unlimited image analysis.",
+      "weeklySummary": "Weekly summary with insights.",
+      "premiumSupport": "Premium Support.",
+      "allProFeatures": "All Pro Plan features",
+      "noSubscriptions": "No subscriptions or recurring payments.",
+      "prioritySupport": "Priority Premium Support.",
+      "futureFeatures": "Access to future features."
+    }
+  },
+  "howWorks": {
+    "title": "How does it work?",
+    "step1": {
+      "title": "Add Eureky.ai to WhatsApp.",
+      "description": "Chat with your coach and start your path to success."
+    },
+    "step2": {
+      "title": "Tell it your goal.",
+      "description": "Explain what you want to achieve, schedule or remember. Your coach will listen and help you plan it."
+    },
+    "step3": {
+      "title": "Focus on your success.",
+      "description": "Let Eureky.ai handle the planning. You just focus on achieving your goals."
+    }
+  },
+  "testimonials": {
+    "title": "They also love <1>eureky.ai</1>",
+    "items": {
+      "1": {
+        "title": "Super recommended!",
+        "text": "It has helped me not to fail in my commitments and to stay on track towards my goals. I use it for everything, even to remind me to buy flowers. I'm achieving my goals like never before!",
+        "author": "@carlamartinez"
+      },
+      "2": {
+        "title": "Super recommended!",
+        "text": "It has helped me not to fail in my commitments and to stay on track towards my goals. I use it for everything, even to remind me to buy flowers. I'm achieving my goals like never before!",
+        "author": "@lucartv"
+      },
+      "3": {
+        "title": "Super recommended!",
+        "text": "It has helped me not to fail in my commitments and to stay on track towards my goals. I use it for everything, even to remind me to buy flowers. I'm achieving my goals like never before!",
+        "author": "@fabriclavo"
+      }
+    }
+  },
+  "faq": {
+    "title": "Have questions?",
+    "items": {
+      "1": {
+        "question": "What is Eureky.ai and how does it help me achieve my goals?",
+        "answer": "Eureky.ai is your personal productivity assistant that helps you organize your tasks, set reminders and achieve your goals efficiently."
+      },
+      "2": {
+        "question": "Can I schedule recurring reminders?",
+        "answer": "Yes, you can schedule daily, weekly or monthly recurring reminders according to your needs."
+      },
+      "3": {
+        "question": "What unique features does Eureky.ai have?",
+        "answer": "Eureky.ai offers features like voice capture, image analysis, calendar synchronization, AI copilot and much more."
+      },
+      "4": {
+        "question": "Is my information secure?",
+        "answer": "Yes, your information is completely secure. We use end-to-end encryption and never share your data with third parties."
+      }
+    }
+  },
+  "footer": {
+    "contact": "contact@eureky.ia",
+    "copyright": "© {{year}} Eureky",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  }
+}

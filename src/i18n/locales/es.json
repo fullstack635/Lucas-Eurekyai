@@ -1,0 +1,146 @@
+{
+  "nav": {
+    "features": "Características",
+    "pricing": "Precios",
+    "howWorks": "¿Cómo funciona?",
+    "reviews": "Reviews"
+  },
+  "hero": {
+    "title": "Más que recordatorios, tu coach de metas",
+    "benefit1": "Ahorra hasta 3 horas a la semana.",
+    "benefit2": "100% de tus ideas al instante con notas de voz.",
+    "benefit3": "PDFs en decisiones en menos de 90 segundos.",
+    "benefit4": "0 citas olvidadas, garantizado por tu coach 24/7.",
+    "cta": "Prueba gratis"
+  },
+  "features": {
+    "subtitle": "Funcionalidades",
+    "feature1": {
+      "title": "Tareas por voz en WhatsApp",
+      "text": "Habla y listo, tus notas de voz se convierten en tareas con recordatorios en WhatsApp para que nada se te escape."
+    },
+    "feature2": {
+      "title": "Plan diario inteligente",
+      "text": "Eureky arma tu agenda con prioridades y sincroniza Google, Apple o Microsoft Calendar. Te dice qué hacer ahora y cuándo."
+    },
+    "feature3": {
+      "title": "Empuje inteligente + Reviews",
+      "text": "Si pospones, Eureky te reubica la tarea, te motiva y muestra tu progreso en reviews diarios, semanales o mensuales."
+    },
+    "feature4": {
+      "title": "Captura voz, texto o imágenes",
+      "text": "Agrega tareas por texto, voz o con fotos y documentos; Eureky lo entiende y lo agenda al instante."
+    }
+  },
+  "dashboard": {
+    "title": "Tus tareas y avances<br />en un solo panel.",
+    "cardTitle": "Tareas, avances y rachas",
+    "cardDescription": "El dashboard de Eureky muestra tus tareas, avances y rachas de forma simple y visual."
+  },
+  "pricing": {
+    "title": "Planes para todos.",
+    "trial": "¡Pruébalo sin pagar por 7 días!",
+    "monthly": "Mensual",
+    "annual": "Anual",
+    "perMonth": "/mes",
+    "oneTime": "Pago único",
+    "mostPopular": "MÁS POPULAR",
+    "plans": {
+      "junior": {
+        "name": "Plan Junior",
+        "cta": "Prueba gratis"
+      },
+      "pro": {
+        "name": "Plan Pro",
+        "cta": "Prueba gratis"
+      },
+      "lifetime": {
+        "name": "Plan Lifetime",
+        "cta": "Empieza ahora"
+      }
+    },
+    "features": {
+      "whatsapp247": "Todo por WhatsApp 24/7",
+      "reminders": "Recordatorios puntuales y recurrentes.",
+      "friendReminders150": "150 Recordatorios a amigos.",
+      "friendRemindersUnlimited": "Recordatorios a amigos ilimitado.",
+      "lists": "Listas y tareas (to-dos).",
+      "voiceCapture": "Captura por voz → tarea.",
+      "languages": "+150 idiomas (detección automática)",
+      "calendarSync": "Sincronización con multicalendarios.",
+      "copilot": "Copiloto IA (Gemini/ChatGPT).",
+      "prioritization": "Priorización y agenda sugerida (IA).",
+      "reschedule": "Si aplazas, sugiere y reprograma.",
+      "dashboard": "Dashboard Avanzado.",
+      "imageAnalysis": "Análisis de imágenes ilimitado.",
+      "weeklySummary": "Resumen semanal con insights.",
+      "premiumSupport": "Soporte Premium.",
+      "allProFeatures": "Todas las funciones del Plan Pro",
+      "noSubscriptions": "Sin suscripciones ni pagos recurrentes.",
+      "prioritySupport": "Prioridad en Soporte Premium.",
+      "futureFeatures": "Acceso a futuras funciones."
+    }
+  },
+  "howWorks": {
+    "title": "¿Cómo funciona?",
+    "step1": {
+      "title": "Añade a Eureky.ai a WhatsApp.",
+      "description": "Chatea con tu coach y empieza tu camino al éxito."
+    },
+    "step2": {
+      "title": "Dile tu meta.",
+      "description": "Explícale lo que quieres conseguir, agendar o recordar. Tu coach te escuchará y te ayudará a planificarlo."
+    },
+    "step3": {
+      "title": "Enfócate en tu éxito.",
+      "description": "Deja que Eureky.ai se encargue de la planificación. Tú solo concéntrate en cumplir tus objetivos."
+    }
+  },
+  "testimonials": {
+    "title": "Ellos también aman <1>eureky.ai</1>",
+    "items": {
+      "1": {
+        "title": "¡Súper recomendado!",
+        "text": "Me ha ayudado a no fallar en mis compromisos y a mantener el rumbo hacia mis metas. Lo uso para todo, hasta recordarme que compre flores. ¡Estoy logrando mis objetivos como nunca antes!",
+        "author": "@carlamartinez"
+      },
+      "2": {
+        "title": "¡Súper recomendado!",
+        "text": "Me ha ayudado a no fallar en mis compromisos y a mantener el rumbo hacia mis metas. Lo uso para todo, hasta recordarme que compre flores. ¡Estoy logrando mis objetivos como nunca antes!",
+        "author": "@lucartv"
+      },
+      "3": {
+        "title": "¡Súper recomendado!",
+        "text": "Me ha ayudado a no fallar en mis compromisos y a mantener el rumbo hacia mis metas. Lo uso para todo, hasta recordarme que compre flores. ¡Estoy logrando mis objetivos como nunca antes!",
+        "author": "@fabriclavo"
+      }
+    }
+  },
+  "faq": {
+    "title": "¿Tienes preguntas?",
+    "items": {
+      "1": {
+        "question": "¿Qué es Eureky.ai y cómo me ayuda a alcanzar mis metas?",
+        "answer": "Eureky.ai es tu asistente personal de productividad que te ayuda a organizar tus tareas, establecer recordatorios y alcanzar tus objetivos de manera eficiente."
+      },
+      "2": {
+        "question": "¿Puedo programar recordatorios que se repitan?",
+        "answer": "Sí, puedes programar recordatorios recurrentes diarios, semanales o mensuales según tus necesidades."
+      },
+      "3": {
+        "question": "¿Qué funcionalidades únicas tiene Eureky.ai?",
+        "answer": "Eureky.ai ofrece funcionalidades como captura por voz, análisis de imágenes, sincronización con calendarios, copiloto IA y mucho más."
+      },
+      "4": {
+        "question": "¿Mi información está segura?",
+        "answer": "Sí, tu información está completamente segura. Utilizamos encriptación de extremo a extremo y nunca compartimos tus datos con terceros."
+      }
+    }
+  },
+  "footer": {
+    "contact": "contacto@eureky.ia",
+    "copyright": "© {{year}} Eureky",
+    "privacy": "Privacidad",
+    "terms": "Términos"
+  }
+}
