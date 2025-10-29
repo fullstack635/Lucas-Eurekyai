@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { calendarService } from '../../../shared/services/calendars';
 
 const OAUTH_STATE_KEY = 'google_oauth_state';
@@ -11,7 +11,21 @@ const OAUTH_STATE_KEY = 'google_oauth_state';
 export const useGoogleCalendar = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState(null);
+  const [needsReconnection, setNeedsReconnection] = useState(false);
   const queryClient = useQueryClient();
+
+  /**
+   * Get calendar connection status
+   */
+  const { data: connectionStatus, refetch: refetchStatus } = useQuery({
+    queryKey: ['calendar-connection-status'],
+    queryFn: async () => {
+      const response = await calendarService.getConnectionStatus();
+      return response.data;
+    },
+    retry: 1,
+    refetchOnWindowFocus: true,
+  });
 
   /**
    * Step 1: Initiate OAuth flow
@@ -81,10 +95,23 @@ export const useGoogleCalendar = () => {
     mutationFn: () => calendarService.syncAllCalendars(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['calendars'] });
+      setNeedsReconnection(false);
+      refetchStatus();
     },
     onError: (err) => {
       console.error('Sync error:', err);
-      setError(err.message || 'Error al sincronizar calendarios');
+
+      // Check if error is due to token expiration
+      const errorData = err.response?.data;
+      if (errorData?.code === 'TOKEN_EXPIRED' ||
+          errorData?.code === 'TOKEN_REFRESH_FAILED' ||
+          errorData?.code === 'CALENDAR_NOT_ACTIVE' ||
+          err.response?.status === 401) {
+        setNeedsReconnection(true);
+        setError('Tu sesión de Google Calendar ha expirado. Por favor reconecta tu cuenta.');
+      } else {
+        setError(err.message || 'Error al sincronizar calendarios');
+      }
     },
   });
 
@@ -118,6 +145,11 @@ export const useGoogleCalendar = () => {
     // Disconnect
     disconnectGoogleCalendar: disconnectMutation.mutate,
     isDisconnecting: disconnectMutation.isPending,
+
+    // Connection status
+    connectionStatus,
+    refetchStatus,
+    needsReconnection,
 
     // State
     isConnecting,

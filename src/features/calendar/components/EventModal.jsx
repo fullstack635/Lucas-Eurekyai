@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { X, Video } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import Button from '../../../shared/components/ui/Button';
@@ -91,6 +91,22 @@ const EventModal = ({ event, onClose }) => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Google Meet Link */}
+          {event.hangoutLink && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">Google Meet</h3>
+              <a
+                href={event.hangoutLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition-colors"
+              >
+                <Video className="w-4 h-4" />
+                <span className="font-medium">Unirse a la reunión</span>
+              </a>
             </div>
           )}
 

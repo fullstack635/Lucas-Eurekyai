@@ -95,6 +95,14 @@ class CalendarService {
   }
 
   /**
+   * Get calendar connection status
+   * Returns: { connected: boolean, calendars: Array, activeCalendars: number, inactiveCalendars: number }
+   */
+  async getConnectionStatus() {
+    return apiClient.get('/calendar-oauth/google/status');
+  }
+
+  /**
    * Disconnect Google Calendar - revoke access and deactivate calendars
    */
   async disconnectGoogleCalendar() {

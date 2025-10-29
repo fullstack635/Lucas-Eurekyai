@@ -1,16 +1,21 @@
 import { useState, useEffect, useMemo } from 'react';
-import { RefreshCw, Settings as SettingsIcon, Calendar as CalendarIcon } from 'lucide-react';
+import { RefreshCw, Settings as SettingsIcon, Calendar as CalendarIcon, Video, AlertTriangle } from 'lucide-react';
 import { useCalendars } from './hooks/useCalendars';
 import { useGoogleCalendar } from './hooks/useGoogleCalendar';
 import { useAllCalendarEvents } from './hooks/useCalendarEvents';
 import CalendarView from './components/CalendarView';
 import CalendarSettings from './components/CalendarSettings';
+import CreateMeetingModal from './components/CreateMeetingModal';
+import EventModal from './components/EventModal';
 import Button from '../../shared/components/ui/Button';
 import { startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
 
 const Calendar = () => {
   const [selectedCalendar, setSelectedCalendar] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showCreateMeeting, setShowCreateMeeting] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedSlotStart, setSelectedSlotStart] = useState(null);
   const [dateRange, setDateRange] = useState({
     start: subMonths(startOfMonth(new Date()), 1),
     end: addMonths(endOfMonth(new Date()), 1),
@@ -22,13 +27,26 @@ const Calendar = () => {
     syncEnabled: true,
   });
 
-  const { syncAllCalendars, isSyncing } = useGoogleCalendar();
+  const {
+    syncAllCalendars,
+    isSyncing,
+    connectGoogleCalendar,
+    isConnecting,
+    needsReconnection,
+    connectionStatus,
+  } = useGoogleCalendar();
 
   // Fetch events for all calendars
   const { data: eventsData, isLoading: isLoadingEvents } = useAllCalendarEvents({ dateRange });
 
   const calendars = calendarsData?.data?.calendars || [];
   const hasCalendars = calendars.length > 0;
+  const hasInactiveCalendars = calendars.some((cal) => !cal.isActive);
+  const showReconnectionWarning = hasInactiveCalendars || needsReconnection || (connectionStatus?.inactiveCalendars > 0);
+
+  const handleReconnect = () => {
+    connectGoogleCalendar();
+  };
 
   // Extract events from response
   const allEvents = useMemo(() => {
@@ -67,12 +85,26 @@ const Calendar = () => {
 
   const handleSelectEvent = (event) => {
     console.log('Selected event:', event);
-    // TODO: Open event details modal
+    setSelectedEvent(event);
   };
 
   const handleSelectSlot = (slotInfo) => {
     console.log('Selected slot:', slotInfo);
-    // TODO: Open create event modal
+    // No hacer nada al hacer click en un slot vacío
+    // El usuario debe usar el botón "Crear Meeting"
+  };
+
+  const handleCreateMeetingClick = () => {
+    setShowCreateMeeting(true);
+  };
+
+  const handleCloseCreateMeeting = () => {
+    setShowCreateMeeting(false);
+    setSelectedSlotStart(null);
+  };
+
+  const handleCloseEventModal = () => {
+    setSelectedEvent(null);
   };
 
   if (isLoading) {
@@ -115,6 +147,39 @@ const Calendar = () => {
 
   return (
     <div className="h-full flex flex-col">
+      {/* Inactive Calendar Warning */}
+      {showReconnectionWarning && (
+        <div className="bg-yellow-50 border-b border-yellow-200 px-6 py-3">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-yellow-600" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-yellow-800">
+                Tu sesión de Google Calendar ha expirado
+              </p>
+              <p className="text-sm text-yellow-700">
+                Por favor reconecta tu cuenta para continuar creando meetings y sincronizando eventos.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleReconnect}
+              disabled={isConnecting}
+              className="bg-white hover:bg-yellow-100 border-yellow-300"
+            >
+              {isConnecting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Conectando...
+                </>
+              ) : (
+                'Reconectar Ahora'
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -140,16 +205,43 @@ const Calendar = () => {
             </div>
           )}
 
-          <Button
-            variant="outline"
-            onClick={handleSync}
-            disabled={isSyncing}
-          >
-            <RefreshCw
-              className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`}
-            />
-            Sincronizar
-          </Button>
+          {showReconnectionWarning ? (
+            <Button
+              onClick={handleReconnect}
+              disabled={isConnecting}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white"
+            >
+              {isConnecting ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Conectando...
+                </>
+              ) : (
+                <>
+                  <AlertTriangle className="w-4 h-4 mr-2" />
+                  Reconectar Google
+                </>
+              )}
+            </Button>
+          ) : (
+            <>
+              <Button onClick={handleCreateMeetingClick}>
+                <Video className="w-4 h-4 mr-2" />
+                Crear Google Meet
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={handleSync}
+                disabled={isSyncing}
+              >
+                <RefreshCw
+                  className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`}
+                />
+                Sincronizar
+              </Button>
+            </>
+          )}
 
           <Button variant="outline" onClick={toggleSettings}>
             <SettingsIcon className="w-4 h-4 mr-2" />
@@ -176,6 +268,18 @@ const Calendar = () => {
           />
         )}
       </div>
+
+      {/* Modals */}
+      {showCreateMeeting && (
+        <CreateMeetingModal
+          onClose={handleCloseCreateMeeting}
+          defaultStart={selectedSlotStart}
+        />
+      )}
+
+      {selectedEvent && (
+        <EventModal event={selectedEvent} onClose={handleCloseEventModal} />
+      )}
     </div>
   );
 };
