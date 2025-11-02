@@ -8,6 +8,7 @@ import Image1 from '../../assets/images/image_1.png';
 import Image4 from '../../assets/images/image_4.png';
 import Image3 from '../../assets/images/image_3.png';
 import Subtitle from '../../assets/images/subtitle.png';
+import Subtitle2 from '../../assets/images/subtitle2.png';
 import Desktop2 from '../../assets/images/desktop_2.png';
 import Chat1 from '../../assets/images/chat_1.png';
 import Chat2 from '../../assets/images/chat_2.png';
@@ -194,7 +195,7 @@ export default function Landing() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
-                <img src={Logo} alt="logo" className="h-8 sm:h-auto" />
+                <img src={Logo} alt="logo" />
               </div>
 
               {/* Desktop menu */}
@@ -320,7 +321,9 @@ export default function Landing() {
         <section id="features" className="pt-12 sm:pt-24 pb-20 sm:pb-39 bg-[#ABFFA8] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto justify-items-center">
             <div className="flex justify-center items-center pb-12 sm:pb-28">
-              <img src={Subtitle} alt="subtitle" className="w-full max-w-md sm:max-w-none" />
+              <div className="font-bold text-5xl sm:text-[80px]/20 sm:w-3xl w-sm text-center absolute sm:mt-15 -mt-15" dangerouslySetInnerHTML={{ __html: t('features.headline') }} />
+              <img src={Subtitle} className="hidden sm:block" alt="bg" />
+              <img src={Subtitle2} className="block sm:hidden" alt="bg_mobile" />
             </div>
 
             <div className="grid grid-cols-1">

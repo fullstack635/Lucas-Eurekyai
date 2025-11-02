@@ -15,6 +15,7 @@
   },
   "features": {
     "subtitle": "Funcionalidades",
+    "headline": "<span class=\"text-[#6A52CC]\">eureky.ai</span> es el socio que te impulsa hacia tus metas.",
     "feature1": {
       "title": "Tareas por voz en WhatsApp",
       "text": "Habla y listo, tus notas de voz se convierten en tareas con recordatorios en WhatsApp para que nada se te escape."
