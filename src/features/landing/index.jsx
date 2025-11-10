@@ -10,14 +10,21 @@ import Image3 from '../../assets/images/image_3.png';
 import Subtitle from '../../assets/images/subtitle.png';
 import Subtitle2 from '../../assets/images/subtitle2.png';
 import Desktop2 from '../../assets/images/desktop_2.png';
+import Desktop2Mobile from '../../assets/images/desktop_2_m.png';
 import Chat1 from '../../assets/images/chat_1.png';
 import Chat2 from '../../assets/images/chat_2.png';
 import Chat3 from '../../assets/images/chat_3.png';
 import Chat4 from '../../assets/images/chat_4.png';
 import Chat6 from '../../assets/images/chat_6.png';
 import Image5 from '../../assets/images/image_5.jpg';
+import Plan1 from '../../assets/images/plan_1.png';
+import Plan2 from '../../assets/images/plan_2.png';
+import Plan3 from '../../assets/images/plan_3.png';
 import Logo from '../../assets/images/logo.png';
-import { SparklesIcon, BoltIcon, HeartIcon, PlusCircleIcon, CheckIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import Check from '../../assets/images/check.png';
+import Check2 from '../../assets/images/check_2.png';
+import X from '../../assets/images/x.png';
+import { PlusCircleIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 export default function Landing() {
   const { t } = useTranslation();
@@ -116,7 +123,7 @@ export default function Landing() {
   const pricingPlans = [
     {
       name: t('pricing.plans.junior.name'),
-      icon: <SparklesIcon className="size-6 text-[#050912]" />,
+      icon: <img src={Plan1} alt="junior" />,
       monthlyPrice: "€2.99",
       annualPrice: "€29.99",
       buttonText: t('pricing.plans.junior.cta'),
@@ -141,7 +148,7 @@ export default function Landing() {
     },
     {
       name: t('pricing.plans.pro.name'),
-      icon: <BoltIcon className="size-6 text-[#050912]" />,
+      icon: <img src={Plan2} alt="pro" />,
       monthlyPrice: "€6.99",
       annualPrice: "€69.99",
       buttonText: t('pricing.plans.pro.cta'),
@@ -166,7 +173,7 @@ export default function Landing() {
     },
     {
       name: t('pricing.plans.lifetime.name'),
-      icon: <HeartIcon className="size-6 text-[#444358]" />,
+      icon: <img src={Plan3} alt="lifetime" />,
       monthlyPrice: "€299",
       annualPrice: "€299",
       buttonText: t('pricing.plans.lifetime.cta'),
@@ -189,13 +196,13 @@ export default function Landing() {
         description="Boost your productivity with Eureky. Manage tasks, sync calendars, track progress, and achieve your goals with our powerful and intuitive platform."
         keywords="productivity app, task management, calendar sync, time tracking, goal tracking, productivity tools, project management"
       />
-      <div className="min-h-screen bg-[#050912]">
+      <div className="min-h-screen bg-[#050912] overflow-hidden">
         {/* Navigation */}
         <nav className="fixed top-0 w-full backdrop-blur-md z-50 bg-[#050912]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center">
-                <img src={Logo} alt="logo" />
+                <img src={Logo} alt="logo" className="w-[160px]" />
               </div>
 
               {/* Desktop menu */}
@@ -272,26 +279,26 @@ export default function Landing() {
         {/* Hero Section */}
         <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 text-white">
-            <div className="w-full">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[80px] lg:leading-tight font-bold">
+            <div className="w-full lg:w-xl">
+              <h1 className="text-5xl sm:text-5xl md:text-6xl lg:text-[80px] lg:leading-[76px] font-bold">
                 {t('hero.title')}
               </h1>
             </div>
-            <div className="flex flex-col md:justify-self-end">
-              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit1')}</span>
+            <div className="flex flex-col md:justify-self-end lg:mt-[30px]">
+              <p className="text-base sm:text-lg md:text-xl mb-3 max-w-3xl flex items-start items-center">
+                <img src={Check} className="w-[24px] mr-4" /> <span>{t('hero.benefit1')}</span>
               </p>
-              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit2')}</span>
+              <p className="text-base sm:text-lg md:text-xl mb-3 max-w-3xl flex items-start items-center">
+                <img src={Check} className="w-[24px] mr-4" /> <span>{t('hero.benefit2')}</span>
               </p>
-              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit3')}</span>
+              <p className="text-base sm:text-lg md:text-xl mb-3 max-w-3xl flex items-start items-center">
+                <img src={Check} className="w-[24px] mr-4" /> <span>{t('hero.benefit3')}</span>
               </p>
-              <p className="text-base sm:text-lg md:text-xl mb-4 max-w-3xl flex items-start">
-                <CheckIcon className="size-5 sm:size-6 mr-3 mt-0.5 flex-shrink-0 rounded-full bg-[#6A52CC] p-0.5" /> <span>{t('hero.benefit4')}</span>
+              <p className="text-base sm:text-lg md:text-xl mb-3 max-w-3xl flex items-start items-center">
+                <img src={Check} className="w-[24px] mr-4" /> <span>{t('hero.benefit4')}</span>
               </p>
 
-              <div className="mt-6 sm:mt-10">
+              <div className="mt-6 sm:mt-8">
                 <Link
                   to="/register"
                   className="w-full md:w-auto inline-block text-center py-4 sm:py-5 px-6 sm:px-8 rounded-full font-semibold transition-colors bg-[#76FF72] text-black hover:bg-[#9FEE9C]"
@@ -301,18 +308,20 @@ export default function Landing() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 sm:mt-20 md:mt-30 px-4 sm:px-0">
-            <div className="flex items-stretch">
-              <img src={Image2} alt="image2" className="w-full h-auto object-cover rounded-lg" />
-            </div>
-            <div className="flex items-stretch">
-              <img src={Image1} alt="image1" className="w-full h-auto object-cover rounded-lg" />
-            </div>
-            <div className="flex items-stretch">
-              <img src={Image4} alt="image4" className="w-full h-auto object-cover rounded-lg" />
-            </div>
-            <div className="flex items-stretch">
-              <img src={Image3} alt="image3" className="w-full h-auto object-cover rounded-lg" />
+          <div className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] mt-12 sm:mt-20 md:mt-30">
+            <div className="grid grid-cols-4 gap-4 px-4 w-[110%] sm:-ml-[6%] -ml-[5%]">
+              <div className="flex items-stretch">
+                <img src={Image2} alt="image2" className="w-full h-auto object-cover rounded-lg" />
+              </div>
+              <div className="flex items-stretch">
+                <img src={Image1} alt="image1" className="w-full h-auto object-cover rounded-lg" />
+              </div>
+              <div className="flex items-stretch">
+                <img src={Image4} alt="image4" className="w-full h-auto object-cover rounded-lg" />
+              </div>
+              <div className="flex items-stretch">
+                <img src={Image3} alt="image3" className="w-full h-auto object-cover rounded-lg" />
+              </div>
             </div>
           </div>
         </section>
@@ -320,22 +329,23 @@ export default function Landing() {
         {/* Features Section */}
         <section id="features" className="pt-12 sm:pt-24 pb-20 sm:pb-39 bg-[#ABFFA8] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto justify-items-center">
-            <div className="flex justify-center items-center pb-12 sm:pb-28">
-              <div className="font-bold text-5xl sm:text-[80px]/20 sm:w-3xl w-sm text-center absolute sm:mt-15 -mt-15" dangerouslySetInnerHTML={{ __html: t('features.headline') }} />
+            <div className="flex justify-center items-center py-24 sm:pb-28">
+              <div className="font-bold text-5xl sm:text-[80px]/20 sm:w-3xl w-sm text-center absolute sm:mt-15 -mt-15" />
               <img src={Subtitle} className="hidden sm:block" alt="bg" />
               <img src={Subtitle2} className="block sm:hidden" alt="bg_mobile" />
             </div>
 
             <div className="grid grid-cols-1">
-              <img src={Desktop2} alt="desktop2" className="w-full h-auto" />
+              <img src={Desktop2} alt="desktop2" className="w-full h-auto hidden sm:block" />
+              <img src={Desktop2Mobile} alt="desktop2 mobile" className="w-full h-auto block sm:hidden" />
             </div>
 
             {features.map((feat, index) => {
               return (
-                <div className="flex items-center flex-col w-full max-w-2xl mt-16 sm:mt-20 md:mt-39" key={`feat-${index}`}>
+                <div className="flex items-center flex-col w-full max-w-2xl mt-31 sm:mt-20 md:mt-39" key={`feat-${index}`}>
                   <div className="text-center px-4">
-                    <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">{feat.title}</p>
-                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-10">{feat.text}</p>
+                    <p className="text-[40px]/10 sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2">{feat.title}</p>
+                    <p className="text-xl sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-10">{feat.text}</p>
                   </div>
                   <div className="w-full flex justify-center">
                     <img src={feat.image} alt={feat.alt} className="h-auto" />
@@ -352,12 +362,12 @@ export default function Landing() {
         <section className="py-12 sm:py-20 md:py-28 bg-[#6A52CC] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             {/* Title */}
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-8 sm:mb-12 md:mb-14" dangerouslySetInnerHTML={{ __html: t('dashboard.title') }} />
+            <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-14 sm:mb-12 md:mb-14" dangerouslySetInnerHTML={{ __html: t('dashboard.title') }} />
 
             {/* Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {dashboardFeatures.map((feature, index) => (
-                <div key={index} className="flex flex-col">
+                <div key={index} className="flex flex-col mb-18">
                   {/* Card with border */}
                   <div className={`rounded-3xl ${feature.borderColor} mb-6 sm:mb-8 overflow-hidden`}>
                     <img
@@ -369,10 +379,10 @@ export default function Landing() {
 
                   {/* Text below card */}
                   <div className="text-center px-2 sm:px-4">
-                    <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                    <h3 className="text-2xl leading-[28px] sm:text-xl font-bold text-white mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-white/90 text-sm sm:text-base leading-relaxed">
+                    <p className="text-lg leading-[24px] text-white/90 sm:text-base leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -387,10 +397,10 @@ export default function Landing() {
           <div className="max-w-7xl mx-auto">
             {/* Header */}
             <div className="text-center mb-8 sm:mb-12">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4">
+              <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4">
                 {t('pricing.title')}
               </h2>
-              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold italic text-[#ABFFA8] mb-6 sm:mb-8">
+              <p className="text-[32px] leading-[40px] sm:text-2xl md:text-3xl lg:text-4xl italic text-[#ABFFA8] mb-6 sm:mb-8">
                 {t('pricing.trial')}
               </p>
 
@@ -423,8 +433,8 @@ export default function Landing() {
                 <div
                   key={index}
                   className={`relative rounded-3xl px-4 sm:px-6 md:px-8 bg-[#050912] ${plan.popular
-                    ? 'border-1 border-[#7B5FCC] md:-mt-6 py-10 sm:py-12 md:py-14'
-                    : 'border-1 border-[#1a2332] py-6 sm:py-8'
+                    ? 'border-1 border-[#8465FF] md:-mt-6 py-10 sm:py-12 md:py-14'
+                    : 'border-1 border-[#CDCEDF] py-6 sm:py-8'
                     }`}
                 >
                   {/* Popular Badge */}
@@ -443,20 +453,20 @@ export default function Landing() {
                   </div>
 
                   {/* Plan Name */}
-                  <h3 className="text-lg sm:text-xl text-white text-center mb-2">
+                  <h3 className="text-xl sm:text-xl text-white text-center mb-2">
                     {plan.name}
                   </h3>
 
                   {/* Price */}
                   <div className="text-center mb-4 sm:mb-6">
-                    <span className="text-2xl sm:text-3xl font-bold text-white">
+                    <span className="text-[32px] sm:text-3xl font-bold text-white">
                       {billingPeriod === 'monthly' ? plan.monthlyPrice : plan.annualPrice}
                     </span>
                     {!plan.isLifetime && (
-                      <span className="text-xl sm:text-2xl md:text-3xl font-bold text-white"> {t('pricing.perMonth')}</span>
+                      <span className="text-[32px] sm:text-2xl md:text-3xl font-bold text-white"> {t('pricing.perMonth')}</span>
                     )}
                     {plan.isLifetime && (
-                      <span className="text-lg sm:text-xl md:text-2xl font-bold text-white"> {t('pricing.oneTime')}</span>
+                      <span className="text-[32px] sm:text-xl md:text-2xl font-bold text-white"> {t('pricing.oneTime')}</span>
                     )}
                   </div>
 
@@ -471,9 +481,9 @@ export default function Landing() {
                   {/* Features List */}
                   <ul className="space-y-2 sm:space-y-3">
                     {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start gap-2 sm:gap-3 text-white">
-                        <span className={`mt-0.5 sm:mt-1 flex-shrink-0 ${feature.included ? 'text-[#ABFFA8]' : 'text-gray-500'}`}>
-                          {feature.included ? '✓' : '✗'}
+                      <li key={featureIndex} className="mt-3 flex items-center gap-2 sm:gap-3 text-white">
+                        <span className={`flex-shrink-0 ${feature.included ? 'text-[#ABFFA8]' : 'text-gray-500'}`}>
+                          {feature.included ? <img src={Check2} alt="check" className="w-[20px]" /> : <img src={X} alt="x" className="w-[20px]" />}
                         </span>
                         <span className={`text-xs sm:text-sm leading-relaxed ${!feature.included ? 'text-gray-500' : ''}`}>
                           {feature.text}
@@ -533,7 +543,7 @@ export default function Landing() {
         <footer id="reviews" className="bg-[#050912] text-gray-300 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
           {/* Testimonials Section */}
           <div className="max-w-7xl mx-auto mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center mb-8 sm:mb-12">
+            <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center mb-8 sm:mb-12">
               <Trans i18nKey="testimonials.title">
                 Ellos también aman <span className="text-[#9999FE]">eureky.ai</span>
               </Trans>
@@ -570,11 +580,11 @@ export default function Landing() {
 
           {/* FAQ Section */}
           <div className="max-w-7xl mx-auto mb-8 sm:mb-12">
-            <div className="rounded-3xl sm:rounded-[40px] bg-[#6B5FCC] p-6 sm:p-8 md:p-12">
+            <div className="rounded-3xl sm:rounded-[40px] bg-[#4E36AF] p-6 sm:p-8 md:p-12">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                 {/* Left side - Title */}
                 <div className="md:col-span-1">
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">
+                  <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">
                     {t('faq.title')}
                   </h2>
                 </div>
@@ -587,11 +597,11 @@ export default function Landing() {
                         onClick={() => toggleFaq(index)}
                         className="w-full flex items-center justify-between text-left text-white hover:text-gray-200 transition-colors cursor-pointer"
                       >
-                        <span className="text-sm sm:text-base md:text-lg font-medium pr-4">
+                        <span className="text-[22px] sm:text-base md:text-lg font-medium pr-4">
                           {faq.question}
                         </span>
                         <PlusCircleIcon
-                          className={`w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 transition-transform ${openFaqIndex === index ? 'rotate-45' : ''
+                          className={`w-8 h-5 sm:w-6 sm:h-6 flex-shrink-0 transition-transform ${openFaqIndex === index ? 'rotate-45' : ''
                             }`}
                         />
                       </button>
@@ -608,32 +618,46 @@ export default function Landing() {
           </div>
 
           {/* Bottom Footer */}
-          <div className="max-w-7xl mx-auto pt-6 sm:pt-8 border-t border-gray-800">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
+          <div className="max-w-7xl mx-auto pt-6 sm:pt-8 border-gray-800">
+            <div className="flex flex-col md:flex-row justify-between gap-4 sm:gap-6">
               {/* Logo & Contact */}
-              <div className="text-center md:text-left">
-                <img src={Logo} alt="logo_footer" />
-                <a href={`mailto:${t('footer.contact')}`} className="text-xs sm:text-sm text-gray-400 hover:text-white underline">
+              <div className="md:text-left">
+                <img src={Logo} alt="logo_footer" className="w-[220px] mb-12" />
+                <a href={`mailto:${t('footer.contact')}`} className="text-xl sm:text-sm text-gray-400 hover:text-white underline">
                   {t('footer.contact')}
                 </a>
+                <div className="hidden sm:block sm:mt-10">
+                  <div className="flex">
+                    <a href={t('footer.facebook')} className="text-gray-400 hover:text-white mr-3">
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                      </svg>
+                    </a>
+                    <a href={t('footer.instagram')} className="text-gray-400 hover:text-white">
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
               </div>
 
               {/* Social Icons & Copyright */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
-                <div className="flex gap-4">
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <div className="flex gap-4 block sm:hidden">
+                  <a href={t('footer.facebook')} className="text-gray-400 hover:text-white">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                     </svg>
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-white">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <a href={t('footer.instagram')} className="text-gray-400 hover:text-white">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                     </svg>
                   </a>
                 </div>
-                <div className="text-xs sm:text-sm text-gray-400 flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
-                  <span>{t('footer.copyright', { year: new Date().getFullYear() })}</span>
+                <div className="mt-20 text-sm sm:text-sm text-gray-400 flex justify-between sm:flex-row items-between gap-2 sm:gap-4 sm:items-center">
+                  <span className="sm:mr-[66px]">{t('footer.copyright', { year: new Date().getFullYear() })}</span>
                   <div className="flex items-center gap-2 sm:gap-4">
                     <a href="#" className="hover:text-white underline">{t('footer.privacy')}</a>
                     <a href="#" className="hover:text-white underline">{t('footer.terms')}</a>
