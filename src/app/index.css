@@ -7,3 +7,130 @@
 * {
   font-family: 'Figtree', sans-serif;
 }
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  /* Light theme (default) - White background */
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 270 80% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 220 15% 90%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 190 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 85%;
+    --input: 220 15% 85%;
+    --ring: 270 80% 60%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 15%;
+    --sidebar-primary: 270 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 95%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 220 15% 85%;
+    --sidebar-ring: 270 80% 60%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(270 80% 60%), hsl(280 75% 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(190 100% 50%), hsl(200 90% 55%));
+    
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Dark theme - #050912 background */
+  .dark {
+    --background: 222 42% 5%;
+    --foreground: 0 0% 100%;
+
+    --card: 222 40% 8%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 222 40% 8%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 270 80% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222 35% 12%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 222 30% 15%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 190 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 30% 15%;
+    --input: 222 30% 15%;
+    --ring: 270 80% 60%;
+
+    --sidebar-background: 222 42% 5%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 270 80% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 222 35% 10%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 222 30% 12%;
+    --sidebar-ring: 270 80% 60%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* SVG icon color inversion based on theme */
+  /* All SVG images will automatically adapt to theme - dark in light theme, light in dark theme */
+  /* Target SVG images by checking src contains .svg or /icons/ path */
+  img[src*=".svg"]:not(.no-theme),
+  img[src*="/icons/"]:not(.no-theme) {
+    transition: filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Light theme (white background): SVGs should be dark/black */
+    filter: brightness(0) saturate(100%);
+  }
+
+  /* Dark theme (dark background #050912): SVGs should be light/white - fully inverted */
+  /* When dark class is on html element, invert all SVG icons to white */
+  html.dark img[src*=".svg"]:not(.no-theme),
+  html.dark img[src*="/icons/"]:not(.no-theme) {
+    filter: brightness(0) saturate(100%) invert(1);
+  }
+  
+  /* Fallback selector for dark class on other elements */
+  .dark img[src*=".svg"]:not(.no-theme),
+  .dark img[src*="/icons/"]:not(.no-theme) {
+    filter: brightness(0) saturate(100%) invert(1);
+  }
+}

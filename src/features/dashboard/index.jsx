@@ -1,142 +1,138 @@
-import { Calendar, CheckSquare, Clock, Plus, AlertCircle } from 'lucide-react';
-import { useListsOperations } from '../lists/hooks/useListsQuery';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Sidebar } from "@/components/Sidebar";
+import { CalendarSection } from "@/components/CalendarSection";
+import { TaskList } from "@/components/TaskList";
+import { AddTask } from "@/components/AddTask";
+import { MobileNav } from "@/components/MobileNav";
+import { Menu, MoreVertical } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import UnionIcon from "@/assets/icons/Union.svg";
+import EurekyLogo from "@/assets/icons/Union (1).svg";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const { lists, isLoading } = useListsOperations();
+  const [activeSection, setActiveSection] = useState("mi-dia");
+  const [lists] = useState(["Personal", "Trabajo"]);
+  const [tasks, setTasks] = useState([
+    { id: "1", title: "Comprar regalo", list: "Personal", completed: false },
+    { id: "2", title: "Planear Menú", list: "Personal", completed: false },
+    { id: "3", title: "Hacer presentación Q4", list: "Trabajo", completed: false },
+    { id: "4", title: "Responder Correo - Cotización", list: "Trabajo", completed: false },
+  ]);
 
-  // Calculate stats from actual data
-  const stats = [
-    { name: 'Active Reminders', value: '0', icon: Clock, color: 'text-blue-600' },
-    { name: 'Completed Tasks', value: '0', icon: CheckSquare, color: 'text-green-600' },
-    { name: 'Upcoming Events', value: '0', icon: Calendar, color: 'text-purple-600' },
-    { name: 'Total Lists', value: lists?.length?.toString() || '0', icon: Plus, color: 'text-orange-600' },
-  ];
+  const [calendarEvents] = useState([
+    { time: "8:00-9:00", title: "Reunión Mónica" },
+    { time: "11:00-12:00", title: "Status equipo", badge: "Únirse" },
+    { time: "15:00-15:30", title: "Feedback" },
+    { time: "17:00-18:00", title: "Status equipo" },
+    { time: "19:00-20:00", title: "Gimnasio" },
+  ]);
 
-  // Get upcoming reminders from all lists
-  const upcomingReminders = [];
-  if (lists) {
-    lists.forEach(list => {
-      if (list.items) {
-        list.items.forEach(item => {
-          if (item.scheduledAt && !item.isCompleted) {
-            const reminderDate = new Date(item.scheduledAt);
-            const now = new Date();
-            const isOverdue = reminderDate < now;
-            upcomingReminders.push({
-              ...item,
-              reminderDate,
-              isOverdue,
-              listName: list.name
-            });
-          }
-        });
-      }
-    });
-  }
+  const handleToggleTask = (id) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
+  };
 
-  // Sort by date and take first 5
-  upcomingReminders.sort((a, b) => a.reminderDate - b.reminderDate);
-  const recentReminders = upcomingReminders.slice(0, 5);
+  const handleDeleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
+  const handleEditTask = (id) => {
+    console.log("Edit task:", id);
+  };
+
+  const handleAddTask = (title, list) => {
+    const newTask = {
+      id: Date.now().toString(),
+      title,
+      list,
+      completed: false,
+    };
+    setTasks([...tasks, newTask]);
+  };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Overview of your reminders and lists</p>
+    <div className="flex h-screen bg-background text-foreground overflow-hidden relative">
+      {/* Theme Switcher - Top Right */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeSwitcher />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div key={stat.name} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.name}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-                <Icon className={`w-8 h-8 ${stat.color}`} />
-              </div>
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <Sidebar
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+          lists={lists}
+          onAddList={() => console.log("Add list")}
+        />
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
+        <div className="max-w-4xl mx-auto lg:p-6">
+          {/* Mobile Header */}
+          <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-sidebar mb-6">
+            {/* Left: User Avatar with Green Badge */}
+            <div className="relative w-10 h-10 rounded-full bg-[#312465] flex items-center justify-center flex-shrink-0">
+              <div className="absolute -bottom-0.5 -left-0.5 w-3 h-3 rounded-full bg-[#6FE36B] border-[1px] border-sidebar"></div>
             </div>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Reminders</h3>
-          <div className="space-y-3">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-4">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"></div>
-              </div>
-            ) : recentReminders.length === 0 ? (
-              <div className="text-center py-4 text-gray-500">
-                <p>No upcoming reminders</p>
-                <button
-                  onClick={() => navigate('/dashboard/lists')}
-                  className="mt-2 text-blue-600 hover:text-blue-700 text-sm"
-                >
-                  Create your first reminder
-                </button>
-              </div>
-            ) : (
-              recentReminders.map((reminder) => (
-                <div key={reminder.id} className={`flex items-center justify-between p-3 rounded-lg ${
-                  reminder.isOverdue ? 'bg-red-50 border border-red-200' : 'bg-gray-50'
-                }`}>
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2">
-                      {reminder.isOverdue && <AlertCircle className="w-4 h-4 text-red-500" />}
-                      <p className="font-medium text-gray-900">{reminder.content}</p>
-                    </div>
-                    <p className="text-sm text-gray-500">
-                      {reminder.reminderDate.toLocaleDateString()} at {reminder.reminderDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                    <p className="text-xs text-gray-400">in {reminder.listName}</p>
-                  </div>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                    reminder.isOverdue
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-blue-100 text-blue-800'
-                  }`}>
-                    {reminder.isOverdue ? 'Overdue' : 'Upcoming'}
-                  </span>
-                </div>
-              ))
-            )}
+            
+            {/* Middle: Logo Icons */}
+            <div className="flex items-center gap-2 flex-1 justify-center">
+              <img src={UnionIcon} alt="Logo" className="h-6 w-auto" />
+              <img src={EurekyLogo} alt="eureky" className="h-7 w-auto" />
+            </div>
+            
+            {/* Right: More Options */}
+            <div className="flex items-center gap-2">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="flex-shrink-0">
+                    <Menu className="w-5 h-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="p-0 w-64">
+                  <Sidebar
+                    activeSection={activeSection}
+                    onSectionChange={setActiveSection}
+                    lists={lists}
+                    onAddList={() => console.log("Add list")}
+                  />
+                </SheetContent>
+              </Sheet>
+              <Button variant="ghost" size="icon" className="flex-shrink-0">
+                <MoreVertical className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
-        </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-          <div className="space-y-3">
-            <button
-              onClick={() => navigate('/dashboard/lists')}
-              className="w-full flex items-center p-3 text-left bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
-            >
-              <Plus className="w-5 h-5 mr-3" />
-              Quick Add Item/Reminder
-            </button>
-            <button
-              onClick={() => navigate('/dashboard/lists')}
-              className="w-full flex items-center p-3 text-left bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
-            >
-              <CheckSquare className="w-5 h-5 mr-3" />
-              Manage Lists
-            </button>
-            <button
-              onClick={() => navigate('/dashboard/settings')}
-              className="w-full flex items-center p-3 text-left bg-purple-50 text-purple-700 rounded-lg hover:bg-purple-100 transition-colors"
-            >
-              <Calendar className="w-5 h-5 mr-3" />
-              Settings
-            </button>
-          </div>
+          {/* Welcome Message */}
+          <h1 className="lg:text-[48px] text-[32px] font-bold mb-8 px-4 lg:px-0">Buenos días, Roger</h1>
+
+          {/* Calendar Section */}
+          <CalendarSection events={calendarEvents} />
+
+          {/* Tasks Section */}
+          <TaskList
+            tasks={tasks}
+            onToggleTask={handleToggleTask}
+            onDeleteTask={handleDeleteTask}
+            onEditTask={handleEditTask}
+          />
+
+          {/* Add Task */}
+          <AddTask onAddTask={handleAddTask} />
         </div>
-      </div>
+      </main>
+
+      {/* Mobile Navigation */}
+      <MobileNav
+        activeSection={activeSection}
+        onSectionChange={setActiveSection}
+      />
     </div>
   );
 };
