@@ -22,11 +22,11 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
   ];
 
   return (
-    <aside className="w-[300px] bg-sidebar border-r border-sidebar-border flex flex-col h-screen">
-      <div className="p-4 border-b border-sidebar-border">
+    <aside className="w-[300px] bg-sidebar flex flex-col h-screen">
+      <div className="p-4 ">
         <div className="flex items-center gap-2 p-2">
-          <img src={UnionIcon} alt="Logo" className="lg:h-[21px] lg:w-[42px] h-[17.12px] w-[34.24px]" />
-          <img src={EurekyLogo} alt="eureky" className="lg:h-[28px] lg:w-[107.33px] h-[22.82px] w-[87.49px]" />
+          <img src={UnionIcon} alt="Logo" className="lg:h-[21px] lg:w-[42px] h-[17.12px] w-[34.24px] svg-icon" />
+          <img src={EurekyLogo} alt="eureky" className="lg:h-[28px] lg:w-[107.33px] h-[22.82px] w-[87.49px] svg-icon" />
         </div>
       </div>
 
@@ -44,7 +44,7 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
                     : "text-sidebar-foreground hover:bg-sidebar-accent/50"
                 )}
               >
-                <img src={section.icon} alt="" className="w-4 h-4" />
+                <img src={section.icon} alt="" className="w-4 h-4 svg-icon" />
                 <span className="lg:text-[16px]">{section.label}</span>
               </button>
             );
@@ -82,18 +82,18 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
         </div>
       </nav>
 
-      <div className="p-3 space-y-1 border-t border-sidebar-border">
+      <div className="p-3 space-y-1">
         <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors">
-          <img src={Soporte} alt="Logo" className="lg:h-[20px] lg:w-[20px] svg-theme" />
+          <img src={Soporte} alt="" className="lg:h-[20px] lg:w-[20px] svg-icon" />
           <span className="lg:text-[16px]">Soporte</span>
         </button>
         <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent/50 transition-colors">
-          <img src={Ajustes} alt="Logo" className="lg:h-[20px] lg:w-[20px] svg-theme" />
+          <img src={Ajustes} alt="" className="lg:h-[20px] lg:w-[20px] svg-icon" />
           <span className="lg:text-[16px]">Ajustes</span>
         </button>
       </div>
 
-      <div className="p-3 border-t border-sidebar-border">
+      <div className="p-3">
         <Button 
           className="hover:opacity-90 transition-opacity relative overflow-hidden flex items-center justify-center"
           style={{ 
@@ -116,19 +116,19 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
         </Button>
       </div>
 
-      <div className="p-3 border-t border-sidebar-border">
-        <div className="bg-card p-3 rounded-lg flex items-center gap-3">
+      <div className="p-3">
+        <div className="bg-card p-3 rounded-lg flex items-center gap-3 border border-round">
           <div className="relative w-10 h-10 rounded-full bg-[#312465] flex items-center justify-center">
             <div className="absolute -bottom-0.5 -right-[0.0px] w-3 h-3 rounded-full bg-[#6FE36B] border-[1px] border-sidebar"></div>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-foreground truncate lg:text-[14px]">Roger</p>
-            <p className="text-xs text-muted-foreground truncate lg:text-[14px]">roger@untitledui.com</p>
+            <p className="text-xs text-muted-foreground truncate lg:text-[14px] text-[#444358]">roger@untitledui.com</p>
           </div>
           <img 
             src={NavAccountMenuIcon} 
             alt="Menu" 
-            className="w-8 h-8 flex-shrink-0 cursor-pointer"
+            className="w-8 h-8 flex-shrink-0 cursor-pointer svg-icon"
           />
         </div>
       </div>

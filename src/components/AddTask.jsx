@@ -33,7 +33,7 @@ export const AddTask = ({ onAddTask }) => {
   };
 
   return (
-    <div className="bg-card bg-[#0F1521] rounded-[70px] pl-8 pt-[8px] pb-[2px] pr-6 mx-4 lg:mx-0">
+    <div className="bg-card rounded-[70px] pl-8 pt-[8px] pb-[2px] pr-6 mx-4 lg:mx-0">
       <div className="flex items-center gap-2 mb-3">
         <Input
           value={taskTitle}
@@ -47,9 +47,9 @@ export const AddTask = ({ onAddTask }) => {
             <Button
               variant="ghost"
               size="icon"
-              className="h-16 w-16 flex-shrink-0 rounded-full hover:bg-accent"
+              className="h-10 w-10 mt-2 flex-shrink-0 rounded-full bg-trigger hover:bg-accent"
             >
-              <List className="w-5 h-5" />
+              <List className="w-5 h-5 bg-trigger-list" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-64 -mt-[245px] p-0" align="end">

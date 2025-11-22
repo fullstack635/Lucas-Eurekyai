@@ -7,7 +7,6 @@ import { MobileNav } from "@/components/MobileNav";
 import { Menu, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import UnionIcon from "@/assets/icons/Union.svg";
 import EurekyLogo from "@/assets/icons/Union (1).svg";
 
@@ -54,12 +53,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden relative">
-      {/* Theme Switcher - Top Right */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeSwitcher />
-      </div>
-
+    <div className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar
@@ -81,13 +75,13 @@ const Dashboard = () => {
             </div>
             
             {/* Middle: Logo Icons */}
-            <div className="flex items-center gap-2 flex-1 justify-center">
-              <img src={UnionIcon} alt="Logo" className="h-6 w-auto" />
-              <img src={EurekyLogo} alt="eureky" className="h-7 w-auto" />
-            </div>
+            {/* <div className="flex items-center gap-2 flex-1 justify-center">
+              <img src={UnionIcon} alt="Logo" className="h-6 w-auto svg-logo" />
+              <img src={EurekyLogo} alt="eureky" className="h-7 w-auto svg-logo" />
+            </div> */}
             
             {/* Right: More Options */}
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="flex-shrink-0">
@@ -106,11 +100,11 @@ const Dashboard = () => {
               <Button variant="ghost" size="icon" className="flex-shrink-0">
                 <MoreVertical className="w-5 h-5" />
               </Button>
-            </div>
+            </div> */}
           </div>
 
           {/* Welcome Message */}
-          <h1 className="lg:text-[48px] text-[32px] font-bold mb-8 px-4 lg:px-0">Buenos días, Roger</h1>
+          <h1 className="text-[32px] lg:text-[48px] font-bold mb-8 px-4 lg:px-0">Buenos días, Roger</h1>
 
           {/* Calendar Section */}
           <CalendarSection events={calendarEvents} />

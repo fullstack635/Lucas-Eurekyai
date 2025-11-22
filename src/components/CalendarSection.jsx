@@ -32,10 +32,10 @@ export const CalendarSection = ({ events }) => {
       <h2 className="lg:text-[20px] text-[16px] font-semibold mb-4">Calendario</h2>
       
       {!isCalendarConnected ? (
-        <div className="bg-card border border-border rounded-lg p-6">
+        <div className="bg-card rounded-lg p-6">
           <div className="flex items-start gap-4">
             <div className="flex flex-col items-center">
-              <span className="text-xs text-muted-foreground">{dayName}</span>
+              <span className="text-3xs font-bold text-muted-foreground">{dayName}</span>
               <span className="text-3xl font-bold">{dayNumber}</span>
             </div>
             <div className="flex-1">
@@ -47,7 +47,7 @@ export const CalendarSection = ({ events }) => {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-64 p-0 mt-7" align="start">
-                  <div className="p-1 bg-[#0F1521]">
+                  <div className="p-1 bg-sidebar">
                     {calendarOptions.map((calendar) => (
                       <button
                         key={calendar}
@@ -65,10 +65,10 @@ export const CalendarSection = ({ events }) => {
           </div>
         </div>
       ) : (
-        <div className="bg-card border-2 border-primary rounded-lg p-6">
+        <div className="bg-card rounded-lg p-6">
           <div className="flex items-start gap-4 mb-4">
             <div className="flex flex-col items-center">
-              <span className="text-xs text-muted-foreground">{dayName}</span>
+              <span className="text-3xs font-bold text-muted-foreground">{dayName}</span>
               <span className="text-3xl font-bold">{dayNumber}</span>
             </div>
             <div className="flex-1">

@@ -1,34 +1,37 @@
 import { Moon, Sun } from "lucide-react";
-import { Button } from "./ui/button";
 import { useTheme } from "@/shared/contexts/AppContext";
-import { cn } from "@/lib/utils";
 
 export const ThemeSwitcher = () => {
   const { theme, toggleTheme } = useTheme();
 
+  const lightStyles = {
+    backgroundColor: "#F5F5FF",
+    color: "#050912",
+  };
+
+  const darkStyles = {
+    backgroundColor: "#050912",
+    color: "#FFFFFF",
+  };
+
+  const currentStyles = theme === "light" ? lightStyles : darkStyles;
+
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
       onClick={toggleTheme}
-      className={cn(
-        "relative h-10 w-10 rounded-full transition-colors",
-        "bg-background/80 backdrop-blur-sm border border-border",
-        "hover:bg-accent hover:border-accent",
-        "shadow-md"
-      )}
-      aria-label="Toggle theme"
+      className="fixed top-4 right-4 z-50 p-3 rounded-md transition-all duration-200 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2"
+      style={{
+        backgroundColor: currentStyles.backgroundColor,
+        color: currentStyles.color,
+      }}
+      aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
-      <Sun className={cn(
-        "h-5 w-5 rotate-0 scale-100 transition-all absolute",
-        theme === "dark" ? "rotate-90 scale-0 opacity-0" : "rotate-0 scale-100 opacity-100"
-      )} />
-      <Moon className={cn(
-        "h-5 w-5 rotate-90 scale-0 transition-all absolute",
-        theme === "dark" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"
-      )} />
-      <span className="sr-only">Toggle theme</span>
-    </Button>
+      {theme === "light" ? (
+        <Moon className="w-5 h-5" style={{ color: currentStyles.color }} />
+      ) : (
+        <Sun className="w-5 h-5" style={{ color: currentStyles.color }} />
+      )}
+    </button>
   );
 };
 

@@ -12,25 +12,24 @@ All colors MUST be HSL.
 */
 
 @layer base {
-  /* Light theme (default) - White background */
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
+    --background: 236, 100%, 98%;
+    --foreground: 220 57% 5%;
 
-    --card: 0 0% 98%;
-    --card-foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 57% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 220 57% 5%;
 
     --primary: 270 80% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 95%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 220 30% 95%;
+    --secondary-foreground: 220 57% 5%;
 
-    --muted: 220 15% 90%;
-    --muted-foreground: 0 0% 40%;
+    --muted: 220 30% 96%;
+    --muted-foreground: 220 10% 40%;
 
     --accent: 190 100% 50%;
     --accent-foreground: 0 0% 100%;
@@ -38,46 +37,47 @@ All colors MUST be HSL.
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 85%;
-    --input: 220 15% 85%;
+    --border: 220 20% 90%;
+    --input: 220 20% 90%;
     --ring: 270 80% 60%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 15%;
+    --sidebar-foreground: 220 57% 5%;
     --sidebar-primary: 270 80% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 95%;
-    --sidebar-accent-foreground: 0 0% 10%;
-    --sidebar-border: 220 15% 85%;
+    --sidebar-accent: 220 30% 92%;
+    --sidebar-accent-foreground: 220 57% 5%;
+    --sidebar-border: 220 20% 90%;
     --sidebar-ring: 270 80% 60%;
 
     --gradient-primary: linear-gradient(135deg, hsl(270 80% 60%), hsl(280 75% 55%));
     --gradient-accent: linear-gradient(135deg, hsl(190 100% 50%), hsl(200 90% 55%));
     
+    --trigger-background: 238, 21%, 84%;
+    --trigger-list-background: 0, 0%, 100%;
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Dark theme - #050912 background */
   .dark {
-    --background: 222 42% 5%;
+    --background: 222 57% 5%;
     --foreground: 0 0% 100%;
 
-    --card: 222 40% 8%;
+    --card: 220 35% 10%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 222 40% 8%;
+    --popover: 220 40% 10%;
     --popover-foreground: 0 0% 100%;
 
     --primary: 270 80% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 222 35% 12%;
+    --secondary: 220 30% 15%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 222 30% 15%;
-    --muted-foreground: 0 0% 70%;
+    --muted: 220 30% 20%;
+    --muted-foreground: 0 0% 60%;
 
     --accent: 190 100% 50%;
     --accent-foreground: 0 0% 100%;
@@ -85,17 +85,17 @@ All colors MUST be HSL.
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 30% 15%;
-    --input: 222 30% 15%;
+    --border: 220 30% 18%;
+    --input: 220 30% 18%;
     --ring: 270 80% 60%;
 
-    --sidebar-background: 222 42% 5%;
-    --sidebar-foreground: 0 0% 90%;
+    --sidebar-background: 218 38% 9%;
+    --sidebar-foreground: 0 0% 85%;
     --sidebar-primary: 270 80% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 35% 10%;
+    --sidebar-accent: 220 35% 12%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 30% 12%;
+    --sidebar-border: 220 30% 12%;
     --sidebar-ring: 270 80% 60%;
   }
 }
@@ -107,30 +107,37 @@ All colors MUST be HSL.
 
   body {
     background-color: hsl(var(--background));
+    .bg-sidebar {
+      background-color: hsl(var(--sidebar-background));
+    }
+    .bg-card {
+      background-color: hsl(var(--card));
+    }
+    .bg-trigger {
+      background-color: hsl(var(--trigger-background));
+    }
+    .bg-trigger-list {
+      color: hsl(var(--trigger-list-background));
+    }
     color: hsl(var(--foreground));
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
-  /* SVG icon color inversion based on theme */
-  /* All SVG images will automatically adapt to theme - dark in light theme, light in dark theme */
-  /* Target SVG images by checking src contains .svg or /icons/ path */
-  img[src*=".svg"]:not(.no-theme),
-  img[src*="/icons/"]:not(.no-theme) {
-    transition: filter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    /* Light theme (white background): SVGs should be dark/black */
+  /* SVG icon filters for theme adaptation */
+  /* Light mode: Make SVG icons dark (#050912 - very dark) */
+  :root img.svg-icon {
     filter: brightness(0) saturate(100%);
   }
 
-  /* Dark theme (dark background #050912): SVGs should be light/white - fully inverted */
-  /* When dark class is on html element, invert all SVG icons to white */
-  html.dark img[src*=".svg"]:not(.no-theme),
-  html.dark img[src*="/icons/"]:not(.no-theme) {
-    filter: brightness(0) saturate(100%) invert(1);
+  /* Dark mode: Make SVG icons white (#FFFFFF) */
+  .dark img.svg-icon {
+    filter: brightness(0) saturate(100%) invert(100%);
   }
-  
-  /* Fallback selector for dark class on other elements */
-  .dark img[src*=".svg"]:not(.no-theme),
-  .dark img[src*="/icons/"]:not(.no-theme) {
-    filter: brightness(0) saturate(100%) invert(1);
-  }
+
+  /* Preserve colors for logos */
+  /* img.svg-logo,
+  img[alt="Logo"],
+  img[alt="eureky"] {
+    filter: none !important;
+  } */
 }

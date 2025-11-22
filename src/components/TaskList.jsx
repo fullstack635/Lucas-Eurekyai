@@ -16,12 +16,12 @@ export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask }) => {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="bg-card border border-border rounded-lg p-4 flex items-center gap-3 hover:border-primary transition-colors"
+            className="bg-card rounded-lg p-4 flex items-center gap-3 hover:border-primary transition-colors"
           >
             <Checkbox
               checked={task.completed}
               onCheckedChange={() => onToggleTask(task.id)}
-              className="border-muted-foreground"
+              className="border-muted-foreground border-[#000000]"
             />
             <div className="flex-1">
               <p className={`text-sm ${task.completed ? "line-through text-muted-foreground" : ""}`}>
@@ -37,16 +37,16 @@ export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask }) => {
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="border border-border">
-                <DropdownMenuItem onClick={() => onEditTask(task.id)} className="p-3 hover:bg-accent hover:text-accent-foreground border-b border-border">
+              <DropdownMenuContent align="end" className="border border-border bg-sidebar">
+                <DropdownMenuItem onClick={() => onEditTask(task.id)} className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border">
                   Lista
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onEditTask(task.id)} className="p-3 hover:bg-accent hover:text-accent-foreground border-b border-border">
+                <DropdownMenuItem onClick={() => onEditTask(task.id)} className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border">
                   Editar
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                   onClick={() => onDeleteTask(task.id)}
-                  className="text-destructive p-3 hover:bg-accent hover:text-accent-foreground"
+                  className="text-destructive p-3 hover:bg-[#6A52CC] hover:text-accent-foreground"
                 >
                   Eliminar
                 </DropdownMenuItem>

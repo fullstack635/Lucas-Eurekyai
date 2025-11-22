@@ -14,12 +14,14 @@ import { AppProvider } from '../shared/contexts/AppContext';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 function App() {
   return (
     <QueryProvider>
       <AppProvider>
         <TooltipProvider>
+          <ThemeSwitcher />
           <Toaster />
           <Sonner />
           <Router>

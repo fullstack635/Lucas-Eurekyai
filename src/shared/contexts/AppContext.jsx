@@ -3,7 +3,7 @@ import { createContext, useContext, useReducer, useEffect } from 'react';
 // Initial state for client-side state (UI, forms, user preferences, etc.)
 const initialState = {
   // UI State
-  theme: 'dark',
+  theme: 'light',
   sidebarCollapsed: false,
   
   // Form states
@@ -161,11 +161,6 @@ export const AppProvider = ({ children }) => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       dispatch({ type: ActionTypes.SET_THEME, payload: savedTheme });
-      // Apply theme immediately when loading from localStorage
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    } else {
-      // Apply default theme (dark) if no saved preference
-      document.documentElement.classList.toggle('dark', true);
     }
   }, []);
 
