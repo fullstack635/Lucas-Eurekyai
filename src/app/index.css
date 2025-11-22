@@ -18,6 +18,7 @@ All colors MUST be HSL.
 
     --card: 0 0% 100%;
     --card-foreground: 220 57% 5%;
+    --checkbox-border-color:  0, 0%, 0%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 220 57% 5%;
@@ -57,6 +58,7 @@ All colors MUST be HSL.
     
     --trigger-background: 238, 21%, 84%;
     --trigger-list-background: 0, 0%, 100%;
+
     --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -66,6 +68,7 @@ All colors MUST be HSL.
 
     --card: 220 35% 10%;
     --card-foreground: 0 0% 100%;
+    --checkbox-border-color:  0, 0%, 100%;
 
     --popover: 220 40% 10%;
     --popover-foreground: 0 0% 100%;
@@ -88,7 +91,7 @@ All colors MUST be HSL.
     --border: 220 30% 18%;
     --input: 220 30% 18%;
     --ring: 270 80% 60%;
-
+    
     --sidebar-background: 218 38% 9%;
     --sidebar-foreground: 0 0% 85%;
     --sidebar-primary: 270 80% 60%;
@@ -97,6 +100,8 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 220 30% 12%;
     --sidebar-ring: 270 80% 60%;
+
+    --trigger-background: 220, 38%, 18%;
   }
 }
 
@@ -128,7 +133,9 @@ All colors MUST be HSL.
   :root img.svg-icon {
     filter: brightness(0) saturate(100%);
   }
-
+  .checkbox-border-color {
+    border-color: hsl(var(--checkbox-border-color));
+  }
   /* Dark mode: Make SVG icons white (#FFFFFF) */
   .dark img.svg-icon {
     filter: brightness(0) saturate(100%) invert(100%);

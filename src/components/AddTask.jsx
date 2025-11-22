@@ -52,7 +52,7 @@ export const AddTask = ({ onAddTask }) => {
               <List className="w-5 h-5 bg-trigger-list" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 -mt-[245px] p-0" align="end">
+          <PopoverContent className="w-64 -mt-[230px] p-0" align="end">
             <div className="p-0 bg-[#0F1521]">
               <div className="p-4 w-full flex items-center justify-between text-sm rounded-sm transition-colors border-b border-border">
                   MIS LISTAS

@@ -46,7 +46,7 @@ export const CalendarSection = ({ events }) => {
                     Conectar calendario
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-0 mt-7" align="start">
+                <PopoverContent className="w-64 p-0 mt-10" align="start">
                   <div className="p-1 bg-sidebar">
                     {calendarOptions.map((calendar) => (
                       <button

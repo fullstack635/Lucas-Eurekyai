@@ -21,7 +21,7 @@ export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask }) => {
             <Checkbox
               checked={task.completed}
               onCheckedChange={() => onToggleTask(task.id)}
-              className="border-muted-foreground border-[#000000]"
+              className="border-muted-foreground checkbox-border-color"
             />
             <div className="flex-1">
               <p className={`text-sm ${task.completed ? "line-through text-muted-foreground" : ""}`}>
@@ -37,7 +37,7 @@ export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask }) => {
                   <MoreVertical className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="border border-border bg-sidebar">
+              <DropdownMenuContent align="end" className="border border-border bg-sidebar mt-5">
                 <DropdownMenuItem onClick={() => onEditTask(task.id)} className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border">
                   Lista
                 </DropdownMenuItem>
