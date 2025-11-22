@@ -85,7 +85,7 @@ export const CalendarSection = ({ events }) => {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-6 px-2 text-xs bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                        className="h-6 px-2 text-xs bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 bg-[#8465FF] text-[#FFFFFF]"
                       >
                         {event.badge}
                       </Button>

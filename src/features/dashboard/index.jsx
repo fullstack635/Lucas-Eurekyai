@@ -75,14 +75,14 @@ const Dashboard = () => {
             </div>
             
             {/* Middle: Logo Icons */}
-            {/* <div className="flex items-center gap-2 flex-1 justify-center">
-              <img src={UnionIcon} alt="Logo" className="h-6 w-auto svg-logo" />
-              <img src={EurekyLogo} alt="eureky" className="h-7 w-auto svg-logo" />
-            </div> */}
+            <div className="flex items-center gap-2 flex-1 justify-center">
+              <img src={UnionIcon} alt="Logo" className="h-6 w-auto svg-icon" />
+              <img src={EurekyLogo} alt="eureky" className="h-7 w-auto svg-icon" />
+            </div>
             
             {/* Right: More Options */}
-            {/* <div className="flex items-center gap-2">
-              <Sheet>
+            <div className="flex items-center gap-2">
+              {/* <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="flex-shrink-0">
                     <Menu className="w-5 h-5" />
@@ -96,11 +96,11 @@ const Dashboard = () => {
                     onAddList={() => console.log("Add list")}
                   />
                 </SheetContent>
-              </Sheet>
+              </Sheet> */}
               <Button variant="ghost" size="icon" className="flex-shrink-0">
                 <MoreVertical className="w-5 h-5" />
               </Button>
-            </div> */}
+            </div>
           </div>
 
           {/* Welcome Message */}
