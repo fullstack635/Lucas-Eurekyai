@@ -53,7 +53,7 @@ export const AddTask = ({ onAddTask }) => {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-64 -mt-[230px] p-0" align="end">
-            <div className="p-0 bg-[#0F1521]">
+            <div className="p-0 bg-sidebar">
               <div className="p-4 w-full flex items-center justify-between text-sm rounded-sm transition-colors border-b border-border">
                   MIS LISTAS
               </div>
@@ -67,8 +67,9 @@ export const AddTask = ({ onAddTask }) => {
                   className="hover:bg-[#6A52CC] p-4 w-full flex items-center justify-between text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
                 >
                   <span>{list}</span>
+                  
                   {selectedList === list && (
-                    <Check className="w-4 h-4 text-primary" />
+                    <Check className="w-3 h-3 text-[#000000] text-primary bg-[#ABFFA8] rounded-full" />
                   )}
                 </button>
               ))}
