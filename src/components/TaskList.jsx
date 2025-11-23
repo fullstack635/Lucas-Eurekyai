@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask }) => {
+export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask, onAddList }) => {
   return (
     <section className="mb-8 px-4 lg:px-0">
       <h2 className="lg:text-[20px] text-[16px] font-semibold mb-4">Tareas</h2>
@@ -17,6 +17,13 @@ export const TaskList = ({ tasks, onToggleTask, onDeleteTask, onEditTask }) => {
           <div
             key={task.id}
             className="bg-card rounded-lg p-4 flex items-center gap-3 hover:border-primary transition-colors"
+            onClick={onAddList}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#424242';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '';
+            }}
           >
             <Checkbox
               checked={task.completed}
