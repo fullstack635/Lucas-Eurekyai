@@ -23,17 +23,19 @@ export const listItemsService = {
   },
 
   // Get all items for a specific list
+  // GET /list-items/by-list/{{list_id}}?limit=50&includeSubtasks=true
   async getListItems(listId, params = {}) {
     try {
       const queryParams = new URLSearchParams();
       
       // Add optional query parameters
-      if (params.limit) queryParams.append('limit', params.limit);
-      if (params.offset) queryParams.append('offset', params.offset);
+      if (params.limit !== undefined) queryParams.append('limit', params.limit);
+      if (params.offset !== undefined) queryParams.append('offset', params.offset);
       if (params.isCompleted !== undefined) queryParams.append('isCompleted', params.isCompleted);
       if (params.priority) queryParams.append('priority', params.priority);
       if (params.orderBy) queryParams.append('orderBy', params.orderBy);
       if (params.orderDirection) queryParams.append('orderDirection', params.orderDirection);
+      if (params.includeSubtasks !== undefined) queryParams.append('includeSubtasks', params.includeSubtasks);
 
       const url = `/list-items/by-list/${listId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
       const response = await apiClient.get(url);

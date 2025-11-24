@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "eureky-api",
-		"name": "Eureky API",
-		"description": "API endpoints for managing lists, items, reminders, and calendars in Eureky. Reminders are implemented as special list items with scheduling capabilities.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "eureky-api-v2",
+		"name": "Eureky API - Complete Collection",
+		"description": "Complete API endpoints for Eureky - AI-powered task and reminder management via WhatsApp. Includes authentication, lists management, list items with subtasks, reminders, calendar integrations, and WhatsApp bot endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"version": "2.0.0"
 	},
 	"auth": {
 		"type": "bearer",
@@ -20,7 +21,7 @@
 			"key": "base_url",
 			"value": "https://dev-api.eureky.ai",
 			"type": "string",
-			"description": "API Base URL for staging environment. Use https://api.eureky.ai for production."
+			"description": "API Base URL for staging environment"
 		},
 		{
 			"key": "base_url_prod",
@@ -31,12 +32,34 @@
 		{
 			"key": "auth_token",
 			"value": "your-jwt-token-here",
+			"type": "string",
+			"description": "JWT authentication token"
+		},
+		{
+			"key": "list_id",
+			"value": "your-list-id-here",
+			"type": "string"
+		},
+		{
+			"key": "item_id",
+			"value": "your-item-id-here",
+			"type": "string"
+		},
+		{
+			"key": "subtask_id",
+			"value": "your-subtask-id-here",
+			"type": "string"
+		},
+		{
+			"key": "calendar_id",
+			"value": "your-calendar-id-here",
 			"type": "string"
 		}
 	],
 	"item": [
 		{
 			"name": "Authentication",
+			"description": "User authentication endpoints for phone-based login with OTP verification",
 			"item": [
 				{
 					"name": "Register User",
@@ -54,14 +77,10 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/register",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"register"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						},
+						"description": "Register a new user with phone number and name"
 					}
 				},
 				{
@@ -80,14 +99,10 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"login"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Initiate login and send OTP to phone number"
 					}
 				},
 				{
@@ -106,20 +121,39 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/auth/verify-otp",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"auth",
-								"verify-otp"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["auth", "verify-otp"]
+						},
+						"description": "Verify OTP code and receive JWT token"
+					}
+				},
+				{
+					"name": "Resend OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phoneNumber\": \"+1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/resend-otp",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "resend-otp"]
+						},
+						"description": "Request a new OTP code"
 					}
 				}
 			]
 		},
 		{
 			"name": "Lists Management",
+			"description": "Traditional list management - organizational containers for tasks",
 			"item": [
 				{
 					"name": "Create List",
@@ -147,17 +181,14 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/lists",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"lists"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["lists"]
+						},
+						"description": "Create a traditional list (organizational container)"
 					}
 				},
 				{
-					"name": "Get User Lists (with Items)",
+					"name": "Get User Lists",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -172,13 +203,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/lists?limit=20&offset=0&status=ACTIVE&isCompleted=false&orderBy=createdAt&orderDirection=desc&includeItems=true&itemsLimit=5",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"lists"
-							],
+							"raw": "{{base_url}}/lists?limit=20&offset=0&status=ACTIVE&orderBy=createdAt&orderDirection=desc",
+							"host": ["{{base_url}}"],
+							"path": ["lists"],
 							"query": [
 								{
 									"key": "limit",
@@ -196,90 +223,18 @@
 									"description": "Filter by list status (ACTIVE, COMPLETED, ARCHIVED, DELETED)"
 								},
 								{
-									"key": "isCompleted",
-									"value": "false",
-									"description": "Filter by completion status (true/false)"
-								},
-								{
 									"key": "orderBy",
 									"value": "createdAt",
-									"description": "Sort by field (name, createdAt, updatedAt, completedAt)"
+									"description": "Sort by field (name, createdAt, updatedAt)"
 								},
 								{
 									"key": "orderDirection",
 									"value": "desc",
 									"description": "Sort direction (asc/desc)"
-								},
-								{
-									"key": "includeItems",
-									"value": "true",
-									"description": "Include list items in response (true/false)"
-								},
-								{
-									"key": "itemsLimit",
-									"value": "5",
-									"description": "Maximum number of items per list when includeItems=true"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "Get User Lists (basic)",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
 								}
 							]
 						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/lists?limit=20&offset=0&status=ACTIVE&isCompleted=false&orderBy=createdAt&orderDirection=desc",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"lists"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "20",
-									"description": "Maximum number of lists to return"
-								},
-								{
-									"key": "offset",
-									"value": "0",
-									"description": "Number of lists to skip for pagination"
-								},
-								{
-									"key": "status",
-									"value": "ACTIVE",
-									"description": "Filter by list status (ACTIVE, COMPLETED, ARCHIVED, DELETED)"
-								},
-								{
-									"key": "isCompleted",
-									"value": "false",
-									"description": "Filter by completion status (true/false)"
-								},
-								{
-									"key": "orderBy",
-									"value": "createdAt",
-									"description": "Sort by field (name, createdAt, updatedAt, completedAt)"
-								},
-								{
-									"key": "orderDirection",
-									"value": "desc",
-									"description": "Sort direction (asc/desc)"
-								}
-							]
-						}
+						"description": "Get all traditional lists for the authenticated user"
 					}
 				},
 				{
@@ -299,14 +254,10 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/lists/{{list_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"lists",
-								"{{list_id}}"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["lists", "{{list_id}}"]
+						},
+						"description": "Get a specific list by ID"
 					}
 				},
 				{
@@ -331,18 +282,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Updated Shopping List\",\n  \"description\": \"Updated weekly grocery shopping list\",\n  \"metadata\": {\n    \"category\": \"shopping\",\n    \"priority\": \"high\",\n    \"tags\": [\"groceries\", \"weekly\", \"urgent\"]\n  }\n}"
+							"raw": "{\n  \"name\": \"Updated Shopping List\",\n  \"description\": \"Updated weekly grocery shopping list\",\n  \"metadata\": {\n    \"category\": \"shopping\",\n    \"priority\": \"high\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/lists/{{list_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"lists",
-								"{{list_id}}"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["lists", "{{list_id}}"]
+						},
+						"description": "Update an existing list"
 					}
 				},
 				{
@@ -362,22 +309,74 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/lists/{{list_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"lists",
-								"{{list_id}}"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["lists", "{{list_id}}"]
+						},
+						"description": "Delete a list"
 					}
 				}
 			]
 		},
 		{
-			"name": "List Items Management (Including Reminders)",
-			"description": "List items can be regular items or reminders with scheduling capabilities. To create a reminder, include 'scheduledAt' field in the request body.",
+			"name": "List Items Management",
+			"description": "List items can be tasks, reminders, or list items with subtasks. The WhatsApp bot creates list_items with subtasks instead of traditional lists.",
 			"item": [
+				{
+					"name": "Get All User Items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/list-items?limit=50&offset=0&isCompleted=false&priority=medium&orderBy=createdAt&orderDirection=desc&includeSubtasks=true",
+							"host": ["{{base_url}}"],
+							"path": ["list-items"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "isCompleted",
+									"value": "false",
+									"description": "Filter by completion status"
+								},
+								{
+									"key": "priority",
+									"value": "medium",
+									"description": "Filter by priority (low, medium, high)"
+								},
+								{
+									"key": "orderBy",
+									"value": "createdAt"
+								},
+								{
+									"key": "orderDirection",
+									"value": "desc"
+								},
+								{
+									"key": "includeSubtasks",
+									"value": "true",
+									"description": "Include subtasks in response"
+								}
+							]
+						},
+						"description": "Get all list items across all lists for the user"
+					}
+				},
 				{
 					"name": "Add Item to Default List",
 					"request": {
@@ -400,18 +399,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"content\": \"Buy groceries\",\n  \"description\": \"Weekly grocery shopping\",\n  \"priority\": \"medium\",\n  \"order\": \"1\",\n  \"metadata\": {\n    \"category\": \"shopping\",\n    \"estimatedTime\": 60,\n    \"notes\": \"Don't forget milk and bread\"\n  }\n}"
+							"raw": "{\n  \"content\": \"Buy groceries\",\n  \"description\": \"Weekly grocery shopping\",\n  \"priority\": \"medium\",\n  \"metadata\": {\n    \"category\": \"shopping\",\n    \"originalText\": \"Buy groceries\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/list-items",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["list-items"]
 						},
-						"description": "Creates a regular item in the user's default list. Do not include 'scheduledAt' field for regular items."
+						"description": "Create a regular item in the user's default list"
 					}
 				},
 				{
@@ -436,22 +431,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"content\": \"Call dentist for appointment\",\n  \"description\": \"Schedule annual checkup\",\n  \"priority\": \"high\",\n  \"scheduledAt\": \"2024-12-31T15:30:00.000Z\",\n  \"metadata\": {\n    \"originalText\": \"Remind me to call dentist tomorrow at 3:30 PM\",\n    \"timezone\": \"America/New_York\",\n    \"phoneNumber\": \"+1234567890\",\n    \"category\": \"health\"\n  }\n}"
+							"raw": "{\n  \"content\": \"Call dentist for appointment\",\n  \"description\": \"Schedule annual checkup\",\n  \"priority\": \"high\",\n  \"scheduledAt\": \"2025-12-31T15:30:00.000Z\",\n  \"metadata\": {\n    \"originalText\": \"Remind me to call dentist tomorrow at 3:30 PM\",\n    \"timezone\": \"America/Bogota\",\n    \"category\": \"health\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/list-items",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["list-items"]
 						},
-						"description": "Creates a reminder in the user's default list. Include 'scheduledAt' field to make it a reminder."
+						"description": "Create a reminder in the user's default list. Include 'scheduledAt' to make it a reminder."
 					}
 				},
 				{
-					"name": "Add Regular Item to Specific List",
+					"name": "Add Item to Specific List",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -472,62 +463,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"content\": \"Buy milk\",\n  \"description\": \"Get 2% organic milk from dairy section\",\n  \"priority\": \"medium\",\n  \"order\": \"1\",\n  \"metadata\": {\n    \"category\": \"dairy\",\n    \"estimatedTime\": 5,\n    \"notes\": \"Check expiration date\"\n  }\n}"
+							"raw": "{\n  \"content\": \"Buy milk\",\n  \"description\": \"Get 2% organic milk\",\n  \"priority\": \"medium\",\n  \"metadata\": {\n    \"category\": \"dairy\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/list-items/by-list/{{list_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"by-list",
-								"{{list_id}}"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "by-list", "{{list_id}}"]
 						},
-						"description": "Creates a regular list item (without reminder functionality). Do not include 'scheduledAt' field."
+						"description": "Add an item to a specific list"
 					}
 				},
 				{
-					"name": "Create Reminder (List Item with scheduling)",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"content\": \"Call client meeting\",\n  \"description\": \"Important client meeting about new project\",\n  \"scheduledAt\": \"2024-12-31T15:30:00.000Z\",\n  \"priority\": \"high\",\n  \"metadata\": {\n    \"originalText\": \"Remind me to call the client tomorrow at 3:30 PM\",\n    \"timezone\": \"America/New_York\",\n    \"phoneNumber\": \"+1234567890\",\n    \"category\": \"work\"\n  }\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/list-items/by-list/{{list_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"by-list",
-								"{{list_id}}"
-							]
-						},
-						"description": "Creates a new reminder as a list item. Include 'scheduledAt' to make it a reminder. If no listId in URL, use user's default list."
-					}
-				},
-				{
-					"name": "Get List Items (with reminder filtering)",
+					"name": "Get Items by List ID",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -542,89 +489,26 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/list-items/by-list/{{list_id}}?limit=50&offset=0&reminderStatus=PENDING&isReminder=true&beforeDate=2024-12-31T23:59:59.999Z",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"by-list",
-								"{{list_id}}"
-							],
+							"raw": "{{base_url}}/list-items/by-list/{{list_id}}?limit=50&includeSubtasks=true",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "by-list", "{{list_id}}"],
 							"query": [
 								{
 									"key": "limit",
-									"value": "50",
-									"description": "Maximum number of items to return"
+									"value": "50"
 								},
 								{
-									"key": "offset",
-									"value": "0",
-									"description": "Number of items to skip for pagination"
-								},
-								{
-									"key": "reminderStatus",
-									"value": "PENDING",
-									"description": "Filter by reminder status (PENDING, SENT, FAILED, CANCELLED, NONE)"
-								},
-								{
-									"key": "isReminder",
+									"key": "includeSubtasks",
 									"value": "true",
-									"description": "Filter for items that are reminders (have scheduledAt)"
-								},
-								{
-									"key": "beforeDate",
-									"value": "2024-12-31T23:59:59.999Z",
-									"description": "Get reminders scheduled before this date (ISO 8601)"
+									"description": "Include subtasks for each item"
 								}
 							]
 						},
-						"description": "Retrieves list items with filtering for reminders. Use query parameters to filter by reminder properties."
+						"description": "Get all items for a specific list, optionally with subtasks"
 					}
 				},
 				{
-					"name": "Get Due Reminders (System Endpoint)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/list-items/reminders/due?beforeDate=2024-12-31T23:59:59.999Z&limit=100&offset=0&includeOverdue=true",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"reminders",
-								"due"
-							],
-							"query": [
-								{
-									"key": "beforeDate",
-									"value": "2024-12-31T23:59:59.999Z",
-									"description": "Get reminders due before this date (default: now)"
-								},
-								{
-									"key": "limit",
-									"value": "100",
-									"description": "Maximum number of due reminders to return (1-500)"
-								},
-								{
-									"key": "offset",
-									"value": "0",
-									"description": "Number of reminders to skip for pagination"
-								},
-								{
-									"key": "includeOverdue",
-									"value": "true",
-									"description": "Include overdue reminders (true/false)"
-								}
-							]
-						},
-						"description": "Gets all due reminders across all users. This endpoint is typically used by the system for processing reminders."
-					}
-				},
-				{
-					"name": "Update List Item/Reminder",
+					"name": "Update List Item",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -645,75 +529,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"content\": \"Updated: Call client meeting about project\",\n  \"description\": \"Updated meeting description\",\n  \"scheduledAt\": \"2024-12-31T16:00:00.000Z\",\n  \"priority\": \"high\",\n  \"metadata\": {\n    \"originalText\": \"Updated reminder text\",\n    \"timezone\": \"America/New_York\",\n    \"category\": \"work\",\n    \"priority\": \"high\"\n  }\n}"
+							"raw": "{\n  \"content\": \"Updated: Buy organic milk\",\n  \"priority\": \"high\",\n  \"scheduledAt\": \"2025-12-31T16:00:00.000Z\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/list-items/{{item_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"{{item_id}}"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}"]
 						},
-						"description": "Updates an existing list item or reminder. Include 'scheduledAt' to maintain reminder functionality."
-					}
-				},
-				{
-					"name": "Delete List Item/Reminder",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/list-items/{{item_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"{{item_id}}"
-							]
-						},
-						"description": "Deletes a list item or reminder. Works for both regular items and reminders."
-					}
-				},
-				{
-					"name": "Update Reminder Status (System Endpoint)",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"status\": \"SENT\",\n  \"sentAt\": \"2024-12-31T15:30:00.000Z\",\n  \"errorMessage\": \"Optional error message for failed reminders\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/list-items/{{item_id}}/reminder-status",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"{{item_id}}",
-								"reminder-status"
-							]
-						},
-						"description": "Updates the reminder status of a list item. Used by the system for marking reminders as SENT, FAILED, or CANCELLED."
+						"description": "Update an existing list item or reminder"
 					}
 				},
 				{
@@ -733,26 +556,66 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/list-items/{{item_id}}/toggle",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"list-items",
-								"{{item_id}}",
-								"toggle"
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}", "toggle"]
+						},
+						"description": "Toggle the completion status of a list item"
+					}
+				},
+				{
+					"name": "Delete List Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
 							]
 						},
-						"description": "Toggle the completion status of a list item or reminder."
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/list-items/{{item_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}"]
+						},
+						"description": "Delete a list item"
 					}
 				}
 			]
 		},
 		{
-			"name": "Calendars Management",
-			"description": "Endpoints for managing user calendars and Google Calendar integration",
+			"name": "Subtasks Management",
+			"description": "Subtasks are sub-elements of list items. The WhatsApp bot creates list_items with subtasks for multi-item lists.",
 			"item": [
 				{
-					"name": "Create Calendar",
+					"name": "Get Subtasks for Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/list-items/{{item_id}}/subtasks",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}", "subtasks"]
+						},
+						"description": "Get all subtasks for a specific list item"
+					}
+				},
+				{
+					"name": "Create Subtask",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -773,109 +636,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"googleCalendarId\": \"primary\",\n  \"calendarName\": \"My Calendar\",\n  \"calendarDescription\": \"Personal calendar\",\n  \"timeZone\": \"America/New_York\",\n  \"backgroundColor\": \"#0B8043\",\n  \"foregroundColor\": \"#FFFFFF\",\n  \"accessToken\": \"your-google-access-token\",\n  \"refreshToken\": \"your-google-refresh-token\",\n  \"tokenExpiresAt\": \"2025-12-31T23:59:59.000Z\",\n  \"isActive\": true,\n  \"isPrimary\": false,\n  \"syncEnabled\": true,\n  \"accessRole\": \"owner\"\n}"
+							"raw": "{\n  \"content\": \"tomato\",\n  \"order\": \"1\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/calendars",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars"
-							]
+							"raw": "{{base_url}}/list-items/{{item_id}}/subtasks",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}", "subtasks"]
 						},
-						"description": "Creates a new calendar for the authenticated user. Requires Google Calendar credentials."
+						"description": "Add a new subtask to a list item"
 					}
 				},
 				{
-					"name": "Get User Calendars",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/calendars?limit=20&offset=0&isActive=true&syncEnabled=true&orderBy=createdAt&orderDirection=desc",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "20",
-									"description": "Maximum number of calendars to return (default: 50)"
-								},
-								{
-									"key": "offset",
-									"value": "0",
-									"description": "Number of calendars to skip for pagination"
-								},
-								{
-									"key": "isActive",
-									"value": "true",
-									"description": "Filter by active status (true/false)"
-								},
-								{
-									"key": "syncEnabled",
-									"value": "true",
-									"description": "Filter by sync enabled status (true/false)"
-								},
-								{
-									"key": "orderBy",
-									"value": "createdAt",
-									"description": "Sort by field (calendarName, createdAt, updatedAt, lastSyncAt)"
-								},
-								{
-									"key": "orderDirection",
-									"value": "desc",
-									"description": "Sort direction (asc/desc)"
-								}
-							]
-						},
-						"description": "Gets all calendars for the authenticated user with pagination and filtering options."
-					}
-				},
-				{
-					"name": "Get Calendar by ID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/calendars/{{calendar_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars",
-								"{{calendar_id}}"
-							]
-						},
-						"description": "Gets a specific calendar by ID. The calendar must belong to the authenticated user."
-					}
-				},
-				{
-					"name": "Update Calendar",
+					"name": "Update Subtask",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -896,23 +668,41 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"calendarName\": \"Updated Calendar Name\",\n  \"calendarDescription\": \"Updated description\",\n  \"backgroundColor\": \"#FF5733\",\n  \"foregroundColor\": \"#FFFFFF\",\n  \"isActive\": true,\n  \"syncEnabled\": false\n}"
+							"raw": "{\n  \"content\": \"organic tomato\",\n  \"isCompleted\": false\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/calendars/{{calendar_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars",
-								"{{calendar_id}}"
-							]
+							"raw": "{{base_url}}/list-items/{{item_id}}/subtasks/{{subtask_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}", "subtasks", "{{subtask_id}}"]
 						},
-						"description": "Updates an existing calendar. Only the calendar owner can update it."
+						"description": "Update an existing subtask"
 					}
 				},
 				{
-					"name": "Delete Calendar",
+					"name": "Toggle Subtask Completion",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/list-items/{{item_id}}/subtasks/{{subtask_id}}/toggle",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}", "subtasks", "{{subtask_id}}", "toggle"]
+						},
+						"description": "Toggle the completion status of a subtask"
+					}
+				},
+				{
+					"name": "Delete Subtask",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -927,82 +717,163 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/calendars/{{calendar_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars",
-								"{{calendar_id}}"
-							]
+							"raw": "{{base_url}}/list-items/{{item_id}}/subtasks/{{subtask_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}", "subtasks", "{{subtask_id}}"]
 						},
-						"description": "Deletes a calendar and all its associated events. Only the calendar owner can delete it."
-					}
-				},
-				{
-					"name": "Set Calendar as Primary",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/calendars/{{calendar_id}}/set-primary",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars",
-								"{{calendar_id}}",
-								"set-primary"
-							]
-						},
-						"description": "Sets a calendar as the primary calendar for the user. Automatically unsets other primary calendars."
-					}
-				},
-				{
-					"name": "Sync Calendar",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/calendars/{{calendar_id}}/sync",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars",
-								"{{calendar_id}}",
-								"sync"
-							]
-						},
-						"description": "Triggers a manual sync of the calendar with Google Calendar. Calendar must be active and have sync enabled."
+						"description": "Delete a subtask"
 					}
 				}
 			]
 		},
 		{
-			"name": "Calendar OAuth & Sync",
-			"description": "Google Calendar OAuth flow and synchronization endpoints",
+			"name": "Reminders (System Endpoints)",
+			"description": "System endpoints for reminder processing and status management",
 			"item": [
+				{
+					"name": "Get Due Reminders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/list-items/reminders/due?beforeDate=2025-12-31T23:59:59.999Z&limit=100&includeOverdue=true",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "reminders", "due"],
+							"query": [
+								{
+									"key": "beforeDate",
+									"value": "2025-12-31T23:59:59.999Z",
+									"description": "Get reminders due before this date"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "includeOverdue",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Get all due reminders across all users (system endpoint)"
+					}
+				},
+				{
+					"name": "Update Reminder Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"SENT\",\n  \"sentAt\": \"2025-01-05T15:30:00.000Z\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/list-items/{{item_id}}/reminder-status",
+							"host": ["{{base_url}}"],
+							"path": ["list-items", "{{item_id}}", "reminder-status"]
+						},
+						"description": "Update the reminder status (SENT, FAILED, CANCELLED)"
+					}
+				}
+			]
+		},
+		{
+			"name": "WhatsApp Webhook",
+			"description": "WhatsApp Business API webhook endpoints for message receiving and verification",
+			"item": [
+				{
+					"name": "Webhook Verification (GET)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=your-webhook-token&hub.challenge=challenge-string",
+							"host": ["{{base_url}}"],
+							"path": ["whatsapp", "webhook"],
+							"query": [
+								{
+									"key": "hub.mode",
+									"value": "subscribe"
+								},
+								{
+									"key": "hub.verify_token",
+									"value": "your-webhook-token"
+								},
+								{
+									"key": "hub.challenge",
+									"value": "challenge-string"
+								}
+							]
+						},
+						"description": "Webhook verification endpoint for WhatsApp Business API setup"
+					}
+				},
+				{
+					"name": "Receive WhatsApp Message (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"object\": \"whatsapp_business_account\",\n  \"entry\": [\n    {\n      \"id\": \"WHATSAPP_BUSINESS_ACCOUNT_ID\",\n      \"changes\": [\n        {\n          \"value\": {\n            \"messaging_product\": \"whatsapp\",\n            \"metadata\": {\n              \"display_phone_number\": \"PHONE_NUMBER\",\n              \"phone_number_id\": \"PHONE_NUMBER_ID\"\n            },\n            \"messages\": [\n              {\n                \"from\": \"SENDER_PHONE_NUMBER\",\n                \"id\": \"MESSAGE_ID\",\n                \"timestamp\": \"TIMESTAMP\",\n                \"type\": \"text\",\n                \"text\": {\n                  \"body\": \"recuérdame mañana comprar leche\"\n                }\n              }\n            ]\n          }\n        }\n      ]\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/whatsapp/webhook",
+							"host": ["{{base_url}}"],
+							"path": ["whatsapp", "webhook"]
+						},
+						"description": "Receives incoming WhatsApp messages and queues them for processing"
+					}
+				}
+			]
+		},
+		{
+			"name": "Calendars Management",
+			"description": "Google Calendar integration endpoints",
+			"item": [
+				{
+					"name": "Get User Calendars",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/calendars?limit=20&isActive=true",
+							"host": ["{{base_url}}"],
+							"path": ["calendars"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "isActive",
+									"value": "true"
+								}
+							]
+						},
+						"description": "Get all calendars for the authenticated user"
+					}
+				},
 				{
 					"name": "Get OAuth Authorization URL",
 					"request": {
@@ -1020,20 +891,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/calendar-oauth/google/authorize",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendar-oauth",
-								"google",
-								"authorize"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["calendar-oauth", "google", "authorize"]
 						},
-						"description": "Get the Google OAuth authorization URL to redirect the user to. This initiates the OAuth flow."
+						"description": "Get the Google OAuth authorization URL"
 					}
 				},
 				{
-					"name": "OAuth Callback (Handle)",
+					"name": "OAuth Callback",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1054,24 +919,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"code\": \"AUTHORIZATION_CODE_FROM_GOOGLE\",\n  \"state\": \"STATE_TOKEN_FROM_AUTHORIZE\"\n}"
+							"raw": "{\n  \"code\": \"AUTHORIZATION_CODE_FROM_GOOGLE\",\n  \"state\": \"STATE_TOKEN\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/calendar-oauth/google/callback",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendar-oauth",
-								"google",
-								"callback"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["calendar-oauth", "google", "callback"]
 						},
-						"description": "Handles the OAuth callback. Frontend calls this endpoint after receiving the code from Google.\n\nFlow:\n1. User authorizes on Google\n2. Google redirects to: https://eureky.ai/calendar/callback?code=xxx&state=xxx\n3. Frontend extracts code and state from URL\n4. Frontend calls this endpoint with code and state\n5. Backend exchanges code for tokens, saves to DB, and imports calendars"
+						"description": "Handle OAuth callback and exchange code for tokens"
 					}
 				},
 				{
-					"name": "Sync All User Calendars",
+					"name": "Sync All Calendars",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1087,44 +946,10 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/calendar-oauth/sync",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendar-oauth",
-								"sync"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["calendar-oauth", "sync"]
 						},
-						"description": "Syncs all active calendars and their events for the authenticated user."
-					}
-				},
-				{
-					"name": "Sync Specific Calendar",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{auth_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/calendar-oauth/sync/{{calendar_id}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendar-oauth",
-								"sync",
-								"{{calendar_id}}"
-							]
-						},
-						"description": "Syncs events for a specific calendar."
+						"description": "Sync all active calendars for the user"
 					}
 				},
 				{
@@ -1144,96 +969,32 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/calendar-oauth/google/disconnect",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendar-oauth",
-								"google",
-								"disconnect"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["calendar-oauth", "google", "disconnect"]
 						},
-						"description": "Revokes Google Calendar access and deactivates all user's calendars."
+						"description": "Revoke Google Calendar access"
 					}
 				}
 			]
 		},
 		{
 			"name": "Health Checks",
+			"description": "Service health check endpoints",
 			"item": [
 				{
-					"name": "Lists Service Health",
+					"name": "Main Health Check",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/health",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"health"
-							]
-						}
-					}
-				},
-				{
-					"name": "Calendars Service Health",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/calendars/health",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendars",
-								"health"
-							]
-						}
-					}
-				},
-				{
-					"name": "Calendar OAuth Service Health",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/calendar-oauth/health",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"calendar-oauth",
-								"health"
-							]
-						}
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						},
+						"description": "Check if the API service is healthy"
 					}
 				}
 			]
-		}
-	],
-	"variable": [
-		{
-			"key": "list_id",
-			"value": "your-list-id-here",
-			"type": "string"
-		},
-		{
-			"key": "item_id",
-			"value": "your-item-id-here",
-			"type": "string"
-		},
-		{
-			"key": "reminder_id",
-			"value": "your-reminder-id-here",
-			"type": "string"
-		},
-		{
-			"key": "calendar_id",
-			"value": "your-calendar-id-here",
-			"type": "string"
 		}
 	]
 }

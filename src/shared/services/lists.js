@@ -2,22 +2,23 @@ import { apiClient } from './api';
 
 export const listsService = {
   // Get all lists for the authenticated user
+  // Supports all query parameters from Postman collection:
+  // limit, offset, status, isCompleted, orderBy, orderDirection, includeItems, itemsLimit
   async getLists(params = {}) {
     try {
       const queryParams = new URLSearchParams();
 
-      queryParams.append("includeItems", true)
-
       // Add optional query parameters
-      if (params.limit) queryParams.append('limit', params.limit);
-      if (params.offset) queryParams.append('offset', params.offset);
+      if (params.limit !== undefined) queryParams.append('limit', params.limit);
+      if (params.offset !== undefined) queryParams.append('offset', params.offset);
       if (params.status) queryParams.append('status', params.status);
       if (params.isCompleted !== undefined) queryParams.append('isCompleted', params.isCompleted);
       if (params.orderBy) queryParams.append('orderBy', params.orderBy);
       if (params.orderDirection) queryParams.append('orderDirection', params.orderDirection);
+      if (params.includeItems !== undefined) queryParams.append('includeItems', params.includeItems);
+      if (params.itemsLimit !== undefined) queryParams.append('itemsLimit', params.itemsLimit);
 
       const url = `/lists${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
-      console.log("url", url);
       const response = await apiClient.get(url);
       return response;
     } catch (error) {

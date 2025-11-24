@@ -62,8 +62,8 @@ export const useUpdateSubtask = () => {
   const { addNotification } = useNotifications();
 
   return useMutation({
-    mutationFn: ({ subtaskId, updates }) =>
-      subtasksService.updateSubtask(subtaskId, updates),
+    mutationFn: ({ listItemId, subtaskId, updates }) =>
+      subtasksService.updateSubtask(listItemId, subtaskId, updates),
     onSuccess: () => {
       // Invalidate all subtasks queries
       queryClient.invalidateQueries({ queryKey: subtasksKeys.all });
@@ -92,7 +92,7 @@ export const useToggleSubtask = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (subtaskId) => subtasksService.toggleSubtask(subtaskId),
+    mutationFn: ({ listItemId, subtaskId }) => subtasksService.toggleSubtask(listItemId, subtaskId),
     onSuccess: () => {
       // Invalidate all subtasks and list items queries
       queryClient.invalidateQueries({ queryKey: subtasksKeys.all });
@@ -107,7 +107,7 @@ export const useDeleteSubtask = () => {
   const { addNotification } = useNotifications();
 
   return useMutation({
-    mutationFn: (subtaskId) => subtasksService.deleteSubtask(subtaskId),
+    mutationFn: ({ listItemId, subtaskId }) => subtasksService.deleteSubtask(listItemId, subtaskId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: subtasksKeys.all });
       queryClient.invalidateQueries({ queryKey: listItemsKeys.lists() });
@@ -146,9 +146,9 @@ export const useSubtasksOperations = (listItemId) => {
 
     // Operations
     createSubtask: (subtaskData) => createMutation.mutate({ listItemId, subtaskData }),
-    updateSubtask: updateMutation.mutate,
-    toggleSubtask: toggleMutation.mutate,
-    deleteSubtask: deleteMutation.mutate,
+    updateSubtask: ({ subtaskId, updates }) => updateMutation.mutate({ listItemId, subtaskId, updates }),
+    toggleSubtask: (subtaskId) => toggleMutation.mutate({ listItemId, subtaskId }),
+    deleteSubtask: (subtaskId) => deleteMutation.mutate({ listItemId, subtaskId }),
 
     // Loading states
     isCreating: createMutation.isPending,

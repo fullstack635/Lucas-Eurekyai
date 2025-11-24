@@ -11,43 +11,54 @@ import Landing from '../features/landing';
 import ProtectedRoute from '../shared/components/ProtectedRoute';
 import QueryProvider from './providers/QueryProvider';
 import { AppProvider } from '../shared/contexts/AppContext';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 function App() {
   return (
     <QueryProvider>
       <AppProvider>
-        <Router>
-          <Routes>
-            {/* Landing page - public route */}
-            <Route path="/" element={<Landing />} />
-
-            {/* Public routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
-            {/* OAuth callback route - protected */}
-            <Route path="/calendar/callback" element={
-              <ProtectedRoute>
-                <CalendarCallback />
-              </ProtectedRoute>
-            } />
-
-            {/* Protected dashboard routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Dashboard />} />
-              <Route path="lists" element={<Lists />} />
-              <Route path="calendar" element={<Calendar />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
-
-            {/* Catch all - redirect to landing */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
+        <TooltipProvider>
+          <ThemeSwitcher className="hidden" />
+          <Toaster />
+          <Sonner />
+          <Router>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              
+              {/* Protected dashboard routes */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/dashboard/lists" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Lists />} />
+              </Route>
+              <Route path="/dashboard/settings" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Settings />} />
+              </Route>
+              
+              {/* Redirect root to dashboard */}
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              
+              {/* Catch all - redirect to dashboard */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Router>
+        </TooltipProvider>
       </AppProvider>
     </QueryProvider>
   );

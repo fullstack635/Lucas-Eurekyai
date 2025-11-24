@@ -2,6 +2,21 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { calendarService } from '../../../shared/services/calendars';
 
 /**
+ * Hook for creating a new calendar
+ */
+export const useCreateCalendar = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (calendarData) => calendarService.createCalendar(calendarData),
+    onSuccess: () => {
+      // Invalidate and refetch calendars list
+      queryClient.invalidateQueries({ queryKey: ['calendars'] });
+    },
+  });
+};
+
+/**
  * Hook for fetching calendars
  */
 export const useCalendars = (params = {}) => {
