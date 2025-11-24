@@ -1,18 +1,8 @@
-import { TaskList } from "@/components/TaskList";
-import { AddTask } from "@/components/AddTask";
-
 export const TareasSection = () => {
   return (
-    <>
-      {/* Header */}
-      <h1 className="text-[32px] lg:text-[48px] font-bold mb-8 px-4 lg:px-0">Tareas</h1>
-
-      {/* All Tasks Section - Fetches all tasks from backend */}
-      <TaskList />
-
-      {/* Add Task */}
-      <AddTask />
-    </>
+    <div className="flex items-center justify-center min-h-[60vh] px-4 lg:px-0">
+      <h1 className="text-[32px] lg:text-[48px] font-bold text-muted-foreground">Próximamente</h1>
+    </div>
   );
 };
 

@@ -1,14 +1,8 @@
-import { CalendarSection } from "@/components/CalendarSection";
-
-export const CalendarioSectionView = ({ calendarEvents }) => {
+export const CalendarioSectionView = () => {
   return (
-    <>
-      {/* Header */}
-      <h1 className="text-[32px] lg:text-[48px] font-bold mb-8 px-4 lg:px-0">Mi calendario</h1>
-
-      {/* Full Calendar Section */}
-      <CalendarSection events={calendarEvents} />
-    </>
+    <div className="flex items-center justify-center min-h-[60vh] px-4 lg:px-0">
+      <h1 className="text-[32px] lg:text-[48px] font-bold text-muted-foreground">Próximamente</h1>
+    </div>
   );
 };
 

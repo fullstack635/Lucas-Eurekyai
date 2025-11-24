@@ -79,7 +79,7 @@ const Dashboard = () => {
           )}
 
           {activeSection === "proximos-7" && (
-            <Proximos7Section calendarEvents={calendarEvents} />
+            <Proximos7Section />
           )}
 
           {activeSection === "tareas" && (
@@ -87,9 +87,7 @@ const Dashboard = () => {
           )}
 
           {activeSection === "calendario" && (
-            <CalendarioSectionView
-              calendarEvents={calendarEvents}
-            />
+            <CalendarioSectionView />
           )}
 
           {/* Render custom list view if a list is selected */}
