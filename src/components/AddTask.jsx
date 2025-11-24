@@ -7,19 +7,53 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "./ui/popover";
+import { useAddItemToDefaultList, useAddItemToList } from "@/features/lists/hooks/useListItemsQuery";
+import { useLists } from "@/features/lists/hooks/useListsQuery";
 
-const listOptions = ["Personal", "Trabajo"];
-
-export const AddTask = ({ onAddTask }) => {
+export const AddTask = ({ listId = null }) => {
   const [taskTitle, setTaskTitle] = useState("");
-  const [selectedList, setSelectedList] = useState(null);
+  const [selectedListId, setSelectedListId] = useState(listId);
   const [listPopoverOpen, setListPopoverOpen] = useState(false);
 
+  // Fetch lists from backend
+  const { data: lists = [], isLoading: isLoadingLists } = useLists({ 
+    status: 'ACTIVE',
+    includeItems: false 
+  });
+
+  // Mutations
+  const addToDefaultMutation = useAddItemToDefaultList();
+  const addToListMutation = useAddItemToList();
+
   const handleSubmit = () => {
-    if (taskTitle.trim() && selectedList) {
-      onAddTask(taskTitle, selectedList);
-      setTaskTitle("");
-      setSelectedList(null);
+    if (!taskTitle.trim()) return;
+
+    const itemData = {
+      content: taskTitle.trim(),
+      description: "",
+      priority: "medium",
+      metadata: {}
+    };
+
+    if (selectedListId) {
+      // Add to specific list
+      addToListMutation.mutate(
+        { listId: selectedListId, itemData },
+        {
+          onSuccess: () => {
+            setTaskTitle("");
+            setSelectedListId(listId); // Reset to prop listId if provided
+          }
+        }
+      );
+    } else {
+      // Add to default list
+      addToDefaultMutation.mutate(itemData, {
+        onSuccess: () => {
+          setTaskTitle("");
+          setSelectedListId(null);
+        }
+      });
     }
   };
 
@@ -28,7 +62,7 @@ export const AddTask = ({ onAddTask }) => {
       handleSubmit();
     } else if (e.key === "Escape") {
       setTaskTitle("");
-      setSelectedList(null);
+      setSelectedListId(listId);
     }
   };
 
@@ -57,22 +91,39 @@ export const AddTask = ({ onAddTask }) => {
               <div className="p-4 w-full flex items-center justify-between text-sm rounded-sm transition-colors border-b border-border">
                   MIS LISTAS
               </div>
-              {listOptions.map((list) => (
-                <button
-                  key={list}
-                  onClick={() => {
-                    setSelectedList(list);
-                    setListPopoverOpen(false);
-                  }}
-                  className="hover:bg-[#6A52CC] p-4 w-full flex items-center justify-between text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-                >
-                  <span>{list}</span>
-                  
-                  {selectedList === list && (
-                    <Check className="w-3 h-3 text-[#000000] text-primary bg-[#ABFFA8] rounded-full" />
-                  )}
-                </button>
-              ))}
+              {isLoadingLists ? (
+                <div className="p-4 text-sm text-muted-foreground">Cargando listas...</div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      setSelectedListId(null);
+                      setListPopoverOpen(false);
+                    }}
+                    className="hover:bg-[#6A52CC] p-4 w-full flex items-center justify-between text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                  >
+                    <span>Lista por defecto</span>
+                    {!selectedListId && (
+                      <Check className="w-3 h-3 text-[#000000] text-primary bg-[#ABFFA8] rounded-full" />
+                    )}
+                  </button>
+                  {lists.map((list) => (
+                    <button
+                      key={list.id}
+                      onClick={() => {
+                        setSelectedListId(list.id);
+                        setListPopoverOpen(false);
+                      }}
+                      className="hover:bg-[#6A52CC] p-4 w-full flex items-center justify-between text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                    >
+                      <span>{list.name}</span>
+                      {selectedListId === list.id && (
+                        <Check className="w-3 h-3 text-[#000000] text-primary bg-[#ABFFA8] rounded-full" />
+                      )}
+                    </button>
+                  ))}
+                </>
+              )}
             </div>
           </PopoverContent>
         </Popover>

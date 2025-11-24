@@ -1,25 +1,21 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { CalendarSection } from "@/components/CalendarSection";
-import { TaskList } from "@/components/TaskList";
-import { AddTask } from "@/components/AddTask";
 import { MobileNav } from "@/components/MobileNav";
-import { Menu, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import UnionIcon from "@/assets/icons/Union.svg";
 import EurekyLogo from "@/assets/icons/Union (1).svg";
+import { MiDiaSection } from "./sections/MiDiaSection";
+import { Proximos7Section } from "./sections/Proximos7Section";
+import { TareasSection } from "./sections/TareasSection";
+import { CalendarioSectionView } from "./sections/CalendarioSection";
+import { TaskList } from "@/components/TaskList";
+import { AddTask } from "@/components/AddTask";
 
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("mi-dia");
-  const [lists] = useState(["Personal", "Trabajo"]);
-  const [tasks, setTasks] = useState([
-    { id: "1", title: "Comprar regalo", list: "Personal", completed: false },
-    { id: "2", title: "Planear Menú", list: "Personal", completed: false },
-    { id: "3", title: "Hacer presentación Q4", list: "Trabajo", completed: false },
-    { id: "4", title: "Responder Correo - Cotización", list: "Trabajo", completed: false },
-  ]);
 
+  // Mock calendar events - TODO: Replace with actual calendar API integration
   const [calendarEvents] = useState([
     { time: "8:00-9:00", title: "Reunión Mónica" },
     { time: "11:00-12:00", title: "Status equipo", badge: "Únirse" },
@@ -28,30 +24,6 @@ const Dashboard = () => {
     { time: "19:00-20:00", title: "Gimnasio" },
   ]);
 
-  const handleToggleTask = (id) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, completed: !task.completed } : task
-    ));
-  };
-
-  const handleDeleteTask = (id) => {
-    setTasks(tasks.filter(task => task.id !== id));
-  };
-
-  const handleEditTask = (id) => {
-    console.log("Edit task:", id);
-  };
-
-  const handleAddTask = (title, list) => {
-    const newTask = {
-      id: Date.now().toString(),
-      title,
-      list,
-      completed: false,
-    };
-    setTasks([...tasks, newTask]);
-  };
-
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Desktop Sidebar */}
@@ -59,8 +31,6 @@ const Dashboard = () => {
         <Sidebar
           activeSection={activeSection}
           onSectionChange={setActiveSection}
-          lists={lists}
-          onAddList={() => console.log("Add list")}
         />
       </div>
 
@@ -103,22 +73,38 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Welcome Message */}
-          <h1 className="text-[32px] lg:text-[48px] font-bold mb-8 px-4 lg:px-0">Buenos días, Roger</h1>
+          {/* Render section based on activeSection */}
+          {activeSection === "mi-dia" && (
+            <MiDiaSection calendarEvents={calendarEvents} />
+          )}
 
-          {/* Calendar Section */}
-          <CalendarSection events={calendarEvents} />
+          {activeSection === "proximos-7" && (
+            <Proximos7Section calendarEvents={calendarEvents} />
+          )}
 
-          {/* Tasks Section */}
-          <TaskList
-            tasks={tasks}
-            onToggleTask={handleToggleTask}
-            onDeleteTask={handleDeleteTask}
-            onEditTask={handleEditTask}
-          />
+          {activeSection === "tareas" && (
+            <TareasSection />
+          )}
 
-          {/* Add Task */}
-          <AddTask onAddTask={handleAddTask} />
+          {activeSection === "calendario" && (
+            <CalendarioSectionView
+              calendarEvents={calendarEvents}
+            />
+          )}
+
+          {/* Render custom list view if a list is selected */}
+          {activeSection !== "mi-dia" && 
+           activeSection !== "proximos-7" && 
+           activeSection !== "tareas" && 
+           activeSection !== "calendario" && (
+            <>
+              <h1 className="text-[32px] lg:text-[48px] font-bold mb-8 px-4 lg:px-0">
+                {activeSection}
+              </h1>
+              <TaskList filterByListName={activeSection} />
+              <AddTask />
+            </>
+          )}
         </div>
       </main>
 

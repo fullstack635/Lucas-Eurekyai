@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import UnionIcon from "@/assets/icons/Union.svg";
 import Soporte from "@/assets/icons/life-buoy-01.svg";
 import Ajustes from "@/assets/icons/settings-01.svg";
@@ -13,8 +13,32 @@ import { DashboardIcon } from "./DashboardIcon";
 import VectorLeft from "@/assets/icons/Vector.svg";
 import VectorRight from "@/assets/icons/Vector (1).svg";
 import NavAccountMenuIcon from "@/assets/icons/__Nav account card menu button.svg";
+import { useLists, useCreateList } from "@/features/lists/hooks/useListsQuery";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "./ui/popover";
+import { Input } from "./ui/input";
 
-export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) => {
+export const Sidebar = ({ activeSection, onSectionChange }) => {
+  // Fetch lists from backend
+  const { data: lists = [], isLoading: isLoadingLists } = useLists({ 
+    status: 'ACTIVE',
+    isCompleted: false,
+    includeItems: false,
+    limit: 50,
+    offset: 0,
+    orderBy: 'createdAt',
+    orderDirection: 'desc'
+  });
+
+  // Create list mutation
+  const createListMutation = useCreateList();
+  
+  // State for add list popover
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [newListName, setNewListName] = useState("");
   const chartIconRef = useRef(null);
   const creditCardIconRef = useRef(null);
   const blendIconRef = useRef(null);
@@ -27,16 +51,44 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
     { id: "calendario", label: "Mi calendario", icon: DashboardIcon, isComponent: true },
   ];
 
+  // Handle creating a new list
+  const handleCreateList = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!newListName.trim()) return;
+
+    createListMutation.mutate(
+      {
+        name: newListName.trim(),
+        description: "",
+        metadata: {}
+      },
+      {
+        onSuccess: () => {
+          setNewListName("");
+          setPopoverOpen(false);
+        },
+        onError: (error) => {
+          console.error("Error creating list:", error);
+        }
+      }
+    );
+  };
+
+  // Get list names for display
+  const listNames = lists.map(list => list.name || list);
+
   return (
     <aside className="w-[300px] bg-sidebar flex flex-col h-screen">
-      <div className="p-4 ">
+      <div className="px-4 pt-4 pb-2">
         <div className="flex items-center gap-2 p-2">
           <img src={UnionIcon} alt="Logo" className="lg:h-[21px] lg:w-[42px] h-[17.12px] w-[34.24px] svg-icon" />
           <img src={EurekyLogo} alt="eureky" className="lg:h-[28px] lg:w-[107.33px] h-[22.82px] w-[87.49px] svg-icon" />
         </div>
       </div>
 
-      <nav className="flex-1 pt-3 pb-3 pl-0 pr-0 overflow-y-auto">
+      <nav className="flex-1 pt-3 pb-3 pl-0 pr-0 overflow-y-auto relative">
         <div className="space-y-1 mb-6">
           {mainSections.map((section) => {
             return (
@@ -44,20 +96,14 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
                 key={section.id}
                 onClick={(e) => {
                   onSectionChange(section.id);
-                  // Clear any inline styles immediately to let CSS class handle active state
-                  e.currentTarget.style.backgroundColor = '';
                 }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-6 py-2 text-sm transition-colors",
+                  "w-full flex items-center gap-3 px-6 py-2 text-sm transition-colors sidebar-button-hover sidebar-nav-button",
                   activeSection === section.id
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    ? "sidebar-button-active"
                     : "text-sidebar-foreground"
                 )}
                 onMouseEnter={(e) => {
-                  // Only apply hover if button is not active
-                  if (activeSection !== section.id) {
-                    e.currentTarget.style.backgroundColor = '#424242';
-                  }
                   // Trigger icon animation if it's the blend icon
                   if (section.id === "mi-dia" && blendIconRef.current) {
                     blendIconRef.current.startAnimation();
@@ -76,9 +122,6 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
                   }
                 }}
                 onMouseLeave={(e) => {
-                  // Always clear inline style on mouse leave
-                  // CSS class will handle the active state background
-                  e.currentTarget.style.backgroundColor = '';
                   // Stop icon animation if it's the blend icon
                   if (section.id === "mi-dia" && blendIconRef.current) {
                     blendIconRef.current.stopAnimation();
@@ -114,79 +157,106 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
         </div>
 
         <div>
-          <div className="flex items-center justify-between px-6 py-2 mb-2" 
-                        onClick={onAddList}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#424242';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = '';
-                        }}
-          >
+          <div className="flex items-center justify-between px-6 py-2 mb-2 sidebar-button-hover sidebar-nav-button">
             <span className="text-xs font-semibold text-muted-foreground uppercase">Mis Listas</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-5 w-5"
-
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80 p-4" align="end">
+                <form onSubmit={handleCreateList} className="space-y-3">
+                  <div>
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Nombre de la lista
+                    </label>
+                    <Input
+                      type="text"
+                      value={newListName}
+                      onChange={(e) => setNewListName(e.target.value)}
+                      placeholder="Ej: Personal, Trabajo..."
+                      className="w-full"
+                      autoFocus
+                      disabled={createListMutation.isPending}
+                    />
+                  </div>
+                  <div className="flex gap-2 justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setPopoverOpen(false);
+                        setNewListName("");
+                      }}
+                      disabled={createListMutation.isPending}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      disabled={!newListName.trim() || createListMutation.isPending}
+                    >
+                      {createListMutation.isPending ? "Creando..." : "Crear"}
+                    </Button>
+                  </div>
+                </form>
+              </PopoverContent>
+            </Popover>
           </div>
           <div className="space-y-1">
-            {lists.map((list) => (
-              <button
-                key={list}
-                onClick={(e) => {
-                  onSectionChange(list);
-                  // Clear any inline styles when button becomes active
-                  e.currentTarget.style.backgroundColor = '';
-                }}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors",
-                  activeSection === list
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground"
-                )}
-                onMouseEnter={(e) => {
-                  if (activeSection !== list) {
-                    e.currentTarget.style.backgroundColor = '#424242';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeSection !== list) {
-                    e.currentTarget.style.backgroundColor = '';
-                  }
-                }}
-              >
-                <span className="pl-3 text-[16px]">{list}</span>
-              </button>
-            ))}
+            {isLoadingLists ? (
+              <div className="px-3 py-2 text-sm text-muted-foreground">
+                Cargando listas...
+              </div>
+            ) : listNames.length === 0 ? (
+              <div className="px-3 py-2 text-sm text-muted-foreground">
+                No hay listas
+              </div>
+            ) : (
+              listNames.map((listName, index) => {
+                const list = lists[index];
+                const listId = list?.id || listName;
+                return (
+                  <button
+                    key={listId}
+                    onClick={(e) => {
+                      onSectionChange(listName);
+                    }}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors sidebar-button-hover sidebar-nav-button",
+                      activeSection === listName
+                        ? "sidebar-button-active"
+                        : "text-sidebar-foreground"
+                    )}
+                  >
+                    <span className="pl-3 text-[16px]">{listName}</span>
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
       </nav>
 
       <div className="pt-3 pb-3 space-y-1">
         <button 
-          className="w-full flex items-center gap-3 px-6 py-2 text-sm text-sidebar-foreground transition-colors"
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#424242';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '';
-          }}
+          className="w-full flex items-center gap-3 px-6 py-2 text-sm text-sidebar-foreground transition-colors sidebar-button-hover sidebar-nav-button"
         >
           <img src={Soporte} alt="" className="lg:h-[20px] lg:w-[20px] svg-icon" />
           <span className="lg:text-[16px]">Soporte</span>
         </button>
         <button 
-          className="w-full flex items-center gap-3 px-6 py-2 text-sm text-sidebar-foreground transition-colors"
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#424242';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '';
-          }}
+          className="w-full flex items-center gap-3 px-6 py-2 text-sm text-sidebar-foreground transition-colors sidebar-button-hover sidebar-nav-button"
         >
           <img src={Ajustes} alt="" className="lg:h-[20px] lg:w-[20px] svg-icon" />
           <span className="lg:text-[16px]">Ajustes</span>
@@ -218,7 +288,7 @@ export const Sidebar = ({ activeSection, onSectionChange, lists, onAddList }) =>
 
       <div className="p-3">
         <div 
-          className="bg-card p-3 rounded-lg flex items-center gap-3 border border-round transition-colors cursor-pointer"
+          className="bg-card p-3 rounded-lg flex items-center gap-3 border border-round transition-colors cursor-pointer relative z-10"
         >
           <div className="relative w-10 h-10 rounded-full bg-[#312465] flex items-center justify-center">
             <div className="absolute -bottom-0.5 -right-[0.0px] w-3 h-3 rounded-full bg-[#6FE36B] border-[1px] border-sidebar"></div>

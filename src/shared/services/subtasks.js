@@ -2,6 +2,7 @@ import { apiClient } from './api';
 
 export const subtasksService = {
   // Get all subtasks for a specific list item
+  // GET /list-items/{{item_id}}/subtasks
   async getSubtasks(listItemId) {
     try {
       const response = await apiClient.get(`/list-items/${listItemId}/subtasks`);
@@ -12,6 +13,7 @@ export const subtasksService = {
   },
 
   // Create a new subtask
+  // POST /list-items/{{item_id}}/subtasks
   async createSubtask(listItemId, subtaskData) {
     try {
       const response = await apiClient.post(`/list-items/${listItemId}/subtasks`, subtaskData);
@@ -22,9 +24,10 @@ export const subtasksService = {
   },
 
   // Update a subtask
-  async updateSubtask(subtaskId, updates) {
+  // PUT /list-items/{{item_id}}/subtasks/{{subtask_id}}
+  async updateSubtask(listItemId, subtaskId, updates) {
     try {
-      const response = await apiClient.put(`/subtasks/${subtaskId}`, updates);
+      const response = await apiClient.put(`/list-items/${listItemId}/subtasks/${subtaskId}`, updates);
       return response;
     } catch (error) {
       throw new Error(error.message || 'Failed to update subtask');
@@ -32,9 +35,10 @@ export const subtasksService = {
   },
 
   // Toggle subtask completion
-  async toggleSubtask(subtaskId) {
+  // POST /list-items/{{item_id}}/subtasks/{{subtask_id}}/toggle
+  async toggleSubtask(listItemId, subtaskId) {
     try {
-      const response = await apiClient.post(`/subtasks/${subtaskId}/toggle`);
+      const response = await apiClient.post(`/list-items/${listItemId}/subtasks/${subtaskId}/toggle`);
       return response;
     } catch (error) {
       throw new Error(error.message || 'Failed to toggle subtask');
@@ -42,9 +46,10 @@ export const subtasksService = {
   },
 
   // Delete a subtask
-  async deleteSubtask(subtaskId) {
+  // DELETE /list-items/{{item_id}}/subtasks/{{subtask_id}}
+  async deleteSubtask(listItemId, subtaskId) {
     try {
-      const response = await apiClient.delete(`/subtasks/${subtaskId}`);
+      const response = await apiClient.delete(`/list-items/${listItemId}/subtasks/${subtaskId}`);
       return response;
     } catch (error) {
       throw new Error(error.message || 'Failed to delete subtask');
