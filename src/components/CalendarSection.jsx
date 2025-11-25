@@ -7,6 +7,8 @@ import {
   PopoverTrigger,
 } from "./ui/popover";
 import { useGoogleCalendar } from "@/features/calendar/hooks/useGoogleCalendar";
+import { useOutlookCalendar } from "@/features/calendar/hooks/useOutlookCalendar";
+import { useICloudCalendar } from "@/features/calendar/hooks/useICloudCalendar";
 import { useCalendars } from "@/features/calendar/hooks/useCalendars";
 import { useAllCalendarEvents } from "@/features/calendar/hooks/useCalendarEvents";
 
@@ -19,10 +21,25 @@ export const CalendarSection = ({ events: propEvents }) => {
   // Hooks for calendar management
   const { 
     connectGoogleCalendar, 
-    isConnecting, 
-    error: oauthError,
+    isConnecting: isConnectingGoogle, 
+    error: googleError,
     connectionStatus 
   } = useGoogleCalendar();
+
+  const {
+    connectOutlookCalendar,
+    isConnecting: isConnectingOutlook,
+    error: outlookError
+  } = useOutlookCalendar();
+
+  const {
+    connectICloudCalendar,
+    isConnecting: isConnectingICloud,
+    error: iCloudError
+  } = useICloudCalendar();
+
+  const isConnecting = isConnectingGoogle || isConnectingOutlook || isConnectingICloud;
+  const oauthError = googleError || outlookError || iCloudError;
 
   // Fetch calendars from backend
   const { 
@@ -82,6 +99,16 @@ export const CalendarSection = ({ events: propEvents }) => {
     setPopoverOpen(false);
   };
 
+  const handleConnectOutlookCalendar = () => {
+    connectOutlookCalendar();
+    setPopoverOpen(false);
+  };
+
+  const handleConnectICloudCalendar = () => {
+    connectICloudCalendar();
+    setPopoverOpen(false);
+  };
+
   return (
     <section className="mb-8 px-4 lg:px-0">
       <h2 className="lg:text-[20px] text-[16px] font-semibold mb-4">Calendario</h2>
@@ -135,9 +162,27 @@ export const CalendarSection = ({ events: propEvents }) => {
                       <span>Google Calendar</span>
                       <ChevronRight className="w-4 h-4" />
                     </button>
-                    {/* Future: Add Outlook and iCloud Calendar options */}
+                    <button
+                      onClick={handleConnectOutlookCalendar}
+                      disabled={isConnecting}
+                      className="hover:bg-[#6A52CC] pt-3 pb-3 pl-4 w-full flex items-center justify-between px-2 py-1.5 text-md rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
+                    >
+                      <span>Outlook Calendar</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={handleConnectICloudCalendar}
+                      disabled={isConnecting}
+                      className="hover:bg-[#6A52CC] pt-3 pb-3 pl-4 w-full flex items-center justify-between px-2 py-1.5 text-md rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
+                    >
+                      <span>iCloud Calendar</span>
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </PopoverContent>
+
+
+
               </Popover>
             </div>
           </div>
