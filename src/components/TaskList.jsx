@@ -1,4 +1,4 @@
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Check } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import {
@@ -7,11 +7,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 import { useAllUserItems, useListItems, useToggleItemCompletion, useDeleteItem, useUpdateItem } from "@/features/lists/hooks/useListItemsQuery";
 import { useLists } from "@/features/lists/hooks/useListsQuery";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 export const TaskList = ({ listId = null, filterByListName = null }) => {
+  // State for list selection modal
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
   // Fetch all user items or items for a specific list
   const { data: allItems = [], isLoading: isLoadingAll } = useAllUserItems({ 
     isCompleted: false,
@@ -67,8 +78,26 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
   };
 
   const handleChangeList = (item) => {
-    // TODO: Implement change list functionality
-    console.log("Change list for item:", item);
+    setSelectedItem(item);
+    setIsListModalOpen(true);
+  };
+
+  const handleSelectList = (targetListId) => {
+    if (!selectedItem) return;
+
+    // Update the item with the new listId
+    updateMutation.mutate(
+      {
+        id: selectedItem.id,
+        listId: targetListId,
+      },
+      {
+        onSuccess: () => {
+          setIsListModalOpen(false);
+          setSelectedItem(null);
+        },
+      }
+    );
   };
 
   return (
@@ -151,6 +180,60 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
           })}
         </div>
       )}
+
+      {/* List Selection Modal */}
+      <Dialog open={isListModalOpen} onOpenChange={setIsListModalOpen}>
+        <DialogContent className="sm:max-w-md bg-sidebar border-border bottom-0 top-auto translate-y-0 sm:top-[70%] sm:translate-y-[-120%] rounded-t-lg sm:rounded-lg">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-semibold">
+              Mover a
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 space-y-0">
+            {lists.map((list) => {
+              const isSelected = selectedItem?.listId === list.id;
+              return (
+                <button
+                  key={list.id}
+                  onClick={() => handleSelectList(list.id)}
+                  className={cn(
+                    "w-full flex items-center justify-between p-4 text-sm transition-colors border-b border-border last:border-b-0",
+                    "hover:bg-[#6A52CC] hover:text-accent-foreground"
+                  )}
+                >
+                  <span>{list.name}</span>
+                  {isSelected && (
+                    <div className="w-5 h-5 rounded-full bg-[#ABFFA8] flex items-center justify-center">
+                      <Check className="w-3 h-3 text-[#000000]" />
+                    </div>
+                  )}
+                  {!isSelected && (
+                    <div className="w-5 h-5 rounded-full border border-muted-foreground" />
+                  )}
+                </button>
+              );
+            })}
+            {/* Option to move to default list (no list) */}
+            <button
+              onClick={() => handleSelectList(null)}
+              className={cn(
+                "w-full flex items-center justify-between p-4 text-sm transition-colors border-b border-border last:border-b-0",
+                "hover:bg-[#6A52CC] hover:text-accent-foreground"
+              )}
+            >
+              <span>Lista por defecto</span>
+              {!selectedItem?.listId && (
+                <div className="w-5 h-5 rounded-full bg-[#ABFFA8] flex items-center justify-center">
+                  <Check className="w-3 h-3 text-[#000000]" />
+                </div>
+              )}
+              {selectedItem?.listId && (
+                <div className="w-5 h-5 rounded-full border border-muted-foreground" />
+              )}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
