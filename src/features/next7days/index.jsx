@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { useNext7DaysItems } from '../../lists/hooks/useNext7DaysItems';
-import DayColumn from '../../next7days/components/DayColumn';
+import { useTranslation } from 'react-i18next';
+import { useNext7DaysItems } from '../lists/hooks/useNext7DaysItems';
+import DayColumn from './components/DayColumn';
 
-export const Proximos7Section = () => {
+const Next7Days = () => {
+  const { t } = useTranslation();
   const [startFromMonday] = useState(true);
   const { data: weekData, isLoading } = useNext7DaysItems(startFromMonday);
 
   const getDayNames = () => {
     return [
-      { key: 'monday', label: 'Lunes' },
-      { key: 'tuesday', label: 'Martes' },
-      { key: 'wednesday', label: 'Miércoles' },
-      { key: 'thursday', label: 'Jueves' },
-      { key: 'friday', label: 'Viernes' },
-      { key: 'saturday', label: 'Sábado' },
-      { key: 'sunday', label: 'Domingo' },
+      { key: 'monday', label: t('next7Days.monday') },
+      { key: 'tuesday', label: t('next7Days.tuesday') },
+      { key: 'wednesday', label: t('next7Days.wednesday') },
+      { key: 'thursday', label: t('next7Days.thursday') },
+      { key: 'friday', label: t('next7Days.friday') },
+      { key: 'saturday', label: t('next7Days.saturday') },
+      { key: 'sunday', label: t('next7Days.sunday') },
     ];
   };
 
@@ -30,8 +32,8 @@ export const Proximos7Section = () => {
   const days = weekData?.days || [];
 
   return (
-    <div className="px-6 py-4">
-      <h1 className="text-[20px] font-semibold mb-6">Próximos 7 días</h1>
+    <div className="px-4 lg:px-6">
+      <h1 className="text-[32px] lg:text-[48px] font-bold mb-6">{t('next7Days.title')}</h1>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
         {dayNames.map((day, index) => {
@@ -40,7 +42,6 @@ export const Proximos7Section = () => {
             <DayColumn
               key={day.key}
               dayName={day.label}
-              date={dayData.date}
               items={dayData.items || []}
             />
           );
@@ -50,3 +51,4 @@ export const Proximos7Section = () => {
   );
 };
 
+export default Next7Days;

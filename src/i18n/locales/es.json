@@ -145,5 +145,21 @@
     "terms": "Términos",
     "facebook": "#",
     "instagram": "#"
+  },
+  "next7Days": {
+    "title": "Próximos 7 Días",
+    "subtitle": "Vista semanal de tus recordatorios",
+    "startFromToday": "Comenzar desde hoy",
+    "startFromMonday": "Comenzar desde lunes",
+    "noReminders": "No hay recordatorios para este día",
+    "today": "Hoy",
+    "monday": "Lunes",
+    "tuesday": "Martes",
+    "wednesday": "Miércoles",
+    "thursday": "Jueves",
+    "friday": "Viernes",
+    "saturday": "Sábado",
+    "sunday": "Domingo",
+    "overdueReminders": "Recordatorios vencidos"
   }
 }

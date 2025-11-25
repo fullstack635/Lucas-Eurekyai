@@ -145,5 +145,21 @@
     "terms": "Terms",
     "facebook": "#",
     "instagram": "#"
+  },
+  "next7Days": {
+    "title": "Next 7 Days",
+    "subtitle": "Weekly view of your reminders",
+    "startFromToday": "Start from today",
+    "startFromMonday": "Start from Monday",
+    "noReminders": "No reminders for this day",
+    "today": "Today",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "overdueReminders": "Overdue Reminders"
   }
 }

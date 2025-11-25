@@ -5,6 +5,7 @@ import Lists from '../features/lists';
 import Calendar from '../features/calendar';
 import CalendarCallback from '../features/calendar/CalendarCallback';
 import Settings from '../features/settings';
+import Next7Days from '../features/next7days';
 import Register from '../features/auth';
 import Login from '../features/auth/Login';
 import Landing from '../features/landing';
@@ -36,6 +37,13 @@ function App() {
                   <Dashboard />
                 </ProtectedRoute>
               } />
+              <Route path="/dashboard/next7days" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Next7Days />} />
+              </Route>
               <Route path="/dashboard/lists" element={
                 <ProtectedRoute>
                   <Layout />
