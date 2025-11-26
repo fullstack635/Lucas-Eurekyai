@@ -77,8 +77,9 @@ export const useGoogleCalendar = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      // Invalidate calendar queries to refetch
+      // Invalidate calendar and events queries to refetch
       queryClient.invalidateQueries({ queryKey: ['calendars'] });
+      queryClient.invalidateQueries({ queryKey: ['all-calendar-events'] });
       setError(null);
     },
     onError: (err) => {

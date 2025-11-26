@@ -85,16 +85,27 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
   const handleSelectList = (targetListId) => {
     if (!selectedItem) return;
 
+    // Don't update if the list is already the same
+    if (selectedItem.listId === targetListId) {
+      setIsListModalOpen(false);
+      setSelectedItem(null);
+      return;
+    }
+
     // Update the item with the new listId
     updateMutation.mutate(
       {
         id: selectedItem.id,
-        listId: targetListId,
+        listId: targetListId || null, // Ensure null is sent for default list
       },
       {
         onSuccess: () => {
           setIsListModalOpen(false);
           setSelectedItem(null);
+        },
+        onError: (error) => {
+          // Error notification is handled by the mutation hook
+          console.error('Error updating item list:', error);
         },
       }
     );
@@ -183,13 +194,13 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
 
       {/* List Selection Modal */}
       <Dialog open={isListModalOpen} onOpenChange={setIsListModalOpen}>
-        <DialogContent className="sm:max-w-md bg-sidebar border-border bottom-0 top-auto translate-y-0 sm:top-[70%] sm:translate-y-[-120%] rounded-t-lg sm:rounded-lg">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-md bg-sidebar border-border bottom-0 top-auto translate-y-0 sm:top-[70%] sm:translate-y-[-120%] rounded-t-lg sm:rounded-lg max-h-[95vh] sm:max-h-[85vh] flex flex-col p-0">
+          <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0">
             <DialogTitle className="text-center text-lg font-semibold">
               Mover a
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-4 space-y-0">
+          <div className="mt-0 space-y-0 overflow-y-auto flex-1 min-h-0 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [scrollbar-width:thin] [scrollbar-color:rgba(156,163,175,0.3)_transparent]">
             {lists.map((list) => {
               const isSelected = selectedItem?.listId === list.id;
               return (
@@ -231,6 +242,9 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
                 <div className="w-5 h-5 rounded-full border border-muted-foreground" />
               )}
             </button>
+          </div>
+          <div className="px-6 py-4 border-t border-border flex-shrink-0">
+            {/* Footer content - can be customized as needed */}
           </div>
         </DialogContent>
       </Dialog>
