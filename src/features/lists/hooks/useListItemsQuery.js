@@ -99,6 +99,58 @@ export const useUpdateItem = () => {
 
   return useMutation({
     mutationFn: ({ id, ...updates }) => listItemsService.updateItem(id, updates),
+    onMutate: async (variables) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: listItemsKeys.all });
+
+      // Snapshot the previous value for all queries
+      const previousQueries = queryClient.getQueriesData({ queryKey: listItemsKeys.all });
+
+      // Extract updates (excluding id)
+      const { id, ...updates } = variables;
+
+      // Optimistically update all list items caches
+      queryClient.setQueriesData({ queryKey: listItemsKeys.all }, (oldData) => {
+        if (!oldData) return oldData;
+        
+        // Handle both array and object responses
+        if (Array.isArray(oldData)) {
+          return oldData.map(item =>
+            item.id === id
+              ? { ...item, ...updates }
+              : item
+          );
+        }
+        // If it's an object with items array
+        if (oldData.items && Array.isArray(oldData.items)) {
+          return {
+            ...oldData,
+            items: oldData.items.map(item =>
+              item.id === id
+                ? { ...item, ...updates }
+                : item
+            )
+          };
+        }
+        return oldData;
+      });
+
+      return { previousQueries };
+    },
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousQueries) {
+        context.previousQueries.forEach(([queryKey, data]) => {
+          queryClient.setQueryData(queryKey, data);
+        });
+      }
+      
+      addNotification({
+        type: 'error',
+        title: 'Error',
+        message: error.message || 'Error al actualizar el item',
+      });
+    },
     onSuccess: (response, variables) => {
       // Invalidate all list items queries to ensure consistency
       // This includes allUserItems and all list-specific queries
@@ -108,13 +160,6 @@ export const useUpdateItem = () => {
         type: 'success',
         title: 'Éxito',
         message: response.message || 'Item actualizado exitosamente',
-      });
-    },
-    onError: (error) => {
-      addNotification({
-        type: 'error',
-        title: 'Error',
-        message: error.message || 'Error al actualizar el item',
       });
     },
   });
