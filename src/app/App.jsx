@@ -51,6 +51,15 @@ function App() {
               }>
                 <Route index element={<Lists />} />
               </Route>
+
+              <Route path="/dashboard/calendar" element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }>
+                <Route index element={<Calendar />} />
+              </Route>
+
               <Route path="/dashboard/settings" element={
                 <ProtectedRoute>
                   <Layout />
@@ -58,6 +67,12 @@ function App() {
               }>
                 <Route index element={<Settings />} />
               </Route>
+
+              <Route path="/calendar/callback" element={
+                <ProtectedRoute>
+                  <CalendarCallback />
+                </ProtectedRoute>
+              } />
               
               {/* Redirect root to dashboard */}
               <Route path="/" element={<Navigate to="/dashboard" replace />} />

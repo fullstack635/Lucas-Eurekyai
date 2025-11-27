@@ -16,9 +16,9 @@ export const useLists = (filters = {}) => {
   return useQuery({
     queryKey: listsKeys.list(filters),
     queryFn: () => listsService.getLists(filters),
-    select: (response) => response.data?.lists || [], // Extract lists array from response
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    refetchOnWindowFocus: false,
+    select: (response) => response.data?.lists || response.data || [], // Extract lists array from response
+    staleTime: 0, // Always consider data stale, refetch on mutations
+    refetchOnWindowFocus: true,
   });
 };
 

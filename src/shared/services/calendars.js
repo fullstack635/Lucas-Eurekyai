@@ -110,6 +110,72 @@ class CalendarService {
   }
 
   /**
+   * Get Outlook OAuth authorization URL
+   * Returns: { authUrl: string, state: string }
+   */
+  async getOutlookOAuthAuthorizationUrl() {
+    return apiClient.get('/calendar-oauth/outlook/authorize');
+  }
+
+  /**
+   * Handle Outlook OAuth callback - exchange code for tokens
+   * @param {string} code - Authorization code from Outlook
+   * @param {string} state - State token for CSRF protection
+   * Returns: { calendars: Calendar[] }
+   */
+  async handleOutlookOAuthCallback(code, state) {
+    return apiClient.post('/calendar-oauth/outlook/callback', { code, state });
+  }
+
+  /**
+   * Get iCloud OAuth authorization URL
+   * Returns: { authUrl: string, state: string }
+   */
+  async getICloudOAuthAuthorizationUrl() {
+    return apiClient.get('/calendar-oauth/icloud/authorize');
+  }
+
+  /**
+   * Handle iCloud OAuth callback - exchange code for tokens
+   * @param {string} code - Authorization code from iCloud
+   * @param {string} state - State token for CSRF protection
+   * Returns: { calendars: Calendar[] }
+   */
+  async handleICloudOAuthCallback(code, state) {
+    return apiClient.post('/calendar-oauth/icloud/callback', { code, state });
+  }
+
+  /**
+   * Get Outlook calendar connection status
+   * Returns: { connected: boolean, calendars: Array, activeCalendars: number, inactiveCalendars: number }
+   */
+  async getOutlookConnectionStatus() {
+    return apiClient.get('/calendar-oauth/outlook/status');
+  }
+
+  /**
+   * Disconnect Outlook Calendar - revoke access and deactivate calendars
+   */
+  async disconnectOutlookCalendar() {
+    return apiClient.post('/calendar-oauth/outlook/disconnect');
+  }
+
+  /**
+   * Get iCloud calendar connection status
+   * Returns: { connected: boolean, calendars: Array, activeCalendars: number, inactiveCalendars: number }
+   */
+  async getICloudConnectionStatus() {
+    return apiClient.get('/calendar-oauth/icloud/status');
+  }
+
+  /**
+   * Disconnect iCloud Calendar - revoke access and deactivate calendars
+   */
+  async disconnectICloudCalendar() {
+    return apiClient.post('/calendar-oauth/icloud/disconnect');
+  }
+
+  /**
    * Get events for a specific calendar
    * @param {string} calendarId - Calendar ID
    * @param {object} params - Query parameters (start, end, limit, offset)

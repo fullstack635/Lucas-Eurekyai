@@ -1,4 +1,4 @@
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Check } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import {
@@ -7,6 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 import { useAllUserItems, useListItems, useToggleItemCompletion, useDeleteItem, useUpdateItem } from "@/features/lists/hooks/useListItemsQuery";
 import { useLists } from "@/features/lists/hooks/useListsQuery";
 import { cn } from "@/lib/utils";
@@ -16,6 +22,10 @@ import { AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 export const TaskList = ({ listId = null, filterByListName = null }) => {
+  // State for list selection modal
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+
   // Fetch all user items or items for a specific list
   const { data: allItems = [], isLoading: isLoadingAll } = useAllUserItems({
     isCompleted: false,
@@ -99,6 +109,37 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
 
   const handleChangeList = (item) => {
     console.log("Change list for item:", item);
+    setSelectedItem(item);
+    setIsListModalOpen(true);
+  };
+
+  const handleSelectList = (targetListId) => {
+    if (!selectedItem) return;
+
+    // Don't update if the list is already the same
+    if (selectedItem.listId === targetListId) {
+      setIsListModalOpen(false);
+      setSelectedItem(null);
+      return;
+    }
+
+    // Update the item with the new listId
+    updateMutation.mutate(
+      {
+        id: selectedItem.id,
+        listId: targetListId || null, // Ensure null is sent for default list
+      },
+      {
+        onSuccess: () => {
+          setIsListModalOpen(false);
+          setSelectedItem(null);
+        },
+        onError: (error) => {
+          // Error notification is handled by the mutation hook
+          console.error('Error updating item list:', error);
+        },
+      }
+    );
   };
 
   return (
