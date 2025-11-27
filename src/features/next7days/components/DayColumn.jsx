@@ -336,11 +336,11 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
         {/* Input para agregar tarea - oculto en mobile cuando no hay tareas y mientras carga */}
         {!isLoading && !isRefetching && (
           <form onSubmit={handleAddTask} className={`w-full mt-3 px-4 pb-3 flex-shrink-0 ${localItems.length === 0 ? 'hidden md:block' : ''}`}>
-            <div className="relative flex items-center gap-2 px-3 py-2 bg-background rounded-lg w-full" style={{ border: '1px solid #444358' }}>
+            <div className="relative flex items-center gap-2 px-3 py-2 bg-card rounded-lg w-full border border-border">
               {addItemMutation.isPending ? (
                 <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin flex-shrink-0" />
               ) : (
-                <Plus className="w-4 h-4 flex-shrink-0" style={{ color: '#444358' }} />
+                <Plus className="w-4 h-4 flex-shrink-0 text-muted-foreground" />
               )}
               <input
                 type="text"
@@ -404,7 +404,7 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
 
       {/* COMPOSER MOBILE */}
       {isMobileComposerOpen && (
-        <div className="fixed inset-x-0 bottom-0 bg-[#0F141B] border-t border-border p-4 z-50 md:hidden">
+        <div className="fixed inset-x-0 bottom-0 bg-card border-t border-border p-4 z-50 md:hidden">
           {/* Chips */}
           <div className="flex gap-2 mb-4 overflow-x-auto">
             {/* Hoy día */}
@@ -456,14 +456,14 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
           {/* Input grande */}
           <div className="flex items-center gap-2 bg-input border border-border rounded-full px-4 py-3">
             <input
-              className="flex-1 bg-transparent text-sm leading-5 font-['DM_Sans'] text-white outline-none"
+              className="flex-1 bg-transparent text-sm leading-5 font-['DM_Sans'] text-foreground outline-none"
               value={newTaskText}
               onChange={(e) => setNewTaskText(e.target.value)}
               placeholder="Agregar tarea"
               autoFocus
             />
 
-            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1D2430]">
+            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-muted">
               <List className="w-5 h-5 text-white" />
             </button>
           </div>

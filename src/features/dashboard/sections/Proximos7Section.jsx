@@ -28,9 +28,9 @@ export const Proximos7Section = () => {
   const days = weekData?.days || [];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col">
       <h1
-        className="px-4 lg:px-6 mb-4 flex-shrink-0"
+        className="px-4 lg:px-6 mb-4"
         style={{
           fontFamily: 'DM Sans',
           fontWeight: '400',
@@ -41,7 +41,7 @@ export const Proximos7Section = () => {
         }}
       >Próximos 7 días</h1>
 
-      <div className="lg:hidden flex flex-col gap-4 px-4 overflow-y-auto">
+      <div className="lg:hidden flex flex-col gap-4 px-4 pb-4">
         {days.map((dayData, index) => {
           const isToday = index === 0;
           return (
@@ -57,7 +57,7 @@ export const Proximos7Section = () => {
         })}
       </div>
 
-      <div className="hidden lg:block flex-1 overflow-x-auto overflow-y-visible pb-4 custom-scrollbar">
+      <div className="hidden lg:block flex-1  overflow-y-visible pb-4">
         <div className="flex gap-4 px-6">
           {days.map((dayData, index) => {
             const isToday = index === 0;

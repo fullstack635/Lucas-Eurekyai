@@ -22,7 +22,7 @@ export const MobileNav = ({ activeSection, onSectionChange }) => {
               className={cn(
                 "flex flex-col items-center gap-1 px-3 py-2 rounded transition-colors",
                 activeSection === section.id
-                  ? "text-white dark:text-white"
+                  ? "text-white bg-white/10"
                   : "text-muted-foreground"
               )}
             >
