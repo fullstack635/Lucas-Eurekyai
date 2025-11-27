@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNext7DaysItems } from '../../lists/hooks/useNext7DaysItems';
 import DayColumn from '../../next7days/components/DayColumn';
-import { TaskNotifications } from '../../next7days/components/TaskNotifications';
 
 export const Proximos7Section = () => {
+  const { t } = useTranslation();
   const { data: weekData, isLoading } = useNext7DaysItems();
 
   const getDayNameByNumber = (dayOfWeek) => {
@@ -55,7 +56,6 @@ export const Proximos7Section = () => {
         </div>
       </div>
 
-      <TaskNotifications items={allItems} />
     </>
   );
 };
