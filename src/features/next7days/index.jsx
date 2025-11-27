@@ -23,11 +23,21 @@ const Next7Days = () => {
   const days = weekData?.days || [];
 
   return (
-    <div className="px-4 lg:px-6 pb-6">
-      <h1 className="text-[32px] lg:text-[48px] font-bold mb-6">{t('next7Days.title')}</h1>
+    <div className="h-full flex flex-col">
+      <h1
+        className="lg:text-[48px] lg:font-bold mb-3 px-4 lg:px-6 flex-shrink-0"
+        style={{
+          fontFamily: 'DM Sans',
+          fontWeight: '400',
+          fontSize: '20px',
+          lineHeight: '150%',
+          letterSpacing: '-0.02em',
+          fontVariantNumeric: 'lining-nums tabular-nums'
+        }}
+      >{t('next7Days.title')}</h1>
 
-      <div className="overflow-x-auto pb-2 -mx-4 lg:-mx-6 px-4 lg:px-6">
-        <div className="flex gap-4">
+      <div className="flex-1 overflow-x-auto overflow-y-visible pb-6 custom-scrollbar">
+        <div className="flex gap-4 px-4 lg:px-6 min-w-max">
           {days.map((dayData, index) => {
             const isToday = index === 0;
             return (

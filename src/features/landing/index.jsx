@@ -36,7 +36,6 @@ export default function Landing() {
     setOpenFaqIndex(openFaqIndex === index ? null : index);
   };
 
-  // Translated content
   const features = [
     { image: Chat1, title: t('features.feature1.title'), text: t('features.feature1.text'), alt: "chat_1" },
     { image: Chat2, title: t('features.feature2.title'), text: t('features.feature2.text'), alt: "chat_2" },
@@ -197,7 +196,6 @@ export default function Landing() {
         keywords="productivity app, task management, calendar sync, time tracking, goal tracking, productivity tools, project management"
       />
       <div className="min-h-screen bg-[#050912] overflow-hidden">
-        {/* Navigation */}
         <nav className="fixed top-0 w-full backdrop-blur-md z-50 bg-[#050912]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
@@ -205,7 +203,6 @@ export default function Landing() {
                 <img src={Logo} alt="logo" className="w-[160px]" />
               </div>
 
-              {/* Desktop menu */}
               <div className="hidden md:flex items-center gap-8 text-white">
                 <a href="#features" className="hover:text-gray-300">
                   {t('nav.features')}
@@ -222,7 +219,6 @@ export default function Landing() {
                 <LanguageSwitcher />
               </div>
 
-              {/* Mobile menu button */}
               <div className="md:hidden">
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -237,7 +233,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Mobile menu */}
             {mobileMenuOpen && (
               <div className="md:hidden pb-4">
                 <div className="flex flex-col gap-4 text-white">
@@ -276,7 +271,6 @@ export default function Landing() {
           </div>
         </nav>
 
-        {/* Hero Section */}
         <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 text-white">
             <div className="w-full lg:w-xl">
@@ -326,7 +320,6 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Features Section */}
         <section id="features" className="pt-12 sm:pt-24 pb-20 sm:pb-39 bg-[#ABFFA8] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto justify-items-center">
             <div className="flex justify-center items-center py-24 sm:pb-28">
@@ -358,17 +351,13 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* CTA Section */}
         <section className="py-12 sm:py-20 md:py-28 bg-[#6A52CC] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Title */}
             <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-14 sm:mb-12 md:mb-14" dangerouslySetInnerHTML={{ __html: t('dashboard.title') }} />
 
-            {/* Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
               {dashboardFeatures.map((feature, index) => (
                 <div key={index} className="flex flex-col mb-18">
-                  {/* Card with border */}
                   <div className={`rounded-3xl ${feature.borderColor} mb-6 sm:mb-8 overflow-hidden`}>
                     <img
                       src={Chat6}
@@ -377,7 +366,6 @@ export default function Landing() {
                     />
                   </div>
 
-                  {/* Text below card */}
                   <div className="text-center px-2 sm:px-4">
                     <h3 className="text-2xl leading-[28px] sm:text-xl font-bold text-white mb-2">
                       {feature.title}
@@ -392,10 +380,8 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Pricing Section */}
         <section id="pricing" className="py-12 sm:py-20 bg-[#050912] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Header */}
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4">
                 {t('pricing.title')}
@@ -404,7 +390,6 @@ export default function Landing() {
                 {t('pricing.trial')}
               </p>
 
-              {/* Billing Toggle */}
               <div className="inline-flex items-center bg-[#0f1521] rounded-full p-1 gap-1">
                 <button
                   onClick={() => setBillingPeriod('monthly')}
@@ -427,7 +412,6 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Pricing Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {pricingPlans.map((plan, index) => (
                 <div
@@ -437,14 +421,12 @@ export default function Landing() {
                     : 'border-1 border-[#CDCEDF] py-6 sm:py-8'
                     }`}
                 >
-                  {/* Popular Badge */}
                   {plan.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#7B5FCC] text-white px-4 sm:px-6 py-1 rounded-full text-xs sm:text-sm font-bold uppercase whitespace-nowrap">
                       {t('pricing.mostPopular')}
                     </div>
                   )}
 
-                  {/* Icon */}
                   <div className="flex justify-center mb-4 sm:mb-6">
                     <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center ${plan.popular ? 'bg-[#7B5FCC] text-white' : 'bg-white text-black'
                       }`}>
@@ -452,12 +434,10 @@ export default function Landing() {
                     </div>
                   </div>
 
-                  {/* Plan Name */}
                   <h3 className="text-xl sm:text-xl text-white text-center mb-2">
                     {plan.name}
                   </h3>
 
-                  {/* Price */}
                   <div className="text-center mb-4 sm:mb-6">
                     <span className="text-[32px] sm:text-3xl font-bold text-white">
                       {billingPeriod === 'monthly' ? plan.monthlyPrice : plan.annualPrice}
@@ -470,7 +450,6 @@ export default function Landing() {
                     )}
                   </div>
 
-                  {/* CTA Button */}
                   <Link
                     to="/register"
                     className={`w-full block text-center py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-semibold mb-4 sm:mb-6 transition-colors ${plan.buttonStyle}`}
@@ -478,7 +457,6 @@ export default function Landing() {
                     {plan.buttonText}
                   </Link>
 
-                  {/* Features List */}
                   <ul className="space-y-2 sm:space-y-3">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="mt-3 flex items-center gap-2 sm:gap-3 text-white">
@@ -497,16 +475,13 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* How works Section */}
         <section id="how-works" className="py-12 sm:py-16 md:py-20 bg-gradient-to-r from-[#2a3f5f] to-[#5a4a8a] px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center">
-              {/* Left side - Image */}
               <div className="flex justify-center order-2 md:order-1">
                 <img src={Image5} alt="WhatsApp conversation" className="w-full max-w-md rounded-2xl" />
               </div>
 
-              {/* Right side - Steps */}
               <div className="order-1 md:order-2">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 sm:mb-10 md:mb-12">
                   {t('howWorks.title')}
@@ -515,14 +490,12 @@ export default function Landing() {
                 <div className="space-y-6 sm:space-y-8">
                   {howItWorksSteps.map((step, index) => (
                     <div key={index} className="flex gap-3 sm:gap-4">
-                      {/* Number Circle */}
                       <div className="flex-shrink-0">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white flex items-center justify-center">
                           <span className="text-white text-lg sm:text-xl font-bold">{step.number}</span>
                         </div>
                       </div>
 
-                      {/* Content */}
                       <div>
                         <h3 className="text-lg sm:text-xl font-bold text-white mb-1 sm:mb-2">
                           {step.title}
@@ -539,9 +512,7 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Footer */}
         <footer id="reviews" className="bg-[#050912] text-gray-300 py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
-          {/* Testimonials Section */}
           <div className="max-w-7xl mx-auto mb-12 sm:mb-16">
             <h2 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-center mb-8 sm:mb-12">
               <Trans i18nKey="testimonials.title">
@@ -552,24 +523,20 @@ export default function Landing() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               {testimonials.map((testimonial, index) => (
                 <div key={index} className="rounded-3xl bg-[#0f1521] p-6 sm:p-8">
-                  {/* Star Rating */}
                   <div className="flex gap-1 mb-3">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <span key={i} className="text-[#ABFFA8] text-lg sm:text-xl">★</span>
                     ))}
                   </div>
 
-                  {/* Title */}
                   <h3 className="text-white font-bold text-lg sm:text-xl mb-3">
                     {testimonial.title}
                   </h3>
 
-                  {/* Review Text */}
                   <p className="text-gray-300 text-xs sm:text-sm mb-4 leading-relaxed">
                     {testimonial.text}
                   </p>
 
-                  {/* Author */}
                   <p className="text-white text-xs sm:text-sm mt-6 sm:mt-10">
                     {testimonial.author}
                   </p>
@@ -578,18 +545,15 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* FAQ Section */}
           <div className="max-w-7xl mx-auto mb-8 sm:mb-12">
             <div className="rounded-3xl sm:rounded-[40px] bg-[#4E36AF] p-6 sm:p-8 md:p-12">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-                {/* Left side - Title */}
                 <div className="md:col-span-1">
                   <h2 className="text-5xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">
                     {t('faq.title')}
                   </h2>
                 </div>
 
-                {/* Right side - FAQ Items */}
                 <div className="md:col-span-2 space-y-3 sm:space-y-4">
                   {faqs.map((faq, index) => (
                     <div key={index} className="border-b border-white/20 pb-3 sm:pb-4">
@@ -617,10 +581,8 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Bottom Footer */}
           <div className="max-w-7xl mx-auto pt-6 sm:pt-8 border-gray-800">
             <div className="flex flex-col md:flex-row justify-between gap-4 sm:gap-6">
-              {/* Logo & Contact */}
               <div className="md:text-left">
                 <img src={Logo} alt="logo_footer" className="w-[220px] mb-12" />
                 <a href={`mailto:${t('footer.contact')}`} className="text-xl sm:text-sm text-gray-400 hover:text-white underline">
@@ -642,7 +604,6 @@ export default function Landing() {
                 </div>
               </div>
 
-              {/* Social Icons & Copyright */}
               <div className="mt-10 flex flex-col sm:flex-row gap-4 sm:gap-6">
                 <div className="flex gap-4 block sm:hidden">
                   <a href={t('footer.facebook')} className="text-gray-400 hover:text-white">

@@ -40,6 +40,7 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
   const [showListSelector, setShowListSelector] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
   const [itemToChangeList, setItemToChangeList] = useState(null);
+  const [isRefetching, setIsRefetching] = useState(false);
 
   const handleReorder = (itemId, oldIndex, newIndex) => {
     const item = items.find(i => i.id === itemId);
@@ -60,11 +61,17 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
 
   const [togglingItemId, setTogglingItemId] = useState(null);
 
-  const handleToggle = (itemId) => {
+  const handleToggle = async (itemId) => {
     setTogglingItemId(itemId);
     toggleCompletion.mutate(itemId, {
-      onSettled: () => {
+      onSettled: async () => {
         setTogglingItemId(null);
+        setIsRefetching(true);
+        await queryClient.invalidateQueries({
+          queryKey: listItemsKeys.all,
+          refetchType: 'all'
+        });
+        setIsRefetching(false);
       }
     });
   };
@@ -86,10 +93,12 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
       {
         onSuccess: async () => {
           setItemToEdit(null);
+          setIsRefetching(true);
           await queryClient.invalidateQueries({
             queryKey: listItemsKeys.all,
             refetchType: 'all'
           });
+          setIsRefetching(false);
         },
         onError: (error) => {
           console.error('Error al editar tarea:', error);
@@ -103,6 +112,8 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
     const item = localItems.find(i => i.id === itemId);
     if (!item) return;
 
+    const newList = lists.find(l => l.id === newListId);
+
     updateItemMutation.mutate(
       {
         id: itemId,
@@ -112,18 +123,75 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
         scheduledAt: item.scheduledAt
       },
       {
+        onMutate: async ({ id, listId }) => {
+          // Cancelar refetch pendientes
+          await queryClient.cancelQueries({ queryKey: listItemsKeys.all });
+
+          // Actualizar optimísticamente todas las queries que contengan items
+          const allQueries = queryClient.getQueriesData({ queryKey: listItemsKeys.all });
+
+          allQueries.forEach(([queryKey, oldData]) => {
+            if (!oldData) return;
+
+            queryClient.setQueryData(queryKey, (current) => {
+              if (!current) return current;
+
+              // Si es un array directo de items
+              if (Array.isArray(current)) {
+                return current.map(i =>
+                  i.id === id
+                    ? { ...i, listId, list: { id: listId, title: newList?.title || 'Lista' } }
+                    : i
+                );
+              }
+
+              // Si tiene estructura con data.items
+              if (current.data?.items) {
+                return {
+                  ...current,
+                  data: {
+                    ...current.data,
+                    items: current.data.items.map(i =>
+                      i.id === id
+                        ? { ...i, listId, list: { id: listId, title: newList?.title || 'Lista' } }
+                        : i
+                    )
+                  }
+                };
+              }
+
+              return current;
+            });
+          });
+
+          return { previousData: allQueries };
+        },
         onSuccess: async () => {
           setItemToChangeList(null);
+          setIsRefetching(true);
+
           await queryClient.invalidateQueries({
             queryKey: listItemsKeys.all,
             refetchType: 'all'
           });
-          toast.success('Tarea movida a otra lista', {
+
+          setIsRefetching(false);
+
+          const listName = newList?.title || 'otra lista';
+          toast.success(`Tarea movida a ${listName}`, {
             duration: 2000,
           });
         },
-        onError: (error) => {
+        onError: (error, variables, context) => {
           console.error('Error al cambiar lista:', error);
+
+          // Revertir cambios optimistas
+          if (context?.previousData) {
+            context.previousData.forEach(([queryKey, data]) => {
+              queryClient.setQueryData(queryKey, data);
+            });
+          }
+
           toast.error('Error al cambiar la lista');
         },
       }
@@ -207,16 +275,18 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
     <>
       <div
         className="
-          bg-card border border-border rounded-lg
-          px-4 py-3
+          border border-border rounded-lg
           w-full
           md:min-w-[240px] md:max-w-[260px] md:flex-shrink-0
+          flex flex-col
         "
         style={{
-          height: 'fit-content'
+          height: 'fit-content',
+          maxHeight: '700px',
+          background: '#0F1521'
         }}
       >
-        <div className="flex items-center justify-between mb-3 py-1">
+        <div className="flex items-center justify-between mb-3 py-1 px-4 pt-3 flex-shrink-0">
           <h3 className="text-sm font-semibold text-foreground">
             {isToday && `${t('next7Days.today')} - `}{dayName}
           </h3>
@@ -231,23 +301,23 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
           )}
         </div>
 
-        {isLoading && (
-          <div className="flex items-center justify-center min-h-[200px]">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
-          </div>
-        )}
+        <div className="overflow-y-auto custom-scrollbar flex-1 px-4">
+          {(isLoading || isRefetching) && (
+            <div className="flex items-center justify-center min-h-[200px]">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            </div>
+          )}
 
-        {!isLoading && localItems.length > 0 && (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={localItems.map((item) => item.id)}
-              strategy={verticalListSortingStrategy}
+          {!isLoading && !isRefetching && localItems.length > 0 && (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
             >
-              <div className="relative">
+              <SortableContext
+                items={localItems.map((item) => item.id)}
+                strategy={verticalListSortingStrategy}
+              >
                 <div className="space-y-3">
                   <AnimatePresence mode="popLayout">
                     {localItems.map((item) => (
@@ -263,14 +333,14 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
                     ))}
                   </AnimatePresence>
                 </div>
-              </div>
-            </SortableContext>
-          </DndContext>
-        )}
+              </SortableContext>
+            </DndContext>
+          )}
+        </div>
 
         {/* Input para agregar tarea - oculto en mobile cuando no hay tareas y mientras carga */}
-        {!isLoading && (
-          <form onSubmit={handleAddTask} className={`w-full mt-3 ${localItems.length === 0 ? 'hidden md:block' : ''}`}>
+        {!isLoading && !isRefetching && (
+          <form onSubmit={handleAddTask} className={`w-full mt-3 px-4 pb-3 flex-shrink-0 ${localItems.length === 0 ? 'hidden md:block' : ''}`}>
             <div className="relative flex items-center gap-2 px-3 py-2 bg-background rounded-lg w-full" style={{ border: '1px solid #444358' }}>
               {addItemMutation.isPending ? (
                 <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin flex-shrink-0" />

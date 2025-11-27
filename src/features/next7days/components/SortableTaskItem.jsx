@@ -38,7 +38,7 @@ export const SortableTaskItem = ({ item, onToggle, onDelete, onEdit, onViewList,
                 className="group relative w-full rounded-lg transition-all py-2 px-4 hover:opacity-90"
                 style={{
                     cursor: handCursor,
-                    backgroundColor: 'var(--task-bg, #ffffff)'
+                    backgroundColor: 'var(--task-bg)'
                 }}
                 {...listeners}
             >
@@ -102,7 +102,7 @@ export const SortableTaskItem = ({ item, onToggle, onDelete, onEdit, onViewList,
                         <div className="flex-1 flex flex-col gap-1">
                             {/* Título de la lista - oculto en mobile */}
                             <div className="hidden md:block text-[10px] uppercase tracking-wide font-medium whitespace-nowrap" style={{ color: '#CDCEDF' }}>
-                                MIS LISTAS &gt; {item.list?.name || 'PERSONAL'}
+                                MIS LISTAS &gt; {item.list?.title || 'PERSONAL'}
                             </div>
                             {/* Contenido de la tarea */}
                             <span

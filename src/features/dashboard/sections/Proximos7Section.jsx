@@ -36,26 +36,37 @@ export const Proximos7Section = () => {
   const days = weekData?.days || [];
 
   return (
-    <>
-      <div className="px-6 py-4">
-        <h1 className="text-[20px] font-semibold mb-3">Próximos 7 días</h1>
+    <div className="flex flex-col h-full">
+      <h1
+        className="px-6 mb-2 flex-shrink-0"
+        style={{
+          fontFamily: 'DM Sans',
+          fontWeight: '400',
+          fontSize: '20px',
+          lineHeight: '150%',
+          letterSpacing: '-0.02em',
+          fontVariantNumeric: 'lining-nums tabular-nums'
+        }}
+      >Próximos 7 días</h1>
 
-        <div className="flex flex-col gap-6 md:flex-row md:gap-4">
+      <div className="flex-1 overflow-x-auto overflow-y-visible pb-4 custom-scrollbar">
+        <div className="flex gap-4 px-6">
           {days.map((dayData, index) => {
             const isToday = index === 0;
             return (
-              <DayColumn
-                key={`day-${index}`}
-                dayName={getDayNameByNumber(dayData.dayOfWeek)}
-                date={dayData.date}
-                items={dayData.items || []}
-                isToday={isToday}
-              />
+              <div key={`day-${index}`} className="flex-shrink-0 w-[280px]">
+                <DayColumn
+                  key={`day-${index}`}
+                  dayName={getDayNameByNumber(dayData.dayOfWeek)}
+                  date={dayData.date}
+                  items={dayData.items || []}
+                  isToday={isToday}
+                />
+              </div>
             );
           })}
         </div>
       </div>
-
-    </>
+    </div>
   );
 };
