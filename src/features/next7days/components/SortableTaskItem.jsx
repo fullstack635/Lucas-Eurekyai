@@ -98,15 +98,15 @@ export const SortableTaskItem = ({ item, onToggle, onDelete, onEdit, onViewList,
                         </div>
                     </button>
 
-                    <div className="flex-1 flex flex-col md:flex-row md:items-start gap-1">
-                        <div className="flex-1 flex flex-col gap-1">
+                    <div className="flex-1 flex flex-row md:flex-row md:items-start gap-2">
+                        <div className="flex-1 flex flex-col gap-1 min-w-0">
                             {/* Título de la lista - oculto en mobile */}
                             <div className="hidden md:block text-[10px] uppercase tracking-wide font-medium whitespace-nowrap" style={{ color: '#CDCEDF' }}>
                                 MIS LISTAS &gt; {item.list?.title || 'PERSONAL'}
                             </div>
                             {/* Contenido de la tarea */}
                             <span
-                                className={`text-sm leading-snug ${item.isCompleted
+                                className={`text-md leading-snug ${item.isCompleted
                                     ? 'line-through text-gray-500'
                                     : 'text-foreground'
                                     }`}
@@ -141,7 +141,7 @@ export const SortableTaskItem = ({ item, onToggle, onDelete, onEdit, onViewList,
                                 const displayHour = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
                                 const timeStr = `${displayHour}:${minutes.toString().padStart(2, '0')} ${period}`;
                                 return (
-                                    <span className="md:hidden text-xs text-white/70 self-start mt-0.5">
+                                    <span className="md:hidden text-xs text-white/70 flex-shrink-0">
                                         {timeStr}
                                     </span>
                                 );

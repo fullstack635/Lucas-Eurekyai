@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useAllUserItems } from './useListItemsQuery';
 
 
-export const useNext7DaysItems = (startFromMonday = false) => {
+export const useNext7DaysItems = () => {
   const { data: allItems = [], isLoading, isError, error } = useAllUserItems({
     limit: 500,
   });
@@ -84,7 +84,7 @@ export const useNext7DaysItems = (startFromMonday = false) => {
         pending: pendingItems
       }
     };
-  }, [allItems, startFromMonday]);
+  }, [allItems]);
 
   return {
     data: organizedData,

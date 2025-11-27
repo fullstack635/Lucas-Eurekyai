@@ -30,18 +30,13 @@ i18n
       escapeValue: false // react already safes from xss
     },
 
+    lng: 'es',
+    
     detection: {
-      // order and from where user language should be detected
       order: ['localStorage', 'navigator', 'htmlTag'],
-
-      // keys or params to lookup language from
       lookupLocalStorage: 'i18nextLng',
-
-      // cache user language on
       caches: ['localStorage'],
-
-      // optional expire and versions
-      cookieMinutes: 10080, // 7 days
+      cookieMinutes: 10080,
     }
   });
 

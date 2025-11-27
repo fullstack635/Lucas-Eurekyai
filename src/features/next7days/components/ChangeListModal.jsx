@@ -45,7 +45,7 @@ export const ChangeListModal = ({ item, lists = [], onClose, onChangeList, isCha
                     <p className="text-white font-medium">{item.content}</p>
                     {currentList && (
                         <p className="text-xs text-white/50 mt-2">
-                            Lista actual: <span className="text-white/70">{currentList.title}</span>
+                            Lista actual: <span className="text-white/70">{currentList.name || currentList.title}</span>
                         </p>
                     )}
                 </div>
@@ -64,7 +64,7 @@ export const ChangeListModal = ({ item, lists = [], onClose, onChangeList, isCha
                         >
                             <div className="flex items-center justify-between">
                                 <div className="flex-1">
-                                    <p className="text-white font-medium">{list.title}</p>
+                                    <p className="text-white font-medium">{list.name || list.title}</p>
                                     {list.description && (
                                         <p className="text-xs text-white/50 mt-1">{list.description}</p>
                                     )}
