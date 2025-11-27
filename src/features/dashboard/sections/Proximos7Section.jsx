@@ -1,22 +1,28 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNext7DaysItems } from '../../lists/hooks/useNext7DaysItems';
 import DayColumn from '../../next7days/components/DayColumn';
+import { TaskNotifications } from '../../next7days/components/TaskNotifications';
 
 export const Proximos7Section = () => {
-  const [startFromMonday] = useState(true);
-  const { data: weekData, isLoading } = useNext7DaysItems(startFromMonday);
+  const { data: weekData, isLoading } = useNext7DaysItems();
 
-  const getDayNames = () => {
-    return [
-      { key: 'monday', label: 'Lunes' },
-      { key: 'tuesday', label: 'Martes' },
-      { key: 'wednesday', label: 'Miércoles' },
-      { key: 'thursday', label: 'Jueves' },
-      { key: 'friday', label: 'Viernes' },
-      { key: 'saturday', label: 'Sábado' },
-      { key: 'sunday', label: 'Domingo' },
-    ];
+  const getDayNameByNumber = (dayOfWeek) => {
+    const dayNames = {
+      0: 'Domingo',
+      1: 'Lunes',
+      2: 'Martes',
+      3: 'Miércoles',
+      4: 'Jueves',
+      5: 'Viernes',
+      6: 'Sábado',
+    };
+    return dayNames[dayOfWeek] || '';
   };
+
+  const allItems = useMemo(() => {
+    if (!weekData?.days) return [];
+    return weekData.days.flatMap(day => day.items || []);
+  }, [weekData]);
 
   if (isLoading) {
     return (
@@ -26,27 +32,30 @@ export const Proximos7Section = () => {
     );
   }
 
-  const dayNames = getDayNames();
   const days = weekData?.days || [];
 
   return (
-    <div className="px-6 py-4">
-      <h1 className="text-[20px] font-semibold mb-6">Próximos 7 días</h1>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
-        {dayNames.map((day, index) => {
-          const dayData = days[index] || { items: [] };
-          return (
-            <DayColumn
-              key={day.key}
-              dayName={day.label}
-              date={dayData.date}
-              items={dayData.items || []}
-            />
-          );
-        })}
+    <>
+      <div className="px-6 py-4">
+        <h1 className="text-[20px] font-semibold mb-3">Próximos 7 días</h1>
+
+        <div className="flex flex-col gap-6 md:flex-row md:gap-4">
+          {days.map((dayData, index) => {
+            const isToday = index === 0;
+            return (
+              <DayColumn
+                key={`day-${index}`}
+                dayName={getDayNameByNumber(dayData.dayOfWeek)}
+                date={dayData.date}
+                items={dayData.items || []}
+                isToday={isToday}
+              />
+            );
+          })}
+        </div>
       </div>
-    </div>
+
+      <TaskNotifications items={allItems} />
+    </>
   );
 };
-

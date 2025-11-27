@@ -16,8 +16,8 @@ export const useAllUserItems = (filters = {}) => {
     queryKey: listItemsKeys.allUserItems(filters),
     queryFn: () => listItemsService.getAllUserItems(filters),
     select: (response) => response.data?.items || [],
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    refetchOnWindowFocus: false,
+    staleTime: 0, // Always fetch fresh data
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -102,8 +102,8 @@ export const useUpdateItem = () => {
     mutationFn: ({ id, ...updates }) => listItemsService.updateItem(id, updates),
     onSuccess: (response, variables) => {
       // Invalidate all list items queries to ensure consistency
-      queryClient.invalidateQueries({ queryKey: listItemsKeys.lists() });
-      
+      queryClient.invalidateQueries({ queryKey: listItemsKeys.all });
+
       addNotification({
         type: 'success',
         title: 'Éxito',
@@ -155,7 +155,7 @@ export const useToggleItemCompletion = () => {
     },
     onSettled: () => {
       // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: listItemsKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: listItemsKeys.all });
     },
   });
 };
@@ -173,7 +173,7 @@ export const useDeleteItem = () => {
         if (!oldData) return oldData;
         return oldData.filter(item => item.id !== deletedId);
       });
-      
+
       addNotification({
         type: 'success',
         title: 'Éxito',
@@ -183,7 +183,7 @@ export const useDeleteItem = () => {
     onError: (error) => {
       // Invalidate to restore the cache in case of error
       queryClient.invalidateQueries({ queryKey: listItemsKeys.lists() });
-      
+
       addNotification({
         type: 'error',
         title: 'Error',
@@ -207,13 +207,13 @@ export const useListItemsOperations = (listId) => {
     isLoading: itemsQuery.isLoading,
     isError: itemsQuery.isError,
     error: itemsQuery.error,
-    
+
     // Operations
     addItem: (itemData) => addItemMutation.mutate({ listId, itemData }),
     updateItem: updateItemMutation.mutate,
     toggleCompletion: toggleMutation.mutate,
     deleteItem: deleteMutation.mutate,
-    
+
     // Loading states
     isAdding: addItemMutation.isPending,
     isUpdating: updateItemMutation.isPending,
