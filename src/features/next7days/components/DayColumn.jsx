@@ -124,10 +124,8 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
       },
       {
         onMutate: async ({ id, listId }) => {
-          // Cancelar refetch pendientes
           await queryClient.cancelQueries({ queryKey: listItemsKeys.all });
 
-          // Actualizar optimísticamente todas las queries que contengan items
           const allQueries = queryClient.getQueriesData({ queryKey: listItemsKeys.all });
 
           allQueries.forEach(([queryKey, oldData]) => {
@@ -136,7 +134,6 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
             queryClient.setQueryData(queryKey, (current) => {
               if (!current) return current;
 
-              // Si es un array directo de items
               if (Array.isArray(current)) {
                 return current.map(i =>
                   i.id === id
@@ -145,7 +142,6 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
                 );
               }
 
-              // Si tiene estructura con data.items
               if (current.data?.items) {
                 return {
                   ...current,
@@ -185,7 +181,6 @@ const DayColumn = ({ dayName, items = [], date, isLoading = false, isToday = fal
         onError: (error, variables, context) => {
           console.error('Error al cambiar lista:', error);
 
-          // Revertir cambios optimistas
           if (context?.previousData) {
             context.previousData.forEach(([queryKey, data]) => {
               queryClient.setQueryData(queryKey, data);

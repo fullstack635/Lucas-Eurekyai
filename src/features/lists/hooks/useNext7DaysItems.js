@@ -8,9 +8,7 @@ export const useNext7DaysItems = (startFromMonday = false) => {
   });
 
 
-  console.log('allItems recibidos en useNext7DaysItems:', allItems.length, allItems);
   const organizedData = useMemo(() => {
-    console.log('Recalculando organizedData con', allItems.length, 'items');
     if (!allItems || allItems.length === 0) {
       return { days: [], stats: { total: 0, completed: 0, pending: 0 } };
     }
@@ -41,8 +39,6 @@ export const useNext7DaysItems = (startFromMonday = false) => {
       const itemDate = new Date(item.scheduledAt);
       itemDate.setHours(0, 0, 0, 0);
 
-      console.log('Procesando item:', item.content, 'scheduledAt:', item.scheduledAt, 'itemDate normalizado:', itemDate);
-
       for (let i = 0; i < days.length; i++) {
         const dayDate = new Date(days[i].date);
         dayDate.setHours(0, 0, 0, 0);
@@ -51,7 +47,6 @@ export const useNext7DaysItems = (startFromMonday = false) => {
         nextDayDate.setDate(dayDate.getDate() + 1);
 
         if (itemDate >= dayDate && itemDate < nextDayDate) {
-          console.log('✅ Item asignado al día', i, 'dayDate:', dayDate);
           days[i].items.push({
             ...item,
             isOverdue: new Date(item.scheduledAt) < new Date() && !item.isCompleted
@@ -63,16 +58,13 @@ export const useNext7DaysItems = (startFromMonday = false) => {
 
     days.forEach(day => {
       day.items.sort((a, b) => {
-        // Las tareas completadas van al final
         if (a.isCompleted && !b.isCompleted) return 1;
         if (!a.isCompleted && b.isCompleted) return -1;
 
-        // Para tareas no completadas, ordenar por updatedAt (más reciente primero)
         if (!a.isCompleted && !b.isCompleted) {
           return new Date(b.updatedAt) - new Date(a.updatedAt);
         }
 
-        // Para tareas completadas, mantener orden por scheduledAt
         return new Date(a.scheduledAt) - new Date(b.scheduledAt);
       });
     });

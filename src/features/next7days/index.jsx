@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNext7DaysItems } from '../lists/hooks/useNext7DaysItems';
 import DayColumn from './components/DayColumn';
