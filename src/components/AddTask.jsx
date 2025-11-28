@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { List, Check } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -15,13 +15,11 @@ export const AddTask = ({ listId = null }) => {
   const [selectedListId, setSelectedListId] = useState(listId);
   const [listPopoverOpen, setListPopoverOpen] = useState(false);
 
-  // Fetch lists from backend
-  const { data: lists = [], isLoading: isLoadingLists } = useLists({ 
+  const { data: lists = [], isLoading: isLoadingLists } = useLists({
     status: 'ACTIVE',
-    includeItems: false 
+    includeItems: false
   });
 
-  // Mutations
   const addToDefaultMutation = useAddItemToDefaultList();
   const addToListMutation = useAddItemToList();
 
@@ -36,18 +34,17 @@ export const AddTask = ({ listId = null }) => {
     };
 
     if (selectedListId) {
-      // Add to specific list
       addToListMutation.mutate(
         { listId: selectedListId, itemData },
         {
           onSuccess: () => {
             setTaskTitle("");
-            setSelectedListId(listId); // Reset to prop listId if provided
+            setSelectedListId(listId);
           }
         }
       );
     } else {
-      // Add to default list
+
       addToDefaultMutation.mutate(itemData, {
         onSuccess: () => {
           setTaskTitle("");
@@ -59,11 +56,28 @@ export const AddTask = ({ listId = null }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleSubmit();
     } else if (e.key === "Escape") {
       setTaskTitle("");
       setSelectedListId(listId);
     }
+  };
+
+
+
+  const isSubmitting = addToDefaultMutation.isPending || addToListMutation.isPending;
+  const isEmpty = !taskTitle.trim();
+
+  const currentListLabel = useMemo(() => {
+    if (!selectedListId) return "Lista por defecto";
+    const selected = lists.find((l) => l.id === selectedListId);
+    return selected?.name ?? "Lista seleccionada";
+  }, [lists, selectedListId]);
+
+  const resetState = () => {
+    setTaskTitle("");
+    setSelectedListId(listId ?? null);
   };
 
   return (
@@ -74,8 +88,8 @@ export const AddTask = ({ listId = null }) => {
           onChange={(e) => setTaskTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Agregar tarea"
-          className="flex-1 bg-transparent outline-none h-12 text-base"
-        />
+          className="flex-1 bg-transparent outline-none h-12 text-sm leading-5 font-normal font-['DM_Sans'] " />
+
         <Popover open={listPopoverOpen} onOpenChange={setListPopoverOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -89,7 +103,7 @@ export const AddTask = ({ listId = null }) => {
           <PopoverContent className="w-64 -mt-[230px] p-0" align="end">
             <div className="p-0 bg-sidebar">
               <div className="p-4 w-full flex items-center justify-between text-sm rounded-sm transition-colors border-b border-border">
-                  MIS LISTAS
+                MIS LISTAS
               </div>
               {isLoadingLists ? (
                 <div className="p-4 text-sm text-muted-foreground">Cargando listas...</div>

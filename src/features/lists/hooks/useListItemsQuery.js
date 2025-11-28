@@ -264,13 +264,13 @@ export const useListItemsOperations = (listId) => {
     isLoading: itemsQuery.isLoading,
     isError: itemsQuery.isError,
     error: itemsQuery.error,
-    
+
     // Operations
     addItem: (itemData) => addItemMutation.mutate({ listId, itemData }),
     updateItem: updateItemMutation.mutate,
     toggleCompletion: toggleMutation.mutate,
     deleteItem: deleteMutation.mutate,
-    
+
     // Loading states
     isAdding: addItemMutation.isPending,
     isUpdating: updateItemMutation.isPending,

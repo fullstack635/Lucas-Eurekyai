@@ -16,7 +16,10 @@ import {
 import { useAllUserItems, useListItems, useToggleItemCompletion, useDeleteItem, useUpdateItem } from "@/features/lists/hooks/useListItemsQuery";
 import { useLists } from "@/features/lists/hooks/useListsQuery";
 import { cn } from "@/lib/utils";
+import { EditTaskModal } from "./EditTaskModal";
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 export const TaskList = ({ listId = null, filterByListName = null }) => {
   // State for list selection modal
@@ -24,20 +27,20 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   // Fetch all user items or items for a specific list
-  const { data: allItems = [], isLoading: isLoadingAll } = useAllUserItems({ 
+  const { data: allItems = [], isLoading: isLoadingAll } = useAllUserItems({
     isCompleted: false,
-    limit: 100 
+    limit: 100
   });
-  
+
   const { data: listItems = [], isLoading: isLoadingList } = useListItems(listId, {
     includeSubtasks: true,
     limit: 100
   });
 
   // Fetch lists to get list names
-  const { data: lists = [] } = useLists({ 
+  const { data: lists = [] } = useLists({
     status: 'ACTIVE',
-    includeItems: false 
+    includeItems: false
   });
 
   // Mutations
@@ -45,16 +48,19 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
   const deleteMutation = useDeleteItem();
   const updateMutation = useUpdateItem();
 
+  // Estado del modal
+  const [itemToEdit, setItemToEdit] = useState(null);
+
   // Determine which items to display
   const items = listId ? listItems : allItems;
   const isLoading = listId ? isLoadingList : isLoadingAll;
 
   // Filter by list name if provided
-  const filteredItems = filterByListName 
+  const filteredItems = filterByListName
     ? items.filter(item => {
-        const itemList = lists.find(l => l.id === item.listId);
-        return itemList?.name === filterByListName;
-      })
+      const itemList = lists.find(l => l.id === item.listId);
+      return itemList?.name === filterByListName;
+    })
     : items;
 
   // Get list name for an item
@@ -73,11 +79,36 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
   };
 
   const handleEdit = (item) => {
-    // TODO: Implement edit functionality (open edit modal/form)
-    console.log("Edit item:", item);
+    setItemToEdit(item);
+  };
+
+  const handleSaveEdit = ({ itemId, updates }) => {
+    const originalItem = filteredItems.find(item => item.id === itemId);
+
+    updateMutation.mutate(
+      {
+        id: itemId,
+        content: updates.content,
+        priority: originalItem?.priority || 'medium',
+        scheduledAt: updates.scheduledAt
+      },
+      {
+        onSuccess: () => {
+          setItemToEdit(null);
+          toast.success('Tarea editada con éxito', {
+            duration: 2000,
+          });
+        },
+        onError: (error) => {
+          console.error('Error al editar tarea:', error);
+          toast.error('Error al editar la tarea');
+        },
+      }
+    );
   };
 
   const handleChangeList = (item) => {
+    console.log("Change list for item:", item);
     setSelectedItem(item);
     setIsListModalOpen(true);
   };
@@ -112,142 +143,99 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
   };
 
   return (
-    <section className="mb-8 px-4 lg:px-0">
-      <h2 className="lg:text-[20px] text-[16px] font-semibold mb-4">Tareas</h2>
-      {isLoading ? (
-        <div className="text-sm text-muted-foreground">Cargando tareas...</div>
-      ) : filteredItems.length === 0 ? (
-        <div className="text-sm text-muted-foreground">No hay tareas</div>
-      ) : (
-        <div className="space-y-2">
-          {filteredItems.map((item) => {
-            const listName = getListName(item);
-            return (
-              <div
-                key={item.id}
-                className={cn(
-                  "bg-card rounded-lg p-4 flex items-center gap-3 sidebar-button-hover sidebar-nav-button"
-                )}
-              >
-                <Checkbox
-                  checked={item.isCompleted || false}
-                  onCheckedChange={() => handleToggle(item.id)}
-                  className="border-muted-foreground checkbox-border-color"
-                />
-                <div className="flex-1">
-                  <p className={cn(
-                    "text-sm",
-                    item.isCompleted && "line-through text-muted-foreground"
-                  )}>
-                    {item.content || item.title}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    MIS LISTAS • {listName.toUpperCase()}
-                  </p>
-                </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-8 w-8 hover:bg-accent"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <MoreVertical className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="border border-border bg-sidebar mt-5">
-                    <DropdownMenuItem 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleChangeList(item);
-                      }} 
-                      className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border"
-                    >
-                      Lista
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit(item);
-                      }} 
-                      className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border"
-                    >
-                      Editar
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(item.id);
-                      }}
-                      className="text-destructive p-3 hover:bg-[#6A52CC] hover:text-accent-foreground"
-                    >
-                      Eliminar
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* List Selection Modal */}
-      <Dialog open={isListModalOpen} onOpenChange={setIsListModalOpen}>
-        <DialogContent className="sm:max-w-md bg-sidebar border-border bottom-0 top-auto translate-y-0 sm:top-[70%] sm:translate-y-[-120%] rounded-t-lg sm:rounded-lg max-h-[95vh] sm:max-h-[85vh] flex flex-col p-0">
-          <DialogHeader className="px-6 pt-6 pb-4 flex-shrink-0">
-            <DialogTitle className="text-center text-lg font-semibold">
-              Mover a
-            </DialogTitle>
-          </DialogHeader>
-          <div className="mt-0 space-y-0 overflow-y-auto flex-1 min-h-0 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-muted-foreground/30 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [scrollbar-width:thin] [scrollbar-color:rgba(156,163,175,0.3)_transparent]">
-            {lists.map((list) => {
-              const isSelected = selectedItem?.listId === list.id;
+    <>
+      <section className="mb-8 px-4 lg:px-0">
+        <h2 className="lg:text-[20px] text-[16px] font-semibold mb-4">Tareas</h2>
+        {isLoading ? (
+          <div className="text-sm text-muted-foreground">Cargando tareas...</div>
+        ) : filteredItems.length === 0 ? (
+          <div className="text-sm text-muted-foreground">No hay tareas</div>
+        ) : (
+          <div className="space-y-2">
+            {filteredItems.map((item) => {
+              const listName = getListName(item);
               return (
-                <button
-                  key={list.id}
-                  onClick={() => handleSelectList(list.id)}
+                <div
+                  key={item.id}
                   className={cn(
-                    "w-full flex items-center justify-between p-4 text-sm transition-colors border-b border-border last:border-b-0",
-                    "hover:bg-[#6A52CC] hover:text-accent-foreground"
+                    "bg-card rounded-lg p-4 flex items-center gap-3 sidebar-button-hover sidebar-nav-button"
                   )}
                 >
-                  <span>{list.name}</span>
-                  {isSelected && (
-                    <div className="w-5 h-5 rounded-full bg-[#ABFFA8] flex items-center justify-center">
-                      <Check className="w-3 h-3 text-[#000000]" />
-                    </div>
-                  )}
-                  {!isSelected && (
-                    <div className="w-5 h-5 rounded-full border border-muted-foreground" />
-                  )}
-                </button>
+                  <Checkbox
+                    checked={item.isCompleted || false}
+                    onCheckedChange={() => handleToggle(item.id)}
+                    className="border-muted-foreground checkbox-border-color"
+                  />
+                  <div className="flex-1">
+                    <p className={cn(
+                      "text-sm",
+                      item.isCompleted && "line-through text-muted-foreground"
+                    )}>
+                      {item.content || item.title}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      MIS LISTAS • {listName.toUpperCase()}
+                    </p>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 hover:bg-accent"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="border border-border bg-sidebar mt-5">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleChangeList(item);
+                        }}
+                        className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border"
+                      >
+                        Lista
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEdit(item);
+                        }}
+                        className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border"
+                      >
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(item.id);
+                        }}
+                        className="text-destructive p-3 hover:bg-[#6A52CC] hover:text-accent-foreground"
+                      >
+                        Eliminar
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               );
             })}
-            {/* Option to move to default list (no list) */}
-            <button
-              onClick={() => handleSelectList(null)}
-              className={cn(
-                "w-full flex items-center justify-between p-4 text-sm transition-colors border-b border-border last:border-b-0",
-                "hover:bg-[#6A52CC] hover:text-accent-foreground"
-              )}
-            >
-              <span>Lista por defecto</span>
-              {!selectedItem?.listId && (
-                <div className="w-5 h-5 rounded-full bg-[#ABFFA8] flex items-center justify-center">
-                  <Check className="w-3 h-3 text-[#000000]" />
-                </div>
-              )}
-              {selectedItem?.listId && (
-                <div className="w-5 h-5 rounded-full border border-muted-foreground" />
-              )}
-            </button>
           </div>
-          <div className="px-6 py-4 border-t border-border flex-shrink-0">
-            {/* Footer content - can be customized as needed */}
-          </div>
-        </DialogContent>
-      </Dialog>
-    </section>
+        )}
+      </section>
+
+      {/* Modal de edición */}
+      <AnimatePresence>
+        {itemToEdit && (
+          <EditTaskModal
+            item={itemToEdit}
+            onClose={() => setItemToEdit(null)}
+            onSave={handleSaveEdit}
+            isSaving={updateMutation.isPending}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 };

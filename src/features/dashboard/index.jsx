@@ -36,20 +36,22 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
-        <div className="max-w-4xl mx-auto lg:p-6">
+        <div className={`mx-auto lg:p-6 ${
+          activeSection === 'proximos-7' ? 'max-w-full h-full' : 'max-w-4xl'
+        }`}>
           {/* Mobile Header */}
           <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-sidebar mb-6">
             {/* Left: User Avatar with Green Badge */}
             <div className="relative w-10 h-10 rounded-full bg-[#312465] flex items-center justify-center flex-shrink-0">
               <div className="absolute -bottom-0.5 -left-0.5 w-3 h-3 rounded-full bg-[#6FE36B] border-[1px] border-sidebar"></div>
             </div>
-            
+
             {/* Middle: Logo Icons */}
             <div className="flex items-center gap-2 flex-1 justify-center">
               <img src={UnionIcon} alt="Logo" className="h-6 w-auto svg-icon" />
               <img src={EurekyLogo} alt="eureky" className="h-7 w-auto svg-icon" />
             </div>
-            
+
             {/* Right: More Options */}
             <div className="flex items-center gap-2">
               {/* <Sheet>
@@ -91,18 +93,18 @@ const Dashboard = () => {
           )}
 
           {/* Render custom list view if a list is selected */}
-          {activeSection !== "mi-dia" && 
-           activeSection !== "proximos-7" && 
-           activeSection !== "tareas" && 
-           activeSection !== "calendario" && (
-            <>
-              <h1 className="text-[32px] lg:text-[48px] font-bold mb-8 px-4 lg:px-0">
-                {activeSection}
-              </h1>
-              <TaskList filterByListName={activeSection} />
-              <AddTask />
-            </>
-          )}
+          {activeSection !== "mi-dia" &&
+            activeSection !== "proximos-7" &&
+            activeSection !== "tareas" &&
+            activeSection !== "calendario" && (
+              <>
+                <h1 className="text-[32px] lg:text-[48px] font-bold mb-8 px-4 lg:px-0">
+                  {activeSection}
+                </h1>
+                <TaskList filterByListName={activeSection} />
+                <AddTask />
+              </>
+            )}
         </div>
       </main>
 

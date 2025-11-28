@@ -1,9 +1,13 @@
-import { Home, CheckSquare, Calendar, Settings } from 'lucide-react';
+import { Home, CheckSquare, Calendar, Settings, CalendarDays } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Sidebar = () => {
+  const { t } = useTranslation();
+  
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
+    { name: t('next7Days.title'), href: '/dashboard/next7days', icon: CalendarDays },
     { name: 'Lists', href: '/dashboard/lists', icon: CheckSquare },
     { name: 'Calendario', href: '/dashboard/calendar', icon: Calendar },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
