@@ -74,24 +74,24 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222 57% 5%;
+    --background: 220 50% 3.5%;
     --foreground: 0 0% 100%;
 
-    --card: 220 35% 10%;
+    --card: 220 30% 9%;
     --card-foreground: 0 0% 100%;
     --checkbox-border-color: 0 0% 100%;
 
-    --popover: 220 40% 10%;
+    --popover: 220 30% 9%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 270 80% 60%;
+    --primary: 250 73% 57%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 30% 15%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 220 30% 20%;
-    --muted-foreground: 0 0% 60%;
+    --muted-foreground: 236 11% 82%;
 
     --accent: 190 100% 50%;
     --accent-foreground: 0 0% 100%;
@@ -99,19 +99,19 @@ All colors MUST be HSL.
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 30% 18%;
+    --border: 240 15% 19%;
     --input: 220 30% 18%;
-    --ring: 270 80% 60%;
+    --ring: 250 73% 57%;
 
-    --sidebar-background: 218 38% 9%;
-    --sidebar-foreground: 0 0% 85%;
-    --sidebar-primary: 270 80% 60%;
+    --sidebar-background: 220 30% 9%;
+    --sidebar-foreground: 236 11% 82%;
+    --sidebar-primary: 250 73% 57%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 220 35% 12%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 30% 12%;
-    --sidebar-ring: 270 80% 60%;
-    --sidebar-button-active-background: 222 57% 5%;
+    --sidebar-border: 240 15% 19%;
+    --sidebar-ring: 250 73% 57%;
+    --sidebar-button-active-background: 220 50% 3.5%;
 
     --trigger-background: 220 38% 18%;
 

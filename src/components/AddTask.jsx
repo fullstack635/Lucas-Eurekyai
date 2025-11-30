@@ -1,12 +1,16 @@
-import { useState, useMemo } from "react";
-import { List, Check } from "lucide-react";
+import { useState } from "react";
+import { List } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { cn } from "@/lib/utils";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "./ui/popover";
+import { CheckCircleFilled } from "./CheckCircleFilled";
+import { CheckCircleOutline } from "./CheckCircleOutline";
+import { CheckIcon } from "./CheckIcon";
 import { useAddItemToDefaultList, useAddItemToList } from "@/features/lists/hooks/useListItemsQuery";
 import { useLists } from "@/features/lists/hooks/useListsQuery";
 
@@ -65,75 +69,62 @@ export const AddTask = ({ listId = null }) => {
   };
 
 
-
-  const isSubmitting = addToDefaultMutation.isPending || addToListMutation.isPending;
-  const isEmpty = !taskTitle.trim();
-
-  const currentListLabel = useMemo(() => {
-    if (!selectedListId) return "Lista por defecto";
-    const selected = lists.find((l) => l.id === selectedListId);
-    return selected?.name ?? "Lista seleccionada";
-  }, [lists, selectedListId]);
-
-  const resetState = () => {
-    setTaskTitle("");
-    setSelectedListId(listId ?? null);
-  };
-
   return (
-    <div className="bg-card rounded-[70px] pl-8 pt-[8px] pb-[2px] pr-6 mx-4 lg:mx-0">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="fixed bottom-0 left-0 right-0 lg:left-[280px] pb-2 pt-2 lg:pb-8 mt-8 z-40 pointer-events-none">
+      <div className="max-w-4xl mx-auto px-6 lg:px-6 pointer-events-auto">
+        <div className="bg-card rounded-[100px] h-[64px] flex items-center px-8 mb-20 lg:mb-0">
+          <div className="flex items-center gap-4 flex-1">
         <Input
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Agregar tarea"
-          className="flex-1 bg-transparent outline-none h-12 text-sm leading-5 font-normal font-['DM_Sans'] " />
+          className="flex-1 bg-transparent border-0 outline-none h-auto text-[16px] leading-[1.5] font-normal placeholder:text-[#CDCEDF] focus-visible:ring-0 px-0"
+          style={{fontFamily: "'DM Sans', sans-serif"}} />
 
         <Popover open={listPopoverOpen} onOpenChange={setListPopoverOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 mt-2 flex-shrink-0 rounded-full bg-trigger hover:bg-accent"
+              className="h-[40px] w-[40px] flex-shrink-0 rounded-[69px] bg-[#1C273E] hover:bg-[#1C273E]/80 p-0"
             >
-              <List className="w-5 h-5 bg-trigger-list" />
+              <List className="w-5 h-5 text-foreground" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 -mt-[230px] p-0" align="end">
-            <div className="p-0 bg-sidebar">
-              <div className="p-4 w-full flex items-center justify-between text-sm rounded-sm transition-colors border-b border-border">
+          <PopoverContent className="w-[324px] lg:w-[292px] p-0 bg-[#0F1521] rounded-[8px] border-0 mb-3" align="end" sideOffset={8}>
+            <div className="p-0 bg-[#0F1521] rounded-[8px] overflow-hidden">
+              <div className="px-4 py-3 text-white text-[14px] leading-[20px] font-bold tracking-[0.56px] uppercase border-b border-[#34324a]" style={{fontFamily: "'DM Sans', sans-serif"}}>
                 MIS LISTAS
               </div>
               {isLoadingLists ? (
                 <div className="p-4 text-sm text-muted-foreground">Cargando listas...</div>
               ) : (
                 <>
-                  <button
-                    onClick={() => {
-                      setSelectedListId(null);
-                      setListPopoverOpen(false);
-                    }}
-                    className="hover:bg-[#6A52CC] p-4 w-full flex items-center justify-between text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
-                  >
-                    <span>Lista por defecto</span>
-                    {!selectedListId && (
-                      <Check className="w-3 h-3 text-[#000000] text-primary bg-[#ABFFA8] rounded-full" />
-                    )}
-                  </button>
-                  {lists.map((list) => (
+                  {lists.map((list, index) => (
                     <button
                       key={list.id}
                       onClick={() => {
                         setSelectedListId(list.id);
                         setListPopoverOpen(false);
                       }}
-                      className="hover:bg-[#6A52CC] p-4 w-full flex items-center justify-between text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 text-white text-[16px] leading-[1.5] hover:bg-[#1C273E] transition-colors",
+                        index < lists.length - 1 && "border-b border-[#34324a]"
+                      )}
+                      style={{fontFamily: "'DM Sans', sans-serif"}}
                     >
                       <span>{list.name}</span>
-                      {selectedListId === list.id && (
-                        <Check className="w-3 h-3 text-[#000000] text-primary bg-[#ABFFA8] rounded-full" />
-                      )}
+                      <div className="relative w-4 h-4 flex items-center justify-center">
+                        {selectedListId === list.id ? (
+                          <>
+                            <CheckCircleFilled size={16} className="absolute" />
+                            <CheckIcon size={12} className="absolute" />
+                          </>
+                        ) : (
+                          <CheckCircleOutline size={16} className="absolute" />
+                        )}
+                      </div>
                     </button>
                   ))}
                 </>
@@ -141,6 +132,8 @@ export const AddTask = ({ listId = null }) => {
             </div>
           </PopoverContent>
         </Popover>
+          </div>
+        </div>
       </div>
     </div>
   );

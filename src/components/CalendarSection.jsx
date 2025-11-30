@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import { ExternalLink, ChevronRight, RefreshCw, AlertCircle } from "lucide-react";
+import { ExternalLink, ChevronRight, RefreshCw, AlertCircle, Share2 } from "lucide-react";
 import { Button } from "./ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover";
+import { cn } from "@/lib/utils";
+import { ConnectCalendarModal } from "./ConnectCalendarModal";
 import { useGoogleCalendar } from "@/features/calendar/hooks/useGoogleCalendar";
 import { useOutlookCalendar } from "@/features/calendar/hooks/useOutlookCalendar";
 import { useICloudCalendar } from "@/features/calendar/hooks/useICloudCalendar";
@@ -13,7 +10,6 @@ import { useCalendars } from "@/features/calendar/hooks/useCalendars";
 import { useAllCalendarEvents } from "@/features/calendar/hooks/useCalendarEvents";
 
 export const CalendarSection = ({ events: propEvents }) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
   const today = new Date();
   const dayName = today.toLocaleDateString("es-ES", { weekday: "short" }).toUpperCase();
   const dayNumber = today.getDate();
@@ -96,134 +92,109 @@ export const CalendarSection = ({ events: propEvents }) => {
 
   const handleConnectGoogleCalendar = () => {
     connectGoogleCalendar();
-    setPopoverOpen(false);
   };
 
   const handleConnectOutlookCalendar = () => {
     connectOutlookCalendar();
-    setPopoverOpen(false);
   };
 
   const handleConnectICloudCalendar = () => {
     connectICloudCalendar();
-    setPopoverOpen(false);
   };
 
   return (
-    <section className="mb-8 px-4 lg:px-0">
-      <h2 className="lg:text-[20px] text-[16px] font-semibold mb-4">Calendario</h2>
+    <section className="mb-8 px-6 lg:px-0">
+      <h2 className="lg:text-[20px] text-[16px] font-medium mb-4 tracking-[-0.2px]" style={{fontFamily: "'DM Sans', sans-serif"}}>Calendario</h2>
       
       {isLoadingCalendars ? (
-        <div className="bg-card rounded-lg p-6">
+        <div className="bg-card rounded-[8px] h-[107px] lg:h-[107px] flex items-center justify-center w-full lg:w-auto">
           <div className="flex items-center justify-center">
             <RefreshCw className="w-5 h-5 animate-spin text-muted-foreground" />
             <span className="ml-2 text-sm text-muted-foreground">Cargando calendarios...</span>
           </div>
         </div>
       ) : !isCalendarConnected ? (
-        <div className="bg-card rounded-lg p-6">
-          <div className="flex items-start gap-4">
+        <div className="bg-card rounded-[8px] h-[107px] flex items-center px-6 lg:px-6 w-full lg:w-auto">
+          <div className="flex items-center gap-6 w-full">
             <div className="flex flex-col items-center">
-              <span className="text-3xs font-bold text-muted-foreground">{dayName}</span>
-              <span className="text-3xl font-bold">{dayNumber}</span>
+              <span className="text-[18px] font-bold leading-[1.6] tracking-normal" style={{fontFamily: "'DM Sans', sans-serif"}}>{dayName}</span>
+              <span className="text-[40px] font-bold leading-[1.2] tracking-[-0.8px]" style={{fontFamily: "'DM Sans', sans-serif"}}>{dayNumber}</span>
             </div>
             <div className="flex-1">
-              <p className="text-sm mb-2">No tienes calendarios sincronizados</p>
+              <p className="text-[16px] mb-2 leading-[1.5] w-[197px] lg:w-auto" style={{fontFamily: "'DM Sans', sans-serif"}}>No tienes calendarios sincronizados</p>
               {oauthError && (
                 <div className="mb-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-destructive">{oauthError}</p>
                 </div>
               )}
-              <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-                <PopoverTrigger asChild>
-                  <Button 
-                    variant="link" 
-                    className="text-primary text-[#8465FF] p-0 h-auto hover:no-underline"
-                    disabled={isConnecting}
-                  >
-                    {isConnecting ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 mr-2 animate-spin inline" />
-                        Conectando...
-                      </>
-                    ) : (
-                      "Conectar calendario"
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 p-0 mt-10" align="start">
-                  <div className="p-1 bg-sidebar">
-                    <button
-                      onClick={handleConnectGoogleCalendar}
-                      disabled={isConnecting}
-                      className="hover:bg-[#6A52CC] pt-3 pb-3 pl-4 w-full flex items-center justify-between px-2 py-1.5 text-md rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
-                    >
-                      <span>Google Calendar</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={handleConnectOutlookCalendar}
-                      disabled={isConnecting}
-                      className="hover:bg-[#6A52CC] pt-3 pb-3 pl-4 w-full flex items-center justify-between px-2 py-1.5 text-md rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
-                    >
-                      <span>Outlook Calendar</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={handleConnectICloudCalendar}
-                      disabled={isConnecting}
-                      className="hover:bg-[#6A52CC] pt-3 pb-3 pl-4 w-full flex items-center justify-between px-2 py-1.5 text-md rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
-                    >
-                      <span>iCloud Calendar</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </PopoverContent>
-
-
-
-              </Popover>
+              <ConnectCalendarModal
+                onConnectGoogle={handleConnectGoogleCalendar}
+                onConnectOutlook={handleConnectOutlookCalendar}
+                onConnectICloud={handleConnectICloudCalendar}
+                isConnecting={isConnecting}
+              >
+                <Button 
+                  variant="link" 
+                  className="text-[#8465FF] p-0 h-auto hover:no-underline text-[14px] font-bold leading-[20px]"
+                  style={{fontFamily: "'DM Sans', sans-serif"}}
+                  disabled={isConnecting}
+                >
+                  {isConnecting ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin inline" />
+                      Conectando...
+                    </>
+                  ) : (
+                    "Conectar calendario"
+                  )}
+                </Button>
+              </ConnectCalendarModal>
             </div>
           </div>
         </div>
       ) : (
-        <div className="bg-card rounded-lg p-6">
-          <div className="flex items-start gap-4 mb-4">
-            <div className="flex flex-col items-center">
-              <span className="text-3xs font-bold text-muted-foreground">{dayName}</span>
-              <span className="text-3xl font-bold">{dayNumber}</span>
+        <div className="bg-card rounded-[8px] min-h-[117px] flex items-start px-6 py-6 lg:px-6 lg:py-4 w-full lg:w-auto">
+          <div className="flex items-start gap-6 w-full">
+            <div className="flex flex-col items-center pt-0 lg:pt-1">
+              <span className="text-[18px] font-bold leading-[1.6] tracking-normal" style={{fontFamily: "'DM Sans', sans-serif"}}>{dayName}</span>
+              <span className="text-[40px] font-bold leading-[1.2] tracking-[-0.8px]" style={{fontFamily: "'DM Sans', sans-serif"}}>{dayNumber}</span>
             </div>
             <div className="flex-1">
-              <div className="mb-3">
-                <span className="text-sm font-medium">
-                  {activeCalendars.length === 1 
-                    ? activeCalendars[0].calendarName || 'Mi calendario'
-                    : `${activeCalendars.length} calendarios conectados`}
-                </span>
-              </div>
               {isLoadingEvents ? (
                 <div className="flex items-center gap-2">
                   <RefreshCw className="w-4 h-4 animate-spin text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">Cargando eventos...</span>
                 </div>
               ) : formattedEvents.length > 0 ? (
-                <div className="space-y-2">
+                <div className="space-y-2 lg:space-y-3">
                   {formattedEvents.map((event, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <span className="text-sm text-muted-foreground min-w-[80px]">{event.time}</span>
-                      <span className="text-sm">{event.title}</span>
-                      {event.badge && (
+                    <div key={idx} className="flex items-center gap-[27px] lg:gap-4">
+                      <span className={cn(
+                        "text-[14px] leading-[20px] min-w-[90px]",
+                        event.isCompleted ? "line-through text-[#34324a]" : "text-foreground"
+                      )} style={{fontFamily: "'DM Sans', sans-serif"}}>{event.time}</span>
+                      <div className="flex items-center gap-2">
+                        <span className={cn(
+                          "text-[16px] leading-[1.5] font-normal",
+                          event.isCompleted ? "line-through text-[#34324a]" : "text-foreground"
+                        )} style={{fontFamily: "'DM Sans', sans-serif"}}>{event.title}</span>
+                        {event.meetLink && !event.isCompleted && (
+                          <Share2 className="w-5 h-5 text-[#8465FF] cursor-pointer hover:opacity-80" />
+                        )}
+                      </div>
+                      {event.badge && !event.isCompleted && (
                         <Button
                           variant="outline"
                           size="sm"
-                          className="h-6 px-2 text-xs bg-primary/10 border-primary/20 text-primary hover:bg-primary/20 bg-[#8465FF] text-[#FFFFFF]"
+                          className="h-[28px] px-6 py-1 text-[14px] leading-[20px] bg-[#8465FF] text-white border-0 rounded-[40px] hover:bg-[#8465FF]/90"
+                          style={{fontFamily: "'DM Sans', sans-serif"}}
                           onClick={() => event.meetLink && window.open(event.meetLink, '_blank')}
                         >
                           {event.badge}
                         </Button>
                       )}
-                      {event.meetLink && (
+                      {event.meetLink && !event.badge && (
                         <ExternalLink 
                           className="w-4 h-4 text-primary ml-auto cursor-pointer hover:opacity-80" 
                           onClick={() => window.open(event.meetLink, '_blank')}

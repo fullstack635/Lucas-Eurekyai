@@ -1,15 +1,15 @@
 import { Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import UnionIcon from "@/assets/icons/Union.svg";
 import Soporte from "@/assets/icons/life-buoy-01.svg";
 import Ajustes from "@/assets/icons/settings-01.svg";
 import EurekyLogo from "@/assets/icons/Union (1).svg";
-import { ChartNoAxesCombinedIcon } from "./ChartNoAxesCombinedIcon";
-import { CreditCardIcon } from "./CreditCardIcon";
-import { BlendIcon } from "./BlendIcon";
-import { DashboardIcon } from "./DashboardIcon";
+import { HomeIcon } from "./HomeIcon";
+import { ChartIcon } from "./ChartIcon";
+import { TasksIcon } from "./TasksIcon";
+import { CalendarStackIcon } from "./CalendarStackIcon";
 import VectorLeft from "@/assets/icons/Vector.svg";
 import VectorRight from "@/assets/icons/Vector (1).svg";
 import NavAccountMenuIcon from "@/assets/icons/__Nav account card menu button.svg";
@@ -39,16 +39,12 @@ export const Sidebar = ({ activeSection, onSectionChange }) => {
   // State for add list popover
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [newListName, setNewListName] = useState("");
-  const chartIconRef = useRef(null);
-  const creditCardIconRef = useRef(null);
-  const blendIconRef = useRef(null);
-  const dashboardIconRef = useRef(null);
 
   const mainSections = [
-    { id: "mi-dia", label: "Mi día", icon: BlendIcon, isComponent: true },
-    { id: "proximos-7", label: "Próximos 7 días", icon: ChartNoAxesCombinedIcon, isComponent: true },
-    { id: "tareas", label: "Tareas", icon: CreditCardIcon, isComponent: true },
-    { id: "calendario", label: "Mi calendario", icon: DashboardIcon, isComponent: true },
+    { id: "mi-dia", label: "Mi día", icon: HomeIcon },
+    { id: "proximos-7", label: "Próximos 7 días", icon: ChartIcon },
+    { id: "tareas", label: "Tareas", icon: TasksIcon },
+    { id: "calendario", label: "Mi calendario", icon: CalendarStackIcon },
   ];
 
   // Handle creating a new list
@@ -80,16 +76,16 @@ export const Sidebar = ({ activeSection, onSectionChange }) => {
   const listNames = lists.map(list => list.name || list);
 
   return (
-    <aside className="w-[300px] bg-sidebar flex flex-col h-screen">
-      <div className="px-4 pt-4 pb-2">
-        <div className="flex items-center gap-2 p-2">
-          <img src={UnionIcon} alt="Logo" className="lg:h-[21px] lg:w-[42px] h-[17.12px] w-[34.24px] svg-icon" />
-          <img src={EurekyLogo} alt="eureky" className="lg:h-[28px] lg:w-[107.33px] h-[22.82px] w-[87.49px] svg-icon" />
+    <aside className="w-[301px] bg-sidebar flex flex-col h-screen">
+      <div className="px-5 pt-6 pb-2">
+        <div className="flex items-center gap-2 py-2">
+          <img src={UnionIcon} alt="Logo" className="h-[28px] w-auto svg-icon" />
+          <img src={EurekyLogo} alt="eureky" className="h-[28px] w-auto svg-icon" />
         </div>
       </div>
 
-      <nav className="flex-1 pt-3 pb-3 pl-0 pr-0 overflow-y-auto relative">
-        <div className="space-y-1 mb-6">
+      <nav className="flex-1 pt-4 pb-0 pl-0 pr-0 overflow-y-auto relative">
+        <div className="space-y-[2px] mb-4 px-4">
           {mainSections.map((section) => {
             return (
               <button
@@ -98,67 +94,29 @@ export const Sidebar = ({ activeSection, onSectionChange }) => {
                   onSectionChange(section.id);
                 }}
                 className={cn(
-                  "w-full flex items-center gap-3 px-6 py-2 text-sm transition-colors sidebar-button-hover sidebar-nav-button",
+                  "w-full flex items-center gap-3 px-3 py-2 text-[16px] leading-[24px] transition-colors sidebar-button-hover sidebar-nav-button rounded-[6px]",
                   activeSection === section.id
                     ? "sidebar-button-active"
                     : "text-sidebar-foreground"
                 )}
-                onMouseEnter={(e) => {
-                  // Trigger icon animation if it's the blend icon
-                  if (section.id === "mi-dia" && blendIconRef.current) {
-                    blendIconRef.current.startAnimation();
-                  }
-                  // Trigger icon animation if it's the chart icon
-                  if (section.id === "proximos-7" && chartIconRef.current) {
-                    chartIconRef.current.startAnimation();
-                  }
-                  // Trigger icon animation if it's the credit card icon
-                  if (section.id === "tareas" && creditCardIconRef.current) {
-                    creditCardIconRef.current.startAnimation();
-                  }
-                  // Trigger icon animation if it's the dashboard icon
-                  if (section.id === "calendario" && dashboardIconRef.current) {
-                    dashboardIconRef.current.startAnimation();
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  // Stop icon animation if it's the blend icon
-                  if (section.id === "mi-dia" && blendIconRef.current) {
-                    blendIconRef.current.stopAnimation();
-                  }
-                  // Stop icon animation if it's the chart icon
-                  if (section.id === "proximos-7" && chartIconRef.current) {
-                    chartIconRef.current.stopAnimation();
-                  }
-                  // Stop icon animation if it's the credit card icon
-                  if (section.id === "tareas" && creditCardIconRef.current) {
-                    creditCardIconRef.current.stopAnimation();
-                  }
-                  // Stop icon animation if it's the dashboard icon
-                  if (section.id === "calendario" && dashboardIconRef.current) {
-                    dashboardIconRef.current.stopAnimation();
-                  }
-                }}
+                style={{fontFamily: "'Inter', sans-serif", fontWeight: 600}}
               >
-                {section.isComponent ? (
-                  <section.icon 
-                    ref={section.id === "mi-dia" ? blendIconRef : section.id === "proximos-7" ? chartIconRef : section.id === "tareas" ? creditCardIconRef : section.id === "calendario" ? dashboardIconRef : null}
-                    size={16} 
-                    className="w-4 h-4 text-current"
-                    isAnimated={true}
-                  />
-                ) : (
-                  <img src={section.icon} alt="" className="w-4 h-4 svg-icon" />
-                )}
-                <span className="lg:text-[16px]">{section.label}</span>
+                <section.icon 
+                  size={20} 
+                  className={cn(
+                    "w-5 h-5",
+                    activeSection === section.id ? "text-white" : "text-[#CDCEDF]"
+                  )}
+                />
+                <span>{section.label}</span>
               </button>
             );
           })}
         </div>
 
-        <div>
-          <div className="flex items-center justify-between px-6 py-2 mb-2 sidebar-button-hover sidebar-nav-button">
-            <span className="text-xs font-semibold text-muted-foreground uppercase">Mis Listas</span>
+        <div className="px-4">
+          <div className="flex items-center justify-between px-3 py-2 mb-[2px] sidebar-button-hover sidebar-nav-button rounded-[6px]">
+            <span className="text-[16px] leading-[24px] font-semibold text-sidebar-foreground" style={{fontFamily: "'Inter', sans-serif", fontWeight: 600}}>Mis Listas</span>
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -213,7 +171,7 @@ export const Sidebar = ({ activeSection, onSectionChange }) => {
               </PopoverContent>
             </Popover>
           </div>
-          <div className="space-y-1">
+          <div className="space-y-[2px]">
             {isLoadingLists ? (
               <div className="px-3 py-2 text-sm text-muted-foreground">
                 Cargando listas...
@@ -233,13 +191,14 @@ export const Sidebar = ({ activeSection, onSectionChange }) => {
                       onSectionChange(listName);
                     }}
                     className={cn(
-                      "w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors sidebar-button-hover sidebar-nav-button",
+                      "w-full flex items-center px-3 py-2 text-[16px] leading-[1.5] transition-colors sidebar-button-hover sidebar-nav-button rounded-[6px]",
                       activeSection === listName
                         ? "sidebar-button-active"
                         : "text-sidebar-foreground"
                     )}
+                    style={{fontFamily: "'DM Sans', sans-serif"}}
                   >
-                    <span className="pl-3 text-[16px]">{listName}</span>
+                    <span>{listName}</span>
                   </button>
                 );
               })
@@ -248,28 +207,28 @@ export const Sidebar = ({ activeSection, onSectionChange }) => {
         </div>
       </nav>
 
-      <div className="pt-3 pb-3 space-y-1">
+      <div className="pt-0 pb-0 space-y-[2px] px-4">
         <button 
-          className="w-full flex items-center gap-3 px-6 py-2 text-sm text-sidebar-foreground transition-colors sidebar-button-hover sidebar-nav-button"
+          className="w-full flex items-center gap-2 px-3 py-2 text-[16px] leading-[24px] text-sidebar-foreground transition-colors sidebar-button-hover sidebar-nav-button rounded-[6px]"
+          style={{fontFamily: "'Inter', sans-serif", fontWeight: 600}}
         >
-          <img src={Soporte} alt="" className="lg:h-[20px] lg:w-[20px] svg-icon" />
-          <span className="lg:text-[16px]">Soporte</span>
+          <img src={Soporte} alt="" className="w-5 h-5 svg-icon" />
+          <span>Soporte</span>
         </button>
         <button 
-          className="w-full flex items-center gap-3 px-6 py-2 text-sm text-sidebar-foreground transition-colors sidebar-button-hover sidebar-nav-button"
+          className="w-full flex items-center gap-2 px-3 py-2 text-[16px] leading-[24px] text-sidebar-foreground transition-colors sidebar-button-hover sidebar-nav-button rounded-[6px]"
+          style={{fontFamily: "'Inter', sans-serif", fontWeight: 600}}
         >
-          <img src={Ajustes} alt="" className="lg:h-[20px] lg:w-[20px] svg-icon" />
-          <span className="lg:text-[16px]">Ajustes</span>
+          <img src={Ajustes} alt="" className="w-5 h-5 svg-icon" />
+          <span>Ajustes</span>
         </button>
       </div>
 
-      <div className="p-3">
+      <div className="px-4 py-4">
         <Button 
-          className="hover:opacity-90 transition-opacity relative overflow-hidden flex items-center justify-center"
+          className="hover:opacity-90 transition-opacity relative overflow-hidden flex items-center justify-center w-[269px] h-[64px] rounded-[8px]"
           style={{ 
-            backgroundColor: '#6A52CC',
-            width: '269px',
-            height: '64px'
+            backgroundColor: '#6A52CC'
           }}
         >
           <img 
@@ -282,20 +241,20 @@ export const Sidebar = ({ activeSection, onSectionChange }) => {
             alt="" 
             className="absolute right-3 top-16 -translate-y-1/2 w-[63px] h-[64px]"
           />
-          <span className="relative z-10 lg:text-[18px]">Mejora tu plan</span>
+          <span className="relative z-10 text-[18px] leading-[1.6] font-medium" style={{fontFamily: "'DM Sans', sans-serif"}}>Mejora tu plan</span>
         </Button>
       </div>
 
-      <div className="p-3">
+      <div className="px-4 pb-6">
         <div 
-          className="bg-card p-3 rounded-lg flex items-center gap-3 border border-round transition-colors cursor-pointer relative z-10"
+          className="bg-card p-3 rounded-[12px] flex items-center gap-4 border border-[#34324a] transition-colors cursor-pointer relative"
         >
           <div className="relative w-10 h-10 rounded-full bg-[#312465] flex items-center justify-center">
-            <div className="absolute -bottom-0.5 -right-[0.0px] w-3 h-3 rounded-full bg-[#6FE36B] border-[1px] border-sidebar"></div>
+            <div className="absolute bottom-0 right-0 w-[10px] h-[10px] rounded-[5px] bg-[#6FE36B] border-[1.5px] border-sidebar"></div>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate lg:text-[14px]">Roger</p>
-            <p className="text-xs text-muted-foreground truncate lg:text-[14px] text-[#444358]">roger@untitledui.com</p>
+            <p className="text-[14px] leading-[20px] font-semibold text-[#F5F5FF] truncate" style={{fontFamily: "'Inter', sans-serif"}}>Roger</p>
+            <p className="text-[14px] leading-[20px] text-[#444358] truncate" style={{fontFamily: "'Inter', sans-serif"}}>roger@untitledui.com</p>
           </div>
           <img 
             src={NavAccountMenuIcon} 

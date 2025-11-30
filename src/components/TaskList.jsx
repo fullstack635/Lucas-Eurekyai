@@ -1,6 +1,9 @@
 import { MoreVertical, Check } from "lucide-react";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
+import { ListIcon } from "./ListIcon";
+import { EditIcon } from "./EditIcon";
+import { DeleteIcon } from "./DeleteIcon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -144,12 +147,10 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
 
   return (
     <>
-      <section className="mb-8 px-4 lg:px-0">
-        <h2 className="lg:text-[20px] text-[16px] font-semibold mb-4">Tareas</h2>
+      <section className="mb-8 px-6 lg:px-0">
+        <h2 className="lg:text-[20px] text-[16px] font-medium mb-4 tracking-[-0.2px]" style={{fontFamily: "'DM Sans', sans-serif"}}>Tareas</h2>
         {isLoading ? (
           <div className="text-sm text-muted-foreground">Cargando tareas...</div>
-        ) : filteredItems.length === 0 ? (
-          <div className="text-sm text-muted-foreground">No hay tareas</div>
         ) : (
           <div className="space-y-2">
             {filteredItems.map((item) => {
@@ -158,23 +159,22 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
                 <div
                   key={item.id}
                   className={cn(
-                    "bg-card rounded-lg p-4 flex items-center gap-3 sidebar-button-hover sidebar-nav-button"
+                    "bg-card rounded-[8px] h-[64px] lg:h-[64px] flex items-center px-4 lg:px-6 gap-6 lg:gap-4 w-full lg:w-auto"
                   )}
                 >
-                  <Checkbox
-                    checked={item.isCompleted || false}
-                    onCheckedChange={() => handleToggle(item.id)}
-                    className="border-muted-foreground checkbox-border-color"
-                  />
-                  <div className="flex-1">
-                    <p className={cn(
-                      "text-sm",
-                      item.isCompleted && "line-through text-muted-foreground"
-                    )}>
-                      {item.content || item.title}
+                  <div className="w-4 h-4 rounded-full border-[1.5px] border-foreground flex items-center justify-center cursor-pointer flex-shrink-0">
+                    {item.isCompleted && <Check className="w-3 h-3" />}
+                  </div>
+                  <div className="flex-1 min-w-0 w-[117px] lg:w-auto">
+                    <p className="text-[10px] leading-[16px] font-medium tracking-[0.5px] uppercase text-foreground mb-0.5" style={{fontFamily: "'DM Sans', sans-serif"}}>
+                      MIS LISTAS&gt;{listName.toUpperCase()}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      MIS LISTAS • {listName.toUpperCase()}
+                    <p className={cn(
+                      "text-[16px] leading-[1.5] font-normal truncate",
+                      item.isCompleted && "line-through text-[#444358]"
+                    )}
+                    style={{fontFamily: "'DM Sans', sans-serif"}}>
+                      {item.content || item.title}
                     </p>
                   </div>
                   <DropdownMenu>
@@ -182,20 +182,22 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 hover:bg-accent"
+                        className="h-5 w-5 lg:h-6 lg:w-6 hover:bg-transparent flex-shrink-0"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <MoreVertical className="w-4 h-4" />
+                        <MoreVertical className="w-5 h-5 lg:w-6 lg:h-6" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="border border-border bg-sidebar mt-5">
+                    <DropdownMenuContent align="end" className="mt-5 w-[131px] p-0 bg-card rounded-[8px] border-0 shadow-[0px_4px_4px_-1px_rgba(12,12,13,0.1),0px_4px_4px_-1px_rgba(12,12,13,0.05)]" sideOffset={8}>
                       <DropdownMenuItem
                         onClick={(e) => {
                           e.stopPropagation();
                           handleChangeList(item);
                         }}
-                        className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border"
+                        className="px-4 py-3 text-[16px] leading-[1.5] hover:bg-accent cursor-pointer border-b border-border rounded-none"
+                        style={{fontFamily: "'DM Sans', sans-serif"}}
                       >
+                        <ListIcon size={16} className="w-4 h-4 mr-2" />
                         Lista
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -203,8 +205,10 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
                           e.stopPropagation();
                           handleEdit(item);
                         }}
-                        className="p-3 hover:bg-[#6A52CC] hover:text-accent-foreground border-b border-border"
+                        className="px-4 py-3 text-[16px] leading-[1.5] hover:bg-accent cursor-pointer border-b border-border rounded-none"
+                        style={{fontFamily: "'DM Sans', sans-serif"}}
                       >
+                        <EditIcon size={16} className="w-4 h-4 mr-2" />
                         Editar
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -212,8 +216,10 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
                           e.stopPropagation();
                           handleDelete(item.id);
                         }}
-                        className="text-destructive p-3 hover:bg-[#6A52CC] hover:text-accent-foreground"
+                        className="px-4 py-3 text-[16px] leading-[1.5] hover:bg-accent cursor-pointer"
+                        style={{fontFamily: "'DM Sans', sans-serif"}}
                       >
+                        <DeleteIcon size={16} className="w-4 h-4 mr-2" />
                         Eliminar
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -236,6 +242,50 @@ export const TaskList = ({ listId = null, filterByListName = null }) => {
           />
         )}
       </AnimatePresence>
+
+      <Dialog open={isListModalOpen} onOpenChange={setIsListModalOpen}>
+        <DialogContent 
+          className="w-full sm:max-w-[375px] bg-[#0F1521] border-0 p-0 rounded-t-[24px] sm:rounded-[24px] overflow-hidden gap-0 !left-[50%] !translate-x-[-50%] !bottom-0 !top-auto !translate-y-0 sm:!top-[50%] sm:!bottom-auto sm:!translate-y-[-50%]"
+          hideCloseButton={true}
+        >
+          <div className="flex flex-col gap-[20px]">
+            <div className="h-[64px] border-b border-[#34324a] flex items-center justify-center relative">
+              <h2 className="text-[18px] font-bold leading-[1.6] text-center text-white" style={{fontFamily: "'DM Sans', sans-serif"}}>
+                Mover a
+              </h2>
+            </div>
+            
+            <div className="flex flex-col gap-[20px] pb-[20px]">
+              {lists.map((list, index) => {
+                const isSelected = selectedItem?.listId === list.id;
+                return (
+                  <div key={list.id}>
+                    <button
+                      onClick={() => handleSelectList(list.id)}
+                      className="w-full flex items-center justify-between px-[24px] text-[16px] leading-[1.5] text-white hover:bg-[#1C273E] transition-colors"
+                      style={{fontFamily: "'DM Sans', sans-serif"}}
+                    >
+                      <span>{list.name}</span>
+                      <div className="w-[24px] h-[24px] rounded-full flex items-center justify-center flex-shrink-0">
+                        {isSelected ? (
+                          <div className="w-[24px] h-[24px] rounded-full bg-[#ABFFA8] flex items-center justify-center">
+                            <Check className="w-[18px] h-[18px] text-white stroke-[2.5]" />
+                          </div>
+                        ) : (
+                          <div className="w-[24px] h-[24px] rounded-full border-[1.5px] border-[#CDCEDF]" />
+                        )}
+                      </div>
+                    </button>
+                    {index < lists.length - 1 && (
+                      <div className="w-full h-[1px] bg-[#34324a] mt-[20px]" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
